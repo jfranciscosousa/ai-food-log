@@ -13,7 +13,7 @@ export default defineConfig({
   plugins: [
     remixDevTools(),
     remix({
-      ignoredRouteFiles: ["**/.*"],
+      ignoredRouteFiles: ["**/.*", "*.disabled"],
     }),
     tsconfigPaths(),
   ],

@@ -114,6 +114,15 @@ export default function SignUp() {
           errors={errors}
         />
 
+        <InputField
+          label="Invite token"
+          name="inviteToken"
+          type="text"
+          required
+          placeholder=""
+          errors={errors}
+        />
+
         <CheckboxField name="rememberMe" label="Remember me" className="pb-4" />
 
         <Button type="submit" className="mt-8" isLoading={isLoading}>

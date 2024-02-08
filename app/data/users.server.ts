@@ -7,6 +7,7 @@ import { DataResult } from "./utils/types";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
 
 export const createUserParams = zfd.formData({
+  inviteToken: zfd.text(),
   email: zfd.text(z.string().email()),
   name: zfd.text(),
   password: zfd.text(),
@@ -46,6 +47,7 @@ export async function createUser(
     return { data: null, errors: formatZodErrors(parsedSchema.error) };
 
   const {
+    inviteToken,
     email,
     name,
     password,
@@ -55,6 +57,10 @@ export async function createUser(
     fitnessLevel,
     rememberMe,
   } = parsedSchema.data;
+
+  if (inviteToken !== "xico o maior da minha aldeia") {
+    return { data: null, errors: { inviteToken: "Invlid invite token!" } };
+  }
 
   if (password !== passwordConfirmation) {
     return {

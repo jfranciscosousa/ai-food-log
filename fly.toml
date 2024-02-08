@@ -4,7 +4,7 @@
 #
 
 app = "ai-food-log"
-primary_region = "lhr"
+primary_region = "mad"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
 
@@ -15,6 +15,8 @@ kill_timeout = "5s"
   METRICS_PORT = "8081"
   PORT = "8080"
   PRIMARY_REGION = "mad"
+  SECURE_AUTH_COOKIE= "true"
+  NODE_ENV = "production"
 
 [deploy]
   release_command = "npx prisma db push"

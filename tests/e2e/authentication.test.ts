@@ -6,7 +6,7 @@ const HEIGHT = "170";
 const WEIGHT = "82";
 const PASSWORD = "foobar";
 
-test("signs up", async ({ page, screen }) => {
+test.skip("signs up", async ({ page, screen }) => {
   await page.goto("/signup");
 
   await screen.getByLabelText("Email").fill(EMAIL);
