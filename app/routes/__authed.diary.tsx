@@ -2,7 +2,6 @@ import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
   SerializeFrom,
-  redirect,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect } from "react";
@@ -41,25 +40,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const form = Object.fromEntries(formData);
 
-  switch (form._action) {
-    case "create":
-      return {
-        _action: "create" as const,
-        ...(await createEntry(userId, formData)),
-      };
-    case "delete":
-      return {
-        _action: "delete" as const,
-        ...(await deleteEntry(userId, formData)),
-      };
-    case "delete-all":
-      return {
-        _action: "delete-all" as const,
-        ...(await deleteAllEntries(userId, formData)),
-      };
+  try {
+    switch (form._action) {
+      case "create":
+        return {
+          _action: "create" as const,
+          ...(await createEntry(userId, formData)),
+        };
+      case "delete":
+        return {
+          _action: "delete" as const,
+          ...(await deleteEntry(userId, formData)),
+        };
+      case "delete-all":
+        return {
+          _action: "delete-all" as const,
+          ...(await deleteAllEntries(userId, formData)),
+        };
+    }
+  } catch (_error) {
+    return { _action: form._action, errors: { content: "unknown" } };
   }
-
-  return redirect("/diary");
 };
 
 export default function NotesPage() {
