@@ -11,7 +11,7 @@
     "deploy": "npm run ts-run tasks/validateConfig.ts && prisma generate && prisma db push && npm run build",
     "dev": "remix vite:dev",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" --cache",
-    "prepare": "husky install",
+    "prepare": "[ \"$NODE_ENV\" != \"production\" ] && husky || :",
     "start": "remix-serve ./build/server/index.js",
     "test": "npm run test:vitest && npm run test:e2e",
     "test:e2e": "dotenv -e .env.test -- bash -c 'prisma db push -- --force && npm run build && playwright test'",

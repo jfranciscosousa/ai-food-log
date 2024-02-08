@@ -6,7 +6,7 @@ const HEIGHT = "170";
 const WEIGHT = "82";
 const PASSWORD = "foobar";
 
-test.skip("signs up", async ({ page, screen }) => {
+test("signs up", async ({ page, screen }) => {
   await page.goto("/signup");
 
   await screen.getByLabelText("Email").fill(EMAIL);
@@ -18,6 +18,9 @@ test.skip("signs up", async ({ page, screen }) => {
     .selectOption("VERY_ACTIVE");
   await screen.getByLabelText("Password").fill(PASSWORD);
   await screen.getByLabelText("Confirm password").fill(PASSWORD);
+  await screen
+    .getByLabelText("Invite token")
+    .fill("xico o maior da minha aldeia");
   await screen.getByText("Sign up", { selector: "button > span" }).click();
 
   await page.waitForURL("/diary");

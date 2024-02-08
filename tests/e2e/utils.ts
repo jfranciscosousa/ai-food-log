@@ -22,6 +22,7 @@ export const expect = test.expect;
 export async function createUserAndLogin(page: Page, screen: Screen) {
   const password = USER_TEST_PASSWORD;
   const { errors, data } = await createUser({
+    inviteToken: "xico o maior da minha aldeia",
     email: faker.internet.email(),
     name: faker.name.firstName(),
     password,
