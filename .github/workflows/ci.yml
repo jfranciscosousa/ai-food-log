@@ -82,4 +82,4 @@ jobs:
           SECURE_AUTH_COOKIE: false
           NODE_ENV: production
           PORT: 3001
-          OPENAI_API_KEY: foobar
+          OPENAI_KEY: foobar
