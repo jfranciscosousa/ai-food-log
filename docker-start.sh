@@ -13,8 +13,4 @@ echo 10 > /proc/sys/vm/swappiness
 swapon /swapfile
 
 pnpm dlx prisma db push
-
-swapoff /swapfile
-rm /swapfile
-
 pnpm run start

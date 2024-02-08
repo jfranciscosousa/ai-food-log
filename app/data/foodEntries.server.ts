@@ -73,6 +73,8 @@ export async function createEntry(
     Some considerations:
     - if the user specifies raw or uncooked, please make sure you represent those values diferently. Raw or uncooked food usually doesn't account
     for water weight lost during cooking time so please adjust.
+    - if the user specifies the macros, please calculate the calories from it. for example user might say "whey protein shake with 50g calories and 20g carbs"
+    you should fill in the calories for this item
     `,
     {
       schema: z.object({
