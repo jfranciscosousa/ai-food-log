@@ -1,4 +1,4 @@
-# Welcome to Remix!
+# ai-food-log
 
 - [Remix Docs](https://remix.run/docs)
 - [Fly deployment](https://remix-prisma-starter.fly.dev/)
@@ -13,13 +13,9 @@
 
 ## Quickstart
 
-Just create a new `remix` project using this template with the following command:
+You can easily install `pnpm` with `npm i -g pnpm`.
 
-```
-npx create-remix@latest --template jfranciscosousa/remix-prisma-starter
-```
-
-This will prompt you to add your postgres database details. Make sure to use different databases for development and for testing.
+Then just run `pnpm i`, configure your `.env` and go!
 
 ## Deployment
 
@@ -30,17 +26,16 @@ You can deploy this to [Fly](https://fly.io). You just have to run `fly deploy -
 To run your Remix app locally, make sure your project's local dependencies are installed:
 
 ```sh
-npm i
+pnpm i
 ```
 
 Afterward, start the Remix development server like so:
 
 ```sh
-npm run dev
+pnpm run dev
 ```
 
 Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
-
 
 ## Testing
 
@@ -51,5 +46,6 @@ It loads up `.env.test` file config, so it uses a different database and a diffe
 All tests are run in sync by a single worker so we can safely reset the database before each test starts.
 
 Before running `npm run dev test` for the first time, make sure to run these commands:
+
 - `npx playwright install`
 - `npx playwright install-deps`
