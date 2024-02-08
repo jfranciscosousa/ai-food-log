@@ -30,11 +30,11 @@ function InnerLoggedInLayout({
         <ul className="flex flex-row space-x-4 items-center">
           <li>
             <NavLink
-              to="/notes"
+              to="/diary"
               prefetch="intent"
               className={({ isActive }) => (isActive ? "underline" : "")}
             >
-              Notes
+              Home
             </NavLink>
           </li>
 

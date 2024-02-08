@@ -6,6 +6,7 @@ export const serverEnvSchema = z.object({
   SECURE_AUTH_COOKIE: z.enum(["true", "false"]).transform((v) => v === "true"),
   NODE_ENV: z.enum(["development", "test", "production"]),
   SECRET_KEY_BASE: z.string(),
+  OPENAI_KEY: z.string(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

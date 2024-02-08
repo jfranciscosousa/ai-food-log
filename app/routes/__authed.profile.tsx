@@ -1,22 +1,24 @@
-import { Form, useActionData } from "@remix-run/react";
 import type {
-  DataFunctionArgs,
-  SerializeFrom,
+  LoaderFunctionArgs,
   MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
+import { Form, useActionData } from "@remix-run/react";
 import { useEffect } from "react";
 import { Button } from "~/components/ui/button";
+import { Card, CardTitle } from "~/components/ui/card";
 import { InputField } from "~/components/ui/input-field";
+import { SelectField } from "~/components/ui/select-field";
+import { useToast } from "~/components/ui/use-toast";
+import { FitnessLevel } from "~/constants";
 import { updateUser } from "~/data/users.server";
 import useIsLoading from "~/hooks/useIsLoading";
 import useUser from "~/hooks/useUser";
 import { userIdFromRequest } from "~/web/auth.server";
-import { Card, CardTitle } from "~/components/ui/card";
-import { useToast } from "~/components/ui/use-toast";
 
 export type ProfileRouteActionType = SerializeFrom<typeof action>;
 
-export const action = async ({ request }: DataFunctionArgs) => {
+export const action = async ({ request }: LoaderFunctionArgs) => {
   const userId = await userIdFromRequest(request);
   const form = await request.formData();
 
@@ -63,6 +65,39 @@ export default function Profile() {
           required
           placeholder="How you would like to be called"
           defaultValue={user.name}
+          errors={actionData?.errors}
+        />
+
+        <InputField
+          label="Height (cm)"
+          name="height"
+          type="number"
+          required
+          placeholder="Your height in cm"
+          defaultValue={user.height}
+          errors={actionData?.errors}
+        />
+
+        <InputField
+          label="Weight (kg)"
+          name="weight"
+          type="number"
+          required
+          placeholder="Your weight in kg"
+          defaultValue={user.weight}
+          errors={actionData?.errors}
+        />
+
+        <SelectField
+          label="Fitness level"
+          name="fitnessLevel"
+          placeholder="Your fitness level"
+          required
+          options={Object.values(FitnessLevel).map((value) => ({
+            value,
+            label: value,
+          }))}
+          defaultValue={user.fitnessLevel}
           errors={actionData?.errors}
         />
 

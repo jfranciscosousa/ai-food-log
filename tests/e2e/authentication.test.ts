@@ -2,6 +2,8 @@ import { createUserAndLogin, expect, test } from "./utils";
 
 const EMAIL = "test@mail.com";
 const NAME = "Test name";
+const HEIGHT = "170";
+const WEIGHT = "82";
 const PASSWORD = "foobar";
 
 test("signs up", async ({ page, screen }) => {
@@ -9,11 +11,16 @@ test("signs up", async ({ page, screen }) => {
 
   await screen.getByLabelText("Email").fill(EMAIL);
   await screen.getByLabelText("Name").fill(NAME);
+  await screen.getByLabelText("Height (cm)").fill(HEIGHT);
+  await screen.getByLabelText("Weight (kg)").fill(WEIGHT);
+  await screen
+    .locator("select[name='fitnessLevel']")
+    .selectOption("VERY_ACTIVE");
   await screen.getByLabelText("Password").fill(PASSWORD);
   await screen.getByLabelText("Confirm password").fill(PASSWORD);
   await screen.getByText("Sign up", { selector: "button > span" }).click();
 
-  await page.waitForURL("/notes");
+  await page.waitForURL("/diary");
 });
 
 test("logins", async ({ page, screen }) => {
@@ -22,7 +29,7 @@ test("logins", async ({ page, screen }) => {
   await screen.getByLabelText("Password").fill(PASSWORD);
   await screen.getByText("Login", { selector: "button > span" }).click();
 
-  await page.waitForURL("/notes");
+  await page.waitForURL("/diary");
 });
 
 test("shows login and then redirects to original page", async ({

@@ -1,4 +1,5 @@
 import { createCookie, redirect } from "@remix-run/node";
+import { addDays } from "date-fns";
 import prisma from "~/data/utils/prisma.server";
 import { SERVER_ENV } from "~/env.server";
 
@@ -22,7 +23,9 @@ export async function authenticate(
           userId: user.id,
         },
         {
-          maxAge: rememberMe ? 31536000 : 3600,
+          expires: rememberMe
+            ? addDays(new Date(), 1)
+            : addDays(new Date(), 30),
         },
       ),
     },
@@ -43,7 +46,7 @@ export async function userIdFromRequest(request: Request) {
   const cookieHeader = request.headers.get("Cookie");
   const { userId } = (await authCookie.parse(cookieHeader)) || {};
 
-  return userId;
+  return userId as string;
 }
 
 export async function userFromRequest(request: Request) {
@@ -60,6 +63,11 @@ export async function userFromRequest(request: Request) {
       createdAt: true,
       updatedAt: true,
       featureFlags: true,
+      height: true,
+      weight: true,
+      bmi: true,
+      bmr: true,
+      fitnessLevel: true,
     },
   });
 

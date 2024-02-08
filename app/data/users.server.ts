@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { FitnessLevel, User } from "@prisma/client";
 import { zfd } from "zod-form-data";
 import { z } from "zod";
 import { encryptPassword, verifyPassword } from "./users/passwordUtils.server";
@@ -11,6 +11,17 @@ export const createUserParams = zfd.formData({
   name: zfd.text(),
   password: zfd.text(),
   passwordConfirmation: zfd.text(),
+  height: zfd.numeric(),
+  weight: zfd.numeric(),
+  fitnessLevel: zfd.text(
+    z.enum([
+      FitnessLevel.EXTRA_ACTIVE,
+      FitnessLevel.LIGHTLY_ACTIVE,
+      FitnessLevel.MODERATELY_ACTIVE,
+      FitnessLevel.SEDENTARY,
+      FitnessLevel.VERY_ACTIVE,
+    ]),
+  ),
   rememberMe: zfd.checkbox().optional(),
 });
 
@@ -34,8 +45,16 @@ export async function createUser(
   if (!parsedSchema.success)
     return { data: null, errors: formatZodErrors(parsedSchema.error) };
 
-  const { email, name, password, passwordConfirmation, rememberMe } =
-    parsedSchema.data;
+  const {
+    email,
+    name,
+    password,
+    passwordConfirmation,
+    height,
+    weight,
+    fitnessLevel,
+    rememberMe,
+  } = parsedSchema.data;
 
   if (password !== passwordConfirmation) {
     return {
@@ -48,9 +67,21 @@ export async function createUser(
     return { data: null, errors: { email: "User already exists!" } };
   }
 
+  const bmi = 0;
+  const bmr = 0;
+
   const encryptedPassword = await encryptPassword(password);
   const user = await prisma.user.create({
-    data: { email, name, password: encryptedPassword },
+    data: {
+      email,
+      name,
+      password: encryptedPassword,
+      height,
+      weight,
+      fitnessLevel,
+      bmi,
+      bmr,
+    },
   });
 
   user.password = "";
@@ -64,6 +95,19 @@ const updateUserParams = zfd.formData({
   currentPassword: zfd.text(),
   newPassword: zfd.text(z.string().optional()),
   passwordConfirmation: zfd.text(z.string().optional()),
+  height: zfd.numeric(z.number().optional()),
+  weight: zfd.numeric(z.number().optional()),
+  fitnessLevel: zfd.text(
+    z
+      .enum([
+        FitnessLevel.EXTRA_ACTIVE,
+        FitnessLevel.LIGHTLY_ACTIVE,
+        FitnessLevel.MODERATELY_ACTIVE,
+        FitnessLevel.SEDENTARY,
+        FitnessLevel.VERY_ACTIVE,
+      ])
+      .optional(),
+  ),
 });
 
 export type UpdateUserParams = z.infer<typeof updateUserParams> | FormData;
@@ -76,9 +120,17 @@ export async function updateUser(
 
   if (!parsedSchema.success)
     return { data: null, errors: formatZodErrors(parsedSchema.error) };
-
-  const { name, email, newPassword, passwordConfirmation, currentPassword } =
-    parsedSchema.data;
+  console.log(parsedSchema.data);
+  const {
+    name,
+    email,
+    height,
+    weight,
+    fitnessLevel,
+    newPassword,
+    passwordConfirmation,
+    currentPassword,
+  } = parsedSchema.data;
 
   if (newPassword !== passwordConfirmation) {
     return {
@@ -100,7 +152,14 @@ export async function updateUser(
     : undefined;
   const updatedUser = await prisma.user.update({
     where: { id: user.id },
-    data: { email, name, password: encryptedPassword },
+    data: {
+      email,
+      name,
+      password: encryptedPassword,
+      height,
+      weight,
+      fitnessLevel,
+    },
   });
 
   if (updatedUser) updatedUser.password = "";
@@ -110,7 +169,7 @@ export async function updateUser(
 
 export async function deleteUser(user: User): Promise<Omit<User, "password">> {
   const [_, deletedUser] = await prisma.$transaction([
-    prisma.note.deleteMany({ where: { userId: user.id } }),
+    prisma.foodEntry.deleteMany({ where: { userId: user.id } }),
     prisma.user.delete({ where: { id: user.id } }),
   ]);
 

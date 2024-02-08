@@ -26,6 +26,9 @@ export async function createUserAndLogin(page: Page, screen: Screen) {
     name: faker.name.firstName(),
     password,
     passwordConfirmation: password,
+    height: 183,
+    weight: 100,
+    fitnessLevel: "SEDENTARY",
   });
 
   if (!data) throw errors;

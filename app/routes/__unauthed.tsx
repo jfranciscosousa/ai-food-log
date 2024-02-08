@@ -7,7 +7,7 @@ import ErrorPage from "~/components/Error500Page";
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await userFromRequest(request);
 
-  if (user) return redirect("/notes");
+  if (user) return redirect("/diary");
 
   return null;
 };

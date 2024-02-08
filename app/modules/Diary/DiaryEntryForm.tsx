@@ -1,14 +1,27 @@
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
+import { useToast } from "~/components/ui/use-toast";
+import { DiaryActionData, DiaryRouteData } from "~/routes/__authed.diary";
 
-export default function NotesForm() {
-  const fetcher = useFetcher();
+export default function DiaryEntryForm() {
+  const { toast } = useToast();
+  const { unparsedDate } = useLoaderData<DiaryRouteData>();
+  const fetcher = useFetcher<DiaryActionData>();
   const inputRef = useRef<HTMLInputElement>(null);
   const isAdding =
     fetcher.state === "submitting" &&
     fetcher.formData?.get("_action") === "create";
+
+  useEffect(() => {
+    if (fetcher.data?.errors) {
+      toast({
+        title: "Unhandled error while creating entry!",
+        variant: "destructive",
+      });
+    }
+  }, [fetcher.data, toast]);
 
   useEffect(() => {
     if (!isAdding || !inputRef.current) return;
@@ -20,8 +33,10 @@ export default function NotesForm() {
   return (
     <fetcher.Form method="post" className="flex flex-col space-y-4">
       <div className="flex flex-row items-end space-x-4 w-full">
+        <input type="hidden" name="day" value={unparsedDate} />
+
         <InputField
-          label="New todo"
+          label="New entry"
           name="content"
           type="text"
           required

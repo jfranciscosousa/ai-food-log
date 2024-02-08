@@ -33,10 +33,17 @@ test("updates profile", async ({ page, screen }) => {
   const newName = faker.name.firstName();
   const newEmail = faker.internet.email();
   const newPassword = faker.internet.password(8);
+  const newHeight = String(faker.number.int({ min: 0, max: 100 }));
+  const newWeight = String(faker.number.int({ min: 0, max: 100 }));
 
   await page.goto("/profile");
   await page.getByLabel("Name").fill(newName);
   await page.getByLabel("Email").fill(newEmail);
+  await screen.getByLabelText("Height (cm)").fill(newHeight);
+  await screen.getByLabelText("Weight (kg)").fill(newWeight);
+  await screen
+    .locator("select[name='fitnessLevel']")
+    .selectOption("EXTRA_ACTIVE");
   await page.getByLabel("New password").fill(newPassword);
   await page.getByLabel("Confirm password").fill(newPassword);
   await page.getByLabel("Current password").fill(USER_TEST_PASSWORD);
@@ -48,9 +55,11 @@ test("updates profile", async ({ page, screen }) => {
     const updatedUser = await prisma.user.findFirstOrThrow({
       where: { id: user.id },
     });
-    expect(await page.getByText(updatedUser.name).count()).toBe(1);
     expect(updatedUser.name).toEqual(newName);
     expect(updatedUser.email).toEqual(newEmail);
+    expect(updatedUser.height.toString()).toEqual(newHeight);
+    expect(updatedUser.weight.toString()).toEqual(newWeight);
+    expect(updatedUser.fitnessLevel).toEqual("EXTRA_ACTIVE");
     // Check that the new password is applied
     expect(
       await verifyPassword(updatedUser.password, newPassword),

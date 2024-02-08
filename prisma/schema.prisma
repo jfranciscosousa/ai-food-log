@@ -9,22 +9,57 @@ datasource db {
   shadowDatabaseUrl = env("DATABASE_URL_NON_POOLING")
 }
 
-model Note {
-  id        String   @id @default(uuid())
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+model FoodEntryItem {
+  id                      String              @id @default(uuid())
+  name                    String
+  servingSize             Decimal
+  calories                Decimal
+  protein                 Decimal
+  carbs                   Decimal
+  fat                     Decimal
+  fiber                   Decimal
+  foodEntryId             String
+  foodEntry               FoodEntry                @relation(fields: [foodEntryId], references: [id], onDelete: Cascade)
+}
+
+model FoodEntry {
+  id                      String              @id @default(uuid())
+  content                 String
+  name                    String
+  calories                Decimal
+  protein                 Decimal
+  carbs                   Decimal
+  fat                     Decimal
+  fiber                   Decimal
+  aiResponse              Json
+  day                     DateTime            @default(now())
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
+  userId                  String
+  user                    User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items                   FoodEntryItem[]
+}
+
+enum FitnessLevel {
+  SEDENTARY
+  LIGHTLY_ACTIVE
+  MODERATELY_ACTIVE
+  VERY_ACTIVE
+  EXTRA_ACTIVE
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  name         String
-  password     String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  featureFlags Json     @default("{}")
-  Note         Note[]
+  id              String                 @id @default(uuid())
+  email           String                 @unique
+  name            String
+  password        String
+  height          Decimal
+  weight          Decimal
+  bmr             Decimal
+  bmi             Decimal
+  fitnessLevel    FitnessLevel
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  featureFlags    Json                    @default("{}")
+  foodEntries                             FoodEntry[]
 }

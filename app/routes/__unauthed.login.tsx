@@ -12,7 +12,7 @@ import { login } from "~/data/users/login.server";
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await userFromRequest(request);
 
-  if (user) return redirect("/notes");
+  if (user) return redirect("/diary");
 
   return null;
 };

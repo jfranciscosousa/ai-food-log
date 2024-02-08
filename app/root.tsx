@@ -3,7 +3,6 @@ import "./root.css";
 import { DataFunctionArgs } from "@remix-run/node";
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -121,7 +120,6 @@ function Document({
         <body>
           {children}
           <ScrollRestoration />
-          <LiveReload />
           <Scripts />
         </body>
       </html>

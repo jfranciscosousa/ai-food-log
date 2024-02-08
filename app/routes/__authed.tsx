@@ -21,12 +21,13 @@ export function ErrorBoundary() {
 export default function AppPage() {
   const { user } = useLoaderData<AuthedRouteData>();
 
-  if (!user)
+  if (!user) {
     return (
       <LoggedOutLayout>
         <Login />
       </LoggedOutLayout>
     );
+  }
 
   return (
     <LoggedInLayout user={user}>
