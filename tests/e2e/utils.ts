@@ -5,7 +5,7 @@ import {
   LocatorFixtures as TestingLibraryFixtures,
 } from "@playwright-testing-library/test/fixture.js";
 import { Page, test as base } from "@playwright/test";
-import { createUser } from "~/data/users.server";
+import { createUser } from "~/server/data/users/index.server";
 import { truncateAll } from "./truncateAll";
 
 export const USER_TEST_PASSWORD = "foobar";

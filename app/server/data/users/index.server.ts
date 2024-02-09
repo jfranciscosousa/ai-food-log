@@ -1,10 +1,10 @@
 import { FitnessLevel, User } from "@prisma/client";
 import { zfd } from "zod-form-data";
 import { z } from "zod";
-import { encryptPassword, verifyPassword } from "./users/passwordUtils.server";
-import prisma from "./utils/prisma.server";
-import { DataResult } from "./utils/types";
-import { formatZodErrors } from "./utils/formatZodErrors.server";
+import { encryptPassword, verifyPassword } from "./passwordUtils.server";
+import prisma from "../prisma.server";
+import { DataResult } from "../utils/types";
+import { formatZodErrors } from "../utils/formatZodErrors.server";
 
 export const createUserParams = zfd.formData({
   inviteToken: zfd.text(),

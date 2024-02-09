@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from "@prisma/client";
 import { SERVER_ENV } from "~/env.server";
-import { UserFeatureFlagsSchema } from "./userFeatureFlags.server";
+import { UserFeatureFlagsSchema } from "./users/userFeatureFlags.server";
 
 function buildClient() {
   const client = new PrismaClient({

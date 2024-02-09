@@ -13,12 +13,12 @@ import {
   deleteEntry,
   getAggregateEntriesForDay,
   getEntriesForDay,
-} from "~/data/foodEntries.server";
+} from "~/server/data/foodEntries.server";
 import DiaryEntryDeleteAll from "~/modules/Diary/DiaryEntryDeleteAll";
 import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
 import DiaryList from "~/modules/Diary/DiaryList";
 import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
-import { userIdFromRequest } from "~/web/auth.server";
+import { userIdFromRequest } from "~/server/auth.server";
 
 export type DiaryRouteData = SerializeFrom<typeof loader>;
 

@@ -7,10 +7,10 @@ import { CheckboxField } from "~/components/ui/checkbox-field";
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
 import { FitnessLevel } from "~/constants";
-import { createUser } from "~/data/users.server";
-import { GenericDataError } from "~/data/utils/types";
+import { createUser } from "~/server/data/users/index.server";
+import { GenericDataError } from "~/server/data/utils/types";
 import useIsLoading from "~/hooks/useIsLoading";
-import { authenticate, userFromRequest } from "~/web/auth.server";
+import { authenticate, userFromRequest } from "~/server/auth.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await userFromRequest(request);

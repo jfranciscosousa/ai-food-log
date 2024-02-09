@@ -1,6 +1,6 @@
 import { createCookie, redirect } from "@remix-run/node";
 import { addDays } from "date-fns";
-import prisma from "~/data/utils/prisma.server";
+import prisma from "~/server/data/prisma.server";
 import { SERVER_ENV } from "~/env.server";
 
 const authCookie = createCookie("auth", {

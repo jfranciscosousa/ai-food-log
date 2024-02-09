@@ -1,5 +1,5 @@
 import { zfd } from "zod-form-data";
-import prisma from "./utils/prisma.server";
+import prisma from "./prisma.server";
 import { FoodEntry } from "@prisma/client";
 import { DataResult } from "./utils/types";
 import { z } from "zod";

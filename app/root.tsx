@@ -14,7 +14,7 @@ import ErrorPage from "./components/Error500Page";
 import { CLIENT_ENV } from "./env";
 import { useRootLoaderData } from "./hooks/useRootLoaderData";
 import { cn } from "./utils";
-import { getCurrentTheme } from "./web/theme.server";
+import { getCurrentTheme } from "./server/theme.server";
 
 // Load the locale from the Accept-Language header to later
 // inject it on the app's context

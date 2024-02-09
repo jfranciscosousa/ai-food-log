@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import prisma from "../utils/prisma.server";
+import prisma from "../prisma.server";
 import { verifyPassword } from "./passwordUtils.server";
 import { DataResult } from "../utils/types";
 import z from "zod";

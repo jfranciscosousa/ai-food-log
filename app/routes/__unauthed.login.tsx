@@ -6,8 +6,8 @@ import type {
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import Login from "~/modules/Login";
-import { authenticate, userFromRequest } from "~/web/auth.server";
-import { login } from "~/data/users/login.server";
+import { authenticate, userFromRequest } from "~/server/auth.server";
+import { login } from "~/server/data/users/login.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await userFromRequest(request);

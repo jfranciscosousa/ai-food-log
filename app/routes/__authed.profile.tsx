@@ -11,10 +11,10 @@ import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
 import { useToast } from "~/components/ui/use-toast";
 import { FitnessLevel } from "~/constants";
-import { updateUser } from "~/data/users.server";
+import { updateUser } from "~/server/data/users/index.server";
 import useIsLoading from "~/hooks/useIsLoading";
 import useUser from "~/hooks/useUser";
-import { userIdFromRequest } from "~/web/auth.server";
+import { userIdFromRequest } from "~/server/auth.server";
 
 export type ProfileRouteActionType = SerializeFrom<typeof action>;
 
