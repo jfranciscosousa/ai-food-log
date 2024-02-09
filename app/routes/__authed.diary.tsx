@@ -87,7 +87,8 @@ export default function NotesPage() {
 
           <CardContent>
             {entriesTotals.calories} calories, {entriesTotals.protein}g protein,{" "}
-            {entriesTotals.carbs}g carbs, {entriesTotals.fiber}g fiber
+            {entriesTotals.carbs}g carbs, {entriesTotals.fat}g fat,
+            {entriesTotals.fiber}g fiber
           </CardContent>
         </Card>
 

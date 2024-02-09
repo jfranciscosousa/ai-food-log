@@ -20,7 +20,7 @@ export default function DiaryList() {
 
             <CardContent>
               {entry.calories} calories, {entry.protein}g protein, {entry.carbs}
-              g carbs, {entry.fiber}g fiber
+              g carbs, {entry.fat}g fat, {entry.fiber}g fiber
             </CardContent>
           </Card>
         ))}
