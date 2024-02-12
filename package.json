@@ -48,7 +48,7 @@
     "llm-api": "^1.2.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
-    "lucide-react": "^0.323.0",
+    "lucide-react": "^0.330.0",
     "postcss": "^8.4.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
