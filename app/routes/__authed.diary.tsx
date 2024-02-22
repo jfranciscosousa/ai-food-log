@@ -19,6 +19,7 @@ import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
 import DiaryList from "~/modules/Diary/DiaryList";
 import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
 import { userIdFromRequest } from "~/server/auth.server";
+import useUser from "~/hooks/useUser";
 
 export type DiaryRouteData = SerializeFrom<typeof loader>;
 
@@ -64,6 +65,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function NotesPage() {
+  const user = useUser();
   const { toast } = useToast();
   const { entriesTotals } = useLoaderData<DiaryRouteData>();
   const fetcher = useFetcher<DiaryActionData>();
@@ -83,11 +85,13 @@ export default function NotesPage() {
         <DiaryNavigation />
 
         <Card>
-          <CardHeader>Totals</CardHeader>
+          <CardHeader className="flex flex-row justify-between">
+            <span>Target: {Math.round(Number(user.targetCalories))} kcal</span>
+          </CardHeader>
 
           <CardContent>
-            {entriesTotals.calories} calories, {entriesTotals.protein}g protein,{" "}
-            {entriesTotals.carbs}g carbs, {entriesTotals.fat}g fat,
+            Totals: {entriesTotals.calories} calories, {entriesTotals.protein}g
+            protein, {entriesTotals.carbs}g carbs, {entriesTotals.fat}g fat,
             {entriesTotals.fiber}g fiber
           </CardContent>
         </Card>

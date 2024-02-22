@@ -1,4 +1,4 @@
-import { unstable_vitePlugin as remix } from "@remix-run/dev";
+import { vitePlugin as remix } from "@remix-run/dev";
 import { installGlobals } from "@remix-run/node";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error

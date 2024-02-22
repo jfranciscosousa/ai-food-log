@@ -65,9 +65,11 @@ export async function userFromRequest(request: Request) {
       featureFlags: true,
       height: true,
       weight: true,
-      bmi: true,
-      bmr: true,
+      gender: true,
+      age: true,
       fitnessLevel: true,
+      weightLossGoal: true,
+      targetCalories: true,
     },
   });
 

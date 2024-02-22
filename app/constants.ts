@@ -5,3 +5,15 @@ export const FitnessLevel = {
   VERY_ACTIVE: "VERY_ACTIVE",
   EXTRA_ACTIVE: "EXTRA_ACTIVE",
 };
+
+export const WeightLossGoal = {
+  MAINTAIN: "MAINTAIN",
+  LOW: "LOW",
+  MEDIUM: "MEDIUM",
+  HIGH: "HIGH",
+};
+
+export const Gender = {
+  MALE: "Male",
+  FEMALE: "Female",
+};

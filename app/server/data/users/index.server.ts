@@ -1,10 +1,11 @@
-import { FitnessLevel, User } from "@prisma/client";
+import { FitnessLevel, Gender, User, WeightLossGoal } from "@prisma/client";
 import { zfd } from "zod-form-data";
 import { z } from "zod";
 import { encryptPassword, verifyPassword } from "./passwordUtils.server";
 import prisma from "../prisma.server";
 import { DataResult } from "../utils/types";
 import { formatZodErrors } from "../utils/formatZodErrors.server";
+import { calculateCalorieGoal } from "./calculateCalorieGoal";
 
 export const createUserParams = zfd.formData({
   inviteToken: zfd.text(),
@@ -12,8 +13,10 @@ export const createUserParams = zfd.formData({
   name: zfd.text(),
   password: zfd.text(),
   passwordConfirmation: zfd.text(),
+  age: zfd.numeric(),
   height: zfd.numeric(),
   weight: zfd.numeric(),
+  gender: zfd.text(z.enum([Gender.MALE, Gender.FEMALE])),
   fitnessLevel: zfd.text(
     z.enum([
       FitnessLevel.EXTRA_ACTIVE,
@@ -21,6 +24,14 @@ export const createUserParams = zfd.formData({
       FitnessLevel.MODERATELY_ACTIVE,
       FitnessLevel.SEDENTARY,
       FitnessLevel.VERY_ACTIVE,
+    ]),
+  ),
+  weightLossGoal: zfd.text(
+    z.enum([
+      WeightLossGoal.MAINTAIN,
+      WeightLossGoal.LOW,
+      WeightLossGoal.MEDIUM,
+      WeightLossGoal.HIGH,
     ]),
   ),
   rememberMe: zfd.checkbox().optional(),
@@ -52,9 +63,12 @@ export async function createUser(
     name,
     password,
     passwordConfirmation,
+    age,
     height,
     weight,
+    gender,
     fitnessLevel,
+    weightLossGoal,
     rememberMe,
   } = parsedSchema.data;
 
@@ -84,7 +98,17 @@ export async function createUser(
       password: encryptedPassword,
       height,
       weight,
+      gender,
       fitnessLevel,
+      weightLossGoal,
+      targetCalories: calculateCalorieGoal(
+        weight,
+        height,
+        age,
+        gender,
+        fitnessLevel,
+        weightLossGoal,
+      ),
       bmi,
       bmr,
     },
@@ -101,6 +125,8 @@ const updateUserParams = zfd.formData({
   currentPassword: zfd.text(),
   newPassword: zfd.text(z.string().optional()),
   passwordConfirmation: zfd.text(z.string().optional()),
+  gender: zfd.text(z.enum([Gender.MALE, Gender.FEMALE])),
+  age: zfd.numeric(z.number().optional()),
   height: zfd.numeric(z.number().optional()),
   weight: zfd.numeric(z.number().optional()),
   fitnessLevel: zfd.text(
@@ -111,6 +137,16 @@ const updateUserParams = zfd.formData({
         FitnessLevel.MODERATELY_ACTIVE,
         FitnessLevel.SEDENTARY,
         FitnessLevel.VERY_ACTIVE,
+      ])
+      .optional(),
+  ),
+  weightLossGoal: zfd.text(
+    z
+      .enum([
+        WeightLossGoal.MAINTAIN,
+        WeightLossGoal.LOW,
+        WeightLossGoal.MEDIUM,
+        WeightLossGoal.HIGH,
       ])
       .optional(),
   ),
@@ -130,9 +166,12 @@ export async function updateUser(
   const {
     name,
     email,
+    age,
     height,
     weight,
+    gender,
     fitnessLevel,
+    weightLossGoal,
     newPassword,
     passwordConfirmation,
     currentPassword,
@@ -164,7 +203,18 @@ export async function updateUser(
       password: encryptedPassword,
       height,
       weight,
+      age,
+      gender,
       fitnessLevel,
+      weightLossGoal,
+      targetCalories: calculateCalorieGoal(
+        weight || user.weight.toNumber(),
+        height || user.height.toNumber(),
+        age || user.age,
+        gender || user.gender,
+        fitnessLevel || user.fitnessLevel,
+        weightLossGoal || user.weightLossGoal,
+      ),
     },
   });
 

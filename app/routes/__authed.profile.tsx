@@ -10,7 +10,7 @@ import { Card, CardTitle } from "~/components/ui/card";
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
 import { useToast } from "~/components/ui/use-toast";
-import { FitnessLevel } from "~/constants";
+import { FitnessLevel, Gender, WeightLossGoal } from "~/constants";
 import { updateUser } from "~/server/data/users/index.server";
 import useIsLoading from "~/hooks/useIsLoading";
 import useUser from "~/hooks/useUser";
@@ -68,6 +68,29 @@ export default function Profile() {
           errors={actionData?.errors}
         />
 
+        <SelectField
+          label="Gender"
+          name="gender"
+          placeholder="Your gender"
+          required
+          options={Object.entries(Gender).map(([key, value]) => ({
+            value: key,
+            label: value,
+          }))}
+          defaultValue={user.gender}
+          errors={actionData?.errors}
+        />
+
+        <InputField
+          label="Age"
+          name="age"
+          type="number"
+          required
+          placeholder="Your age"
+          defaultValue={user.age}
+          errors={actionData?.errors}
+        />
+
         <InputField
           label="Height (cm)"
           name="height"
@@ -98,6 +121,19 @@ export default function Profile() {
             label: value,
           }))}
           defaultValue={user.fitnessLevel}
+          errors={actionData?.errors}
+        />
+
+        <SelectField
+          label="Weight loss goal"
+          name="weightLossGoal"
+          placeholder="Your weight loss goal"
+          required
+          options={Object.values(WeightLossGoal).map((value) => ({
+            value,
+            label: value,
+          }))}
+          defaultValue={user.weightLossGoal}
           errors={actionData?.errors}
         />
 

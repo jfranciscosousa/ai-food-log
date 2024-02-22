@@ -6,7 +6,7 @@ import { Card, CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
-import { FitnessLevel } from "~/constants";
+import { FitnessLevel, Gender, WeightLossGoal } from "~/constants";
 import { createUser } from "~/server/data/users/index.server";
 import { GenericDataError } from "~/server/data/utils/types";
 import useIsLoading from "~/hooks/useIsLoading";
@@ -66,6 +66,27 @@ export default function SignUp() {
           errors={errors}
         />
 
+        <SelectField
+          label="Gender"
+          name="gender"
+          placeholder="Your gender"
+          required
+          options={Object.entries(Gender).map(([key, value]) => ({
+            value: key,
+            label: value,
+          }))}
+          errors={errors}
+        />
+
+        <InputField
+          label="Age"
+          name="age"
+          type="number"
+          required
+          placeholder="Your age"
+          errors={errors}
+        />
+
         <InputField
           label="Height (cm)"
           name="height"
@@ -94,6 +115,18 @@ export default function SignUp() {
             value,
             label: value,
           }))}
+        />
+
+        <SelectField
+          label="Weight loss goal"
+          name="weightLossGoal"
+          placeholder="Your weight loss goal"
+          required
+          options={Object.values(WeightLossGoal).map((value) => ({
+            value,
+            label: value,
+          }))}
+          errors={errors}
         />
 
         <InputField

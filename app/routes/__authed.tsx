@@ -1,4 +1,4 @@
-import { DataFunctionArgs, SerializeFrom } from "@remix-run/node";
+import { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import ErrorPage from "~/components/Error500Page";
 import LoggedInLayout from "~/components/layouts/LoggedInLayout";
@@ -8,7 +8,7 @@ import { userFromRequest } from "~/server/auth.server";
 
 export type AuthedRouteData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ request }: DataFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await userFromRequest(request);
 
   return { user };

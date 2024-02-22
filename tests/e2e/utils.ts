@@ -30,6 +30,9 @@ export async function createUserAndLogin(page: Page, screen: Screen) {
     height: 183,
     weight: 100,
     fitnessLevel: "SEDENTARY",
+    age: 36,
+    gender: "FEMALE",
+    weightLossGoal: "MEDIUM",
   });
 
   if (!data) throw errors;

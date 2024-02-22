@@ -46,16 +46,32 @@ enum FitnessLevel {
   EXTRA_ACTIVE
 }
 
+enum WeightLossGoal {
+  MAINTAIN
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
 model User {
   id              String                 @id @default(uuid())
   email           String                 @unique
   name            String
   password        String
+  age             Int                    @default(0)
   height          Decimal
   weight          Decimal
   bmr             Decimal
   bmi             Decimal
+  gender          Gender                  @default(MALE)
   fitnessLevel    FitnessLevel
+  weightLossGoal  WeightLossGoal          @default(LOW)
+  targetCalories  Decimal                 @default(2000)
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
   featureFlags    Json                    @default("{}")

@@ -2,6 +2,7 @@ import { createUserAndLogin, expect, test } from "./utils";
 
 const EMAIL = "test@mail.com";
 const NAME = "Test name";
+const AGE = "39";
 const HEIGHT = "170";
 const WEIGHT = "82";
 const PASSWORD = "foobar";
@@ -11,11 +12,14 @@ test("signs up", async ({ page, screen }) => {
 
   await screen.getByLabelText("Email").fill(EMAIL);
   await screen.getByLabelText("Name").fill(NAME);
+  await screen.getByLabelText("Age").fill(AGE);
   await screen.getByLabelText("Height (cm)").fill(HEIGHT);
   await screen.getByLabelText("Weight (kg)").fill(WEIGHT);
+  await screen.locator("select[name='gender']").selectOption("FEMALE");
   await screen
     .locator("select[name='fitnessLevel']")
     .selectOption("VERY_ACTIVE");
+  await screen.locator("select[name='weightLossGoal']").selectOption("MEDIUM");
   await screen.getByLabelText("Password").fill(PASSWORD);
   await screen.getByLabelText("Confirm password").fill(PASSWORD);
   await screen
