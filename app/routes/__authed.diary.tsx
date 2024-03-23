@@ -3,10 +3,12 @@ import {
   LoaderFunctionArgs,
   SerializeFrom,
 } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
-import { useEffect } from "react";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
-import { useToast } from "~/components/ui/use-toast";
+import DiaryEntryDeleteAll from "~/modules/Diary/DiaryEntryDeleteAll";
+import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
+import DiaryList from "~/modules/Diary/DiaryList";
+import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
+import DiaryTotals from "~/modules/Diary/DiaryTotals";
+import { userIdFromRequest } from "~/server/auth.server";
 import {
   createEntry,
   deleteAllEntries,
@@ -14,12 +16,6 @@ import {
   getAggregateEntriesForDay,
   getEntriesForDay,
 } from "~/server/data/foodEntries.server";
-import DiaryEntryDeleteAll from "~/modules/Diary/DiaryEntryDeleteAll";
-import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
-import DiaryList from "~/modules/Diary/DiaryList";
-import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
-import { userIdFromRequest } from "~/server/auth.server";
-import useUser from "~/hooks/useUser";
 
 export type DiaryRouteData = SerializeFrom<typeof loader>;
 
@@ -65,36 +61,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function NotesPage() {
-  const user = useUser();
-  const { toast } = useToast();
-  const { entriesTotals } = useLoaderData<DiaryRouteData>();
-  const fetcher = useFetcher<DiaryActionData>();
-
-  useEffect(() => {
-    if (fetcher.data?._action === "delete" && fetcher.data?.errors) {
-      toast({
-        title: "Unhandled error while deleting entry!",
-        variant: "destructive",
-      });
-    }
-  }, [fetcher.data, toast]);
-
   return (
     <>
       <main className="max-w-xl w-full mx-auto flex-grow overflow-hidden flex flex-col">
         <DiaryNavigation />
 
-        <Card>
-          <CardHeader className="flex flex-row justify-between">
-            <span>Target: {Math.round(Number(user.targetCalories))} kcal</span>
-          </CardHeader>
-
-          <CardContent>
-            Totals: {entriesTotals.calories} calories, {entriesTotals.protein}g
-            protein, {entriesTotals.carbs}g carbs, {entriesTotals.fat}g fat,
-            {entriesTotals.fiber}g fiber
-          </CardContent>
-        </Card>
+        <DiaryTotals />
 
         <div className="my-8 h-[1px] border" />
 

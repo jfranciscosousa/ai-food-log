@@ -1,12 +1,26 @@
 import { useFetcher } from "@remix-run/react";
+import { useEffect } from "react";
+import { useToast } from "~/components/ui/use-toast";
+import { DiaryActionData } from "~/routes/__authed.diary";
 import { cn } from "~/utils";
+import { Trash2Icon } from "lucide-react";
 
 type Props = {
   entryId: string;
 };
 
 export default function DiaryEntryDeleteOne({ entryId }: Props) {
-  const fetcher = useFetcher();
+  const { toast } = useToast();
+  const fetcher = useFetcher<DiaryActionData>();
+
+  useEffect(() => {
+    if (fetcher.data?._action === "delete" && fetcher.data?.errors) {
+      toast({
+        title: "Unhandled error while deleting entry!",
+        variant: "destructive",
+      });
+    }
+  }, [fetcher.data, toast]);
 
   return (
     <fetcher.Form
@@ -24,8 +38,9 @@ export default function DiaryEntryDeleteOne({ entryId }: Props) {
         value="delete"
         aria-label="Delete entry"
         disabled={fetcher.state === "submitting"}
+        className="p-4 -m-4"
       >
-        X
+        <Trash2Icon width="16px" aria-hidden="true" />
       </button>
     </fetcher.Form>
   );
