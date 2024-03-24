@@ -33,8 +33,6 @@ export default function DiaryEntryForm() {
   return (
     <fetcher.Form method="post" className="flex flex-col space-y-4">
       <div className="flex flex-row items-end space-x-4 w-full">
-        <input type="hidden" name="day" value={unparsedDate} />
-
         <InputField
           label="New entry"
           name="content"
@@ -55,6 +53,8 @@ export default function DiaryEntryForm() {
           Submit
         </Button>
       </div>
+
+      <input type="hidden" name="day" value={unparsedDate} />
     </fetcher.Form>
   );
 }

@@ -19,7 +19,7 @@ function InnerLoggedInLayout({
   const isLoading = useIsLoading({ action: "/logout" });
 
   return (
-    <div className="flex flex-col h-screen w-full px-12">
+    <div className="flex flex-col h-screen w-full px-12 sm:px-6">
       <nav className="max-w-6xl mx-auto flex w-full justify-between shrink-0 py-8">
         {hasUserFeatureFlag("EXAMPLE_FEATURE_FLAG") ? (
           <p>Special welcome, {user.name}!</p>

@@ -63,7 +63,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function NotesPage() {
   return (
     <>
-      <main className="max-w-xl w-full mx-auto flex-grow overflow-hidden flex flex-col">
+      <main className="max-w-xl w-full mx-auto flex-grow overflow-hidden flex flex-col mb-4">
         <DiaryNavigation />
 
         <DiaryTotals />
