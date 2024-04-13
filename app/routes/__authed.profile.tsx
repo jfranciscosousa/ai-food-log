@@ -3,18 +3,14 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { useActionData } from "@remix-run/react";
 import { useEffect } from "react";
-import { Button } from "~/components/ui/button";
-import { Card, CardTitle } from "~/components/ui/card";
-import { InputField } from "~/components/ui/input-field";
-import { SelectField } from "~/components/ui/select-field";
+import { Card } from "~/components/ui/card";
 import { useToast } from "~/components/ui/use-toast";
-import { FitnessLevel, Gender, WeightLossGoal } from "~/constants";
-import { updateUser } from "~/server/data/users/index.server";
-import useIsLoading from "~/hooks/useIsLoading";
 import useUser from "~/hooks/useUser";
+import ProfileForm from "~/modules/Profile/ProfileForm";
 import { userIdFromRequest } from "~/server/auth.server";
+import { updateUser } from "~/server/data/users/index.server";
 
 export type ProfileRouteActionType = SerializeFrom<typeof action>;
 
@@ -22,7 +18,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
   const userId = await userIdFromRequest(request);
   const form = await request.formData();
 
-  return await updateUser(userId, form);
+  return updateUser(userId, form);
 };
 
 export const meta: MetaFunction = () => [
@@ -32,10 +28,9 @@ export const meta: MetaFunction = () => [
 ];
 
 export default function Profile() {
-  const user = useUser();
   const actionData = useActionData<ProfileRouteActionType>();
   const { toast } = useToast();
-  const isLoading = useIsLoading();
+  const user = useUser();
 
   useEffect(() => {
     if (actionData?.errors) {
@@ -45,128 +40,7 @@ export default function Profile() {
 
   return (
     <Card className="max-w-lg w-full mx-auto flex items-center justify-center">
-      <Form method="post" className="p-10 w-full flex flex-col space-y-4">
-        <CardTitle className="mb-8">Edit your profile</CardTitle>
-
-        <InputField
-          label="Email"
-          name="email"
-          type="text"
-          required
-          placeholder="hello@email.com"
-          defaultValue={user.email}
-          errors={actionData?.errors}
-        />
-
-        <InputField
-          label="Name"
-          name="name"
-          type="text"
-          required
-          placeholder="How you would like to be called"
-          defaultValue={user.name}
-          errors={actionData?.errors}
-        />
-
-        <SelectField
-          label="Gender"
-          name="gender"
-          placeholder="Your gender"
-          required
-          options={Object.entries(Gender).map(([key, value]) => ({
-            value: key,
-            label: value,
-          }))}
-          defaultValue={user.gender}
-          errors={actionData?.errors}
-        />
-
-        <InputField
-          label="Age"
-          name="age"
-          type="number"
-          required
-          placeholder="Your age"
-          defaultValue={user.age}
-          errors={actionData?.errors}
-        />
-
-        <InputField
-          label="Height (cm)"
-          name="height"
-          type="number"
-          required
-          placeholder="Your height in cm"
-          defaultValue={user.height}
-          errors={actionData?.errors}
-        />
-
-        <InputField
-          label="Weight (kg)"
-          name="weight"
-          type="number"
-          required
-          placeholder="Your weight in kg"
-          defaultValue={user.weight}
-          errors={actionData?.errors}
-        />
-
-        <SelectField
-          label="Fitness level"
-          name="fitnessLevel"
-          placeholder="Your fitness level"
-          required
-          options={Object.values(FitnessLevel).map((value) => ({
-            value,
-            label: value,
-          }))}
-          defaultValue={user.fitnessLevel}
-          errors={actionData?.errors}
-        />
-
-        <SelectField
-          label="Weight loss goal"
-          name="weightLossGoal"
-          placeholder="Your weight loss goal"
-          required
-          options={Object.values(WeightLossGoal).map((value) => ({
-            value,
-            label: value,
-          }))}
-          defaultValue={user.weightLossGoal}
-          errors={actionData?.errors}
-        />
-
-        <InputField
-          label="Current password"
-          name="currentPassword"
-          type="password"
-          placeholder="**************"
-          required
-          errors={actionData?.errors}
-        />
-
-        <InputField
-          label="New password"
-          name="newPassword"
-          type="password"
-          placeholder="**************"
-          errors={actionData?.errors}
-        />
-
-        <InputField
-          label="Confirm password"
-          name="passwordConfirmation"
-          type="password"
-          placeholder="**************"
-          errors={actionData?.errors}
-          className="pb-4"
-        />
-
-        <Button type="submit" isLoading={isLoading}>
-          Update profile
-        </Button>
-      </Form>
+      <ProfileForm errors={actionData?.errors} mode="update" user={user} />
     </Card>
   );
 }

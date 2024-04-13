@@ -1,4 +1,7 @@
+import { waitFor } from "@playwright-testing-library/test";
 import { createUserAndLogin, expect, test } from "./utils";
+import prisma from "~/server/data/prisma.server";
+import { verifyPassword } from "~/server/data/users/passwordUtils.server";
 
 const EMAIL = "test@mail.com";
 const NAME = "Test name";
@@ -28,6 +31,19 @@ test("signs up", async ({ page, screen }) => {
   await screen.getByText("Sign up", { selector: "button > span" }).click();
 
   await page.waitForURL("/diary");
+  await waitFor(async () => {
+    const user = await prisma.user.findFirstOrThrow({
+      where: { email: EMAIL },
+    });
+    expect(user.name).toEqual(NAME);
+    expect(user.email).toEqual(EMAIL);
+    expect(user.height.toString()).toEqual(HEIGHT);
+    expect(user.weight.toString()).toEqual(WEIGHT);
+    expect(user.fitnessLevel).toEqual("VERY_ACTIVE");
+    expect(user.weightLossGoal).toEqual("MEDIUM");
+    // Check that the new password is applied
+    expect(await verifyPassword(user.password, PASSWORD)).toBeTruthy();
+  });
 });
 
 test("logins", async ({ page, screen }) => {

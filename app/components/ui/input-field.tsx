@@ -39,7 +39,7 @@ const InputField = forwardRef(
           {...props}
         />
 
-        {errorMessage && <p className="pt-4 text-red-500">{errorMessage}</p>}
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       </div>
     );
   },
