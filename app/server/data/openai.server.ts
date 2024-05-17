@@ -6,7 +6,7 @@ import { SERVER_ENV } from "~/env.server";
 
 const openai = new OpenAIChatApi(
   { apiKey: SERVER_ENV.OPENAI_KEY },
-  { model: "gpt-4o" },
+  { model: "gpt-4o", temperature: 0.2 },
 );
 
 type CompletionArguments<T extends ZodType<any, ZodTypeDef, any>> = Parameters<
