@@ -1,6 +1,6 @@
 import "./root.css";
 
-import { DataFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -13,8 +13,8 @@ import React, { useEffect } from "react";
 import ErrorPage from "./components/Error500Page";
 import { CLIENT_ENV } from "./env";
 import { useRootLoaderData } from "./hooks/useRootLoaderData";
-import { cn } from "./utils";
 import { getCurrentTheme } from "./server/theme.server";
+import { cn } from "./utils";
 
 // Load the locale from the Accept-Language header to later
 // inject it on the app's context
@@ -32,7 +32,7 @@ function localeFromRequest(request: Request): string {
   return `${languages[0].code}-${languages[0].region.toLowerCase()}`;
 }
 
-export const loader = async ({ request }: DataFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     locale: localeFromRequest(request),
     ENV: CLIENT_ENV,

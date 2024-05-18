@@ -20,9 +20,8 @@ import {
 export type DiaryRouteData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const date = new Date(
-    new URL(request.url).searchParams.get("date") || new Date(),
-  );
+  const dateString = new URL(request.url).searchParams.get("date");
+  const date = dateString ? new Date(dateString) : undefined;
   const userId = await userIdFromRequest(request);
   const entries = await getEntriesForDay(userId, date);
   const entriesTotals = await getAggregateEntriesForDay(userId, date);
