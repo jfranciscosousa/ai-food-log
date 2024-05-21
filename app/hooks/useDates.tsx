@@ -23,7 +23,11 @@ function formatRelativeTime(
   return formatRelative(timestamp, new Date(rootTime), options);
 }
 
-export function formatSimpleDate(timestamp: string | Date) {
+export function formatDate(timestamp: string | Date) {
+  return format(new Date(timestamp), "yyyy-MM-dd hh:mm:ss");
+}
+
+export function formatDateWithoutTime(timestamp: string | Date) {
   return format(new Date(timestamp), "yyyy-MM-dd");
 }
 

@@ -1,22 +1,23 @@
-import { zfd } from "zod-form-data";
-import prisma from "./prisma.server";
 import { FoodEntry } from "@prisma/client";
-import { DataResult } from "./utils/types";
 import { z } from "zod";
+import { zfd } from "zod-form-data";
+import { processFoodWithAI } from "../ai/processFoodWithAI.server";
+import prisma from "./prisma.server";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
-import { completion } from "./openai.server";
+import { DataResult } from "./utils/types";
+import { formatDate } from "~/hooks/useDates";
 
-function getStartAndEndOfDay(date = new Date()): [Date, Date] {
-  const startOfDay = new Date(date);
+function getStartAndEndOfDay(day = formatDate(new Date())): [Date, Date] {
+  const startOfDay = new Date(day);
   startOfDay.setHours(0, 0, 0, 0); // Set to start of the day
 
-  const endOfDay = new Date(date);
+  const endOfDay = new Date(day);
   endOfDay.setHours(23, 59, 59, 999); // Set to end of the day
 
   return [startOfDay, endOfDay];
 }
 
-export async function getEntriesForDay(userId: string, date = new Date()) {
+export async function getEntriesForDay(userId: string, date?: string) {
   const [start, end] = getStartAndEndOfDay(date);
   const entries = await prisma.foodEntry.findMany({
     include: { items: true },
@@ -26,10 +27,7 @@ export async function getEntriesForDay(userId: string, date = new Date()) {
   return entries;
 }
 
-export async function getAggregateEntriesForDay(
-  userId: string,
-  date = new Date(),
-) {
+export async function getAggregateEntriesForDay(userId: string, date?: string) {
   const [start, end] = getStartAndEndOfDay(date);
   const entries = await prisma.foodEntry.aggregate({
     _sum: {
@@ -64,53 +62,20 @@ export async function createEntry(
 ): Promise<DataResult<FoodEntry>> {
   const parsedSchema = createEntryParams.safeParse(params);
 
-  if (!parsedSchema.success)
+  if (!parsedSchema.success) {
     return { data: null, errors: formatZodErrors(parsedSchema.error) };
+  }
 
-  const response = await completion(
-    `Convert the following prompt into a meal structure with this schema: ${parsedSchema.data.content}.
-
-    Some considerations:
-    - if the user specifies raw or uncooked, please make sure you represent those values diferently. Raw or uncooked food usually doesn't account
-    for water weight lost during cooking time so please adjust.
-    - if the user specifies the macros, please calculate the calories from it. for example user might say "whey protein shake with 50g calories and 20g carbs"
-    you should fill in the calories for this item
-    `,
-    {
-      schema: z.object({
-        name: z.string().describe("A short name that describes the meal"),
-        items: z.array(
-          z
-            .object({
-              name: z
-                .string()
-                .describe("A short name that describes the ingredient"),
-              servingSize: z
-                .number()
-                .describe(
-                  "The total weight of this component (default to grams ALWAYS performing a conversion if needed)",
-                ),
-              calories: z.number().describe("Caloric content of the meal"),
-              protein: z
-                .number()
-                .describe("Protein content of the meal in grams"),
-              carbs: z.number().describe("Carb content of the meal in grams"),
-              fat: z.number().describe("Fat content of the meal in grams"),
-              fiber: z.number().describe("Fiber content of the meal in grams"),
-            })
-            .describe("Each of the individual components of this meal"),
-        ),
-      }),
-    },
-  );
+  const aiResponse = await processFoodWithAI(parsedSchema.data.content);
 
   const result = await prisma.$transaction(async (tx) => {
     const entry = await tx.foodEntry.create({
       data: {
         ...parsedSchema.data,
+        day: new Date(parsedSchema.data.day),
         userId,
-        name: response.data.name,
-        aiResponse: response.data,
+        name: aiResponse.name,
+        aiResponse,
         calories: 0,
         protein: 0,
         carbs: 0,
@@ -120,7 +85,7 @@ export async function createEntry(
     });
 
     await tx.foodEntryItem.createMany({
-      data: response.data.items.map((item) => ({
+      data: aiResponse.items.map((item) => ({
         ...item,
         foodEntryId: entry.id,
       })),
@@ -192,7 +157,7 @@ export async function deleteAllEntries(
 
   const { day } = parsedSchema.data;
 
-  const [start, end] = getStartAndEndOfDay(new Date(day));
+  const [start, end] = getStartAndEndOfDay(day);
   await prisma.foodEntry.deleteMany({
     where: { userId, day: { gte: start, lte: end } },
   });

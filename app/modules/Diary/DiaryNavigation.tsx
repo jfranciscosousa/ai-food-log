@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import { addDays, isToday, subDays } from "date-fns";
 import { buttonVariants } from "~/components/ui/button";
-import { formatSimpleDate } from "~/hooks/useDates";
+import { formatDate, formatDateWithoutTime } from "~/hooks/useDates";
 import { DiaryRouteData } from "~/routes/__authed.diary";
 import { cn } from "~/utils";
 
@@ -13,19 +13,19 @@ export default function DiaryNavigation() {
     <div className="mb-4 flex justify-between items-center">
       <Link
         className={cn(buttonVariants(), "w-32")}
-        to={`/diary?date=${subDays(date, 1).toISOString()}`}
+        to={`/diary?date=${formatDate(subDays(date, 1))}`}
       >
         Previous day
       </Link>
 
-      <span>{isToday(date) ? "Today" : formatSimpleDate(date)}</span>
+      <span>{isToday(date) ? "Today" : formatDateWithoutTime(date)}</span>
 
       {isToday(date) ? (
         <span className="w-32" />
       ) : (
         <Link
           className={cn(buttonVariants(), "w-32")}
-          to={`/diary?date=${addDays(date, 1).toISOString()}`}
+          to={`/diary?date=${formatDate(addDays(date, 1))}`}
         >
           Next day
         </Link>

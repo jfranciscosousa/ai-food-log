@@ -3,6 +3,8 @@ import { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
 import { useToast } from "~/components/ui/use-toast";
+import { formatDate } from "~/hooks/useDates";
+import { useIsClient } from "~/hooks/useIsClient";
 import { DiaryActionData, DiaryRouteData } from "~/routes/__authed.diary";
 
 export default function DiaryEntryForm() {
@@ -13,6 +15,7 @@ export default function DiaryEntryForm() {
   const isAdding =
     fetcher.state === "submitting" &&
     fetcher.formData?.get("_action") === "create";
+  const isClient = useIsClient();
 
   useEffect(() => {
     if (fetcher.data?.errors) {
@@ -54,7 +57,14 @@ export default function DiaryEntryForm() {
         </Button>
       </div>
 
-      <input type="hidden" name="day" value={unparsedDate} />
+      {!isClient && <input type="hidden" name="day" value={unparsedDate} />}
+      {isClient && (
+        <input
+          type="hidden"
+          name="day"
+          value={unparsedDate || formatDate(new Date())}
+        />
+      )}
     </fetcher.Form>
   );
 }
