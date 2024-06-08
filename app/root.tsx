@@ -101,8 +101,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
   {
     viewport:
       data?.userAgent.device.model === "iphone"
-        ? "width=device-width,initial-scale=1,maximum-scale=1"
-        : "width=device-width,initial-scale=1",
+        ? "width=device-width, initial-scale=1.0, maximum-scale=1"
+        : "width=device-width, initial-scale=1.0",
   },
 ];
 
