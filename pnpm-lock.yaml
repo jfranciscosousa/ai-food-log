@@ -92,9 +92,6 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.3(ts-node@10.9.2(@types/node@20.12.12)(typescript@5.4.5)))
-      ua-parser-js:
-        specifier: 2.0.0-beta.3
-        version: 2.0.0-beta.3
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -5613,10 +5610,6 @@ packages:
   typescript@5.4.5:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
-    hasBin: true
-
-  ua-parser-js@2.0.0-beta.3:
-    resolution: {integrity: sha512-vZkEG/GplLRxj4XVrjLUQpSNg9Qj9RdnIqrOy8dqrLP1e5x7i2N8RfVYlWRbKEZdDSWfeWNcWS38gmieX03/5A==}
     hasBin: true
 
   ufo@1.5.3:
@@ -12679,8 +12672,6 @@ snapshots:
   typedarray@0.0.6: {}
 
   typescript@5.4.5: {}
-
-  ua-parser-js@2.0.0-beta.3: {}
 
   ufo@1.5.3: {}
 

@@ -1,11 +1,10 @@
 import { Form, NavLink } from "@remix-run/react";
 import { ReactNode } from "react";
-import useFeatureFlags from "~/hooks/useFeatureFlags";
+import useIsLoading from "~/hooks/useIsLoading";
 import { UserProvider } from "~/hooks/useUser";
 import { AuthedRouteData } from "~/routes/__authed";
-import { Button } from "../ui/button";
 import ThemeChanger from "../ThemeChanger";
-import useIsLoading from "~/hooks/useIsLoading";
+import { Button } from "../ui/button";
 import { Toaster } from "../ui/toaster";
 
 function InnerLoggedInLayout({
@@ -15,19 +14,14 @@ function InnerLoggedInLayout({
   user: NonNullable<AuthedRouteData["user"]>;
   children: ReactNode;
 }) {
-  const { hasUserFeatureFlag } = useFeatureFlags();
   const isLoading = useIsLoading({ action: "/logout" });
 
   return (
     <div className="flex flex-col h-screen w-full px-12 sm:px-6">
-      <nav className="max-w-6xl mx-auto flex w-full justify-between shrink-0 py-8">
-        {hasUserFeatureFlag("EXAMPLE_FEATURE_FLAG") ? (
-          <p>Special welcome, {user.name}!</p>
-        ) : (
-          <p>Welcome, {user.name}!</p>
-        )}
+      <nav className="max-w-6xl mx-auto flex items-center w-full justify-between shrink-0 py-8">
+        <p className="sm:hidden">Welcome, {user.name}!</p>
 
-        <ul className="flex flex-row space-x-4 items-center">
+        <ul className="flex flex-row space-x-4 items-center sm:ml-auto">
           <li>
             <NavLink
               to="/diary"

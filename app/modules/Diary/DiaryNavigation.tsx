@@ -12,7 +12,10 @@ export default function DiaryNavigation() {
   return (
     <div className="mb-4 flex justify-between items-center">
       <Link
-        className={cn(buttonVariants(), "w-32")}
+        className={cn(
+          buttonVariants({ size: "sm" }),
+          "w-32 sm:w-24 sm:p-2 sm:text-xs",
+        )}
         to={`/diary?date=${formatDate(subDays(date, 1))}`}
       >
         Previous day
@@ -24,7 +27,10 @@ export default function DiaryNavigation() {
         <span className="w-32" />
       ) : (
         <Link
-          className={cn(buttonVariants(), "w-32")}
+          className={cn(
+            buttonVariants({ size: "sm" }),
+            "w-32 sm:w-24 sm:p-2 sm:text-xs",
+          )}
           to={`/diary?date=${formatDate(addDays(date, 1))}`}
         >
           Next day

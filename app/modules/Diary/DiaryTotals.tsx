@@ -15,7 +15,7 @@ export default function DiaryTotals() {
 
       <CardContent>
         Totals: {entriesTotals.calories} calories, {entriesTotals.protein}g
-        protein, {entriesTotals.carbs}g carbs, {entriesTotals.fat}g fat,
+        protein, {entriesTotals.carbs}g carbs, {entriesTotals.fat}g fat,{" "}
         {entriesTotals.fiber}g fiber
       </CardContent>
     </Card>
