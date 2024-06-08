@@ -1,6 +1,6 @@
 import "./root.css";
 
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -15,6 +15,7 @@ import { CLIENT_ENV } from "./env";
 import { useRootLoaderData } from "./hooks/useRootLoaderData";
 import { getCurrentTheme } from "./server/theme.server";
 import { cn } from "./utils";
+import { UAParser } from "ua-parser-js";
 
 // Load the locale from the Accept-Language header to later
 // inject it on the app's context
@@ -35,6 +36,7 @@ function localeFromRequest(request: Request): string {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     locale: localeFromRequest(request),
+    userAgent: UAParser(request.headers.get("user-agent") as string),
     ENV: CLIENT_ENV,
     rootTime: new Date().toISOString(),
     currentTheme: await getCurrentTheme(request),
@@ -95,6 +97,15 @@ export function ErrorBoundary() {
   );
 }
 
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
+  {
+    viewport:
+      data?.userAgent.device.model === "iphone"
+        ? "width=device-width,initial-scale=1,maximum-scale=1"
+        : "width=device-width,initial-scale=1",
+  },
+];
+
 function Document({
   children,
   title,
@@ -112,7 +123,6 @@ function Document({
       >
         <head>
           <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width,initial-scale=1" />
           {title ? <title>{title}</title> : null}
           <Meta />
           <Links />
