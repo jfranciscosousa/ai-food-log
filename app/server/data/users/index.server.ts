@@ -5,7 +5,7 @@ import { encryptPassword, verifyPassword } from "./passwordUtils.server";
 import prisma from "../prisma.server";
 import { DataResult } from "../utils/types";
 import { formatZodErrors } from "../utils/formatZodErrors.server";
-import { calculateCalorieGoal } from "./calculateCalorieGoal";
+import { calculateCalorieGoal } from "./calculateCalorieGoal.server";
 
 export const createUserParams = zfd.formData({
   inviteToken: zfd.text(),

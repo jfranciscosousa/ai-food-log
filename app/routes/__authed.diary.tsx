@@ -15,7 +15,7 @@ import {
   deleteEntry,
   getAggregateEntriesForDay,
   getEntriesForDay,
-} from "~/server/data/foodEntries.server";
+} from "~/server/data/food.server";
 
 export type DiaryRouteData = SerializeFrom<typeof loader>;
 
