@@ -13,7 +13,7 @@ import {
   createEntry,
   deleteAllEntries,
   deleteEntry,
-  getAggregateEntriesForDay,
+  getAggregateForDay,
   getEntriesForDay,
 } from "~/server/data/food.server";
 
@@ -23,7 +23,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const date = new URL(request.url).searchParams.get("date") ?? undefined;
   const userId = await userIdFromRequest(request);
   const entries = await getEntriesForDay(userId, date);
-  const entriesTotals = await getAggregateEntriesForDay(userId, date);
+  const entriesTotals = await getAggregateForDay(userId, date);
 
   return {
     entriesForToday: entries,

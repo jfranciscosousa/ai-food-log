@@ -22,12 +22,13 @@ export async function getEntriesForDay(userId: string, date?: string) {
   const entries = await prisma.foodEntry.findMany({
     include: { items: true },
     where: { userId, day: { gte: start, lte: end } },
+    orderBy: { createdAt: "asc" },
   });
 
   return entries;
 }
 
-export async function getAggregateEntriesForDay(userId: string, date?: string) {
+export async function getAggregateForDay(userId: string, date?: string) {
   const [start, end] = getStartAndEndOfDay(date);
   const entries = await prisma.foodEntry.aggregate({
     _sum: {
