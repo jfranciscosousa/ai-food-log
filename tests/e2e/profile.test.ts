@@ -32,7 +32,7 @@ test("updates profile", async ({ page, screen }) => {
   const user = await createUserAndLogin(page, screen);
   const newName = faker.name.firstName();
   const newEmail = faker.internet.email();
-  const newPassword = faker.internet.password(8);
+  const newPassword = faker.internet.password({ length: 8 });
   const newHeight = String(faker.number.int({ min: 0, max: 100 }));
   const newWeight = String(faker.number.int({ min: 0, max: 100 }));
 
@@ -72,7 +72,7 @@ test("does not update profile if password confirmation does not match", async ({
   screen,
 }) => {
   const user = await createUserAndLogin(page, screen);
-  const newPassword = faker.internet.password(8);
+  const newPassword = faker.internet.password({ length: 8 });
 
   await page.goto("/profile");
   await page.getByLabel("New password").fill(newPassword);
