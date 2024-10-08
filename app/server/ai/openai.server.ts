@@ -1,23 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { OpenAIChatApi } from "llm-api";
+import { zodResponseFormat } from "openai/helpers/zod";
+import OpenAI from "openai";
 import { ZodType, ZodTypeDef } from "zod";
-import { completion as zodGptCompletion } from "zod-gpt";
 import { SERVER_ENV } from "~/env.server";
 
-const openai = new OpenAIChatApi(
-  { apiKey: SERVER_ENV.OPENAI_KEY },
-  { model: "gpt-4o-mini", temperature: 0.2 },
-);
-
-type CompletionArguments<T extends ZodType<any, ZodTypeDef, any>> = Parameters<
-  typeof zodGptCompletion<T>
->;
+const openai = new OpenAI({ apiKey: SERVER_ENV.OPENAI_KEY });
 
 export function completion<T extends ZodType<any, ZodTypeDef, any>>(
-  schema: CompletionArguments<T>[1],
-  opt?: CompletionArguments<T>[2],
+  system: string,
+  prompt: string,
+  schema: T,
 ) {
-  return zodGptCompletion(openai, schema, opt);
+  return openai.beta.chat.completions.parse({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: prompt },
+    ],
+    response_format: zodResponseFormat(schema, "schema"),
+  });
 }
-
-export default openai;
