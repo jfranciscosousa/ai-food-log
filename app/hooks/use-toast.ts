@@ -1,4 +1,3 @@
-// Inspired by react-hot-toast library
 import * as React from "react";
 
 import type { ToastActionElement, ToastProps } from "~/components/ui/toast";
@@ -24,7 +23,7 @@ const actionTypes = {
 let count = 0;
 
 function genId() {
-  count = (count + 1) % Number.MAX_VALUE;
+  count = (count + 1) % Number.MAX_SAFE_INTEGER;
   return count.toString();
 }
 

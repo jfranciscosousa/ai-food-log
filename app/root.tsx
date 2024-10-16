@@ -15,6 +15,7 @@ import { CLIENT_ENV } from "./env";
 import { useRootLoaderData } from "./hooks/useRootLoaderData";
 import { getCurrentTheme } from "./server/theme.server";
 import { cn } from "./utils";
+import { Toaster } from "./components/ui/toaster";
 
 // Load the locale from the Accept-Language header to later
 // inject it on the app's context
@@ -121,6 +122,7 @@ function Document({
           <Links />
         </head>
         <body>
+          <Toaster />
           {children}
           <ScrollRestoration />
           <Scripts />

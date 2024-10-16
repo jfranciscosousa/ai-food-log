@@ -2,7 +2,7 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
-import { useToast } from "~/components/ui/use-toast";
+import { useToast } from "~/hooks/use-toast";
 import { formatDate } from "~/hooks/useDates";
 import { useIsClient } from "~/hooks/useIsClient";
 import { DiaryActionData, DiaryRouteData } from "~/routes/__authed.diary";

@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "~/hooks/use-toast";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 
 export default function ThemeChanger() {

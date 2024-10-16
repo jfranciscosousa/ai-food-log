@@ -6,7 +6,7 @@ import type {
 import { useActionData } from "@remix-run/react";
 import { useEffect } from "react";
 import { Card } from "~/components/ui/card";
-import { useToast } from "~/components/ui/use-toast";
+import { useToast } from "~/hooks/use-toast";
 import useUser from "~/hooks/useUser";
 import ProfileForm from "~/modules/Profile/ProfileForm";
 import { userIdFromRequest } from "~/server/auth.server";

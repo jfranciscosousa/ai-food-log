@@ -1,6 +1,6 @@
 import { useFetcher } from "@remix-run/react";
 import { useEffect } from "react";
-import { useToast } from "~/components/ui/use-toast";
+import { useToast } from "~/hooks/use-toast";
 import { DiaryActionData } from "~/routes/__authed.diary";
 import { cn } from "~/utils";
 import { Trash2Icon } from "lucide-react";

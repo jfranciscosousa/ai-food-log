@@ -5,7 +5,6 @@ import { UserProvider } from "~/hooks/useUser";
 import { AuthedRouteData } from "~/routes/__authed";
 import ThemeChanger from "../ThemeChanger";
 import { Button } from "../ui/button";
-import { Toaster } from "../ui/toaster";
 
 function InnerLoggedInLayout({
   user,
@@ -70,7 +69,6 @@ export default function LoggedInLayout({
 }) {
   return (
     <UserProvider user={user}>
-      <Toaster />
       <InnerLoggedInLayout user={user}>{children}</InnerLoggedInLayout>
     </UserProvider>
   );

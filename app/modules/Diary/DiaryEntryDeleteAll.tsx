@@ -1,7 +1,7 @@
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect } from "react";
 import { Button } from "~/components/ui/button";
-import { useToast } from "~/components/ui/use-toast";
+import { useToast } from "~/hooks/use-toast";
 import { DiaryActionData, DiaryRouteData } from "~/routes/__authed.diary";
 
 export default function DiaryEntryDeleteAll() {
