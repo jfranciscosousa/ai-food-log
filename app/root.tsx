@@ -16,6 +16,7 @@ import { useRootLoaderData } from "./hooks/useRootLoaderData";
 import { getCurrentTheme } from "./server/theme.server";
 import { cn } from "./utils";
 import { Toaster } from "./components/ui/toaster";
+import { useToast } from "./hooks/use-toast";
 
 // Load the locale from the Accept-Language header to later
 // inject it on the app's context
@@ -62,10 +63,12 @@ const applySystemThemeString = `
 
 export default function App() {
   const { ENV, currentTheme } = useRootLoaderData();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (currentTheme === "system") applySystemTheme();
-  }, [currentTheme]);
+    window.toast = toast;
+  }, [currentTheme, toast]);
 
   return (
     <Document className={currentTheme}>
