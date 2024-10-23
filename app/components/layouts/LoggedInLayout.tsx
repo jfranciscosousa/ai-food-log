@@ -18,9 +18,9 @@ function InnerLoggedInLayout({
   return (
     <div className="flex flex-col h-screen w-full px-12 sm:px-6">
       <nav className="max-w-6xl mx-auto flex items-center w-full justify-between shrink-0 py-8">
-        <p className="sm:hidden">Welcome, {user.name}!</p>
+        <p className="hidden sm:block">Welcome, {user.name}!</p>
 
-        <ul className="flex flex-row space-x-4 items-center sm:ml-auto">
+        <ul className="flex flex-row space-x-4 items-center ml-auto sm:ml-0">
           <li>
             <NavLink
               to="/diary"

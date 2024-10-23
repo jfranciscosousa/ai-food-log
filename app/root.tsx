@@ -67,7 +67,6 @@ export default function App() {
 
   useEffect(() => {
     if (currentTheme === "system") applySystemTheme();
-    window.toast = toast;
   }, [currentTheme, toast]);
 
   return (
