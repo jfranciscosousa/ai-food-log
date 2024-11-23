@@ -18,5 +18,6 @@ export function completion<T extends ZodType<any, ZodTypeDef, any>>(
       { role: "user", content: prompt },
     ],
     response_format: zodResponseFormat(schema, "schema"),
+    temperature: 0,
   });
 }

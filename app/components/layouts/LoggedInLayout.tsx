@@ -27,7 +27,17 @@ function InnerLoggedInLayout({
               prefetch="intent"
               className={({ isActive }) => (isActive ? "underline" : "")}
             >
-              Home
+              Diary
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/preview"
+              prefetch="intent"
+              className={({ isActive }) => (isActive ? "underline" : "")}
+            >
+              Preview
             </NavLink>
           </li>
 
