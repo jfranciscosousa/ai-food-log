@@ -70,7 +70,7 @@ export default function NotesPage() {
 
         <DiaryTotals />
 
-        <div className="my-8 h-[1px] border" />
+        <div className="my-4 sm:my-8 h-[1px] border" />
 
         <DiaryList />
       </main>

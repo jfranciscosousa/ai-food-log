@@ -16,11 +16,11 @@ function InnerLoggedInLayout({
   const isLoading = useIsLoading({ action: "/logout" });
 
   return (
-    <div className="flex flex-col h-screen w-full px-12 sm:px-6">
+    <div className="flex flex-col h-screen w-full px-4 sm:px-12">
       <nav className="max-w-6xl mx-auto flex items-center w-full justify-between shrink-0 py-8">
         <p className="hidden sm:block">Welcome, {user.name}!</p>
 
-        <ul className="flex flex-row space-x-4 items-center ml-auto sm:ml-0">
+        <ul className="flex flex-row space-x-4 items-center ml-0 xs:ml-auto">
           <li>
             <NavLink
               to="/diary"
