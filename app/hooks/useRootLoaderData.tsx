@@ -1,7 +1,7 @@
-import { useRouteLoaderData } from "@remix-run/react";
-import { loader } from "~/root";
+import { useRouteLoaderData } from "react-router";
+import type { Info } from "../+types/root";
 
-export type RootLoaderType = Awaited<ReturnType<typeof loader>>;
+export type RootLoaderType = Info["loaderData"];
 
 export function useRootLoaderData(): RootLoaderType {
   return useRouteLoaderData("root")!;

@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
-import { Screen } from "@playwright-testing-library/test/dist/fixture/types";
+import { type Screen } from "@playwright-testing-library/test/dist/fixture/types";
 import {
   locatorFixtures as fixtures,
-  LocatorFixtures as TestingLibraryFixtures,
+  type LocatorFixtures as TestingLibraryFixtures,
 } from "@playwright-testing-library/test/fixture.js";
-import { Page, test as base } from "@playwright/test";
+import { test as base, type Page } from "@playwright/test";
 import { createUser } from "~/server/data/users/index.server";
 import { truncateAll } from "./truncateAll";
 

@@ -29,6 +29,7 @@ export default [
       "**/dist/",
       "**/node_modules",
       "**/api/",
+      ".react-router/**",
     ],
   },
   ...fixupConfigRules(

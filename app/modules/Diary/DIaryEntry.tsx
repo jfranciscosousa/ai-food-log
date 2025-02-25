@@ -1,7 +1,7 @@
 import { EyeIcon } from "lucide-react";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import DiaryEntryDeleteOne from "./DiaryEntryDeleteOne";
-import { DiaryRouteData } from "~/routes/__authed.diary";
+import { type DiaryRouteData } from "~/routes/__authed.diary";
 import { useState } from "react";
 
 type Props = {

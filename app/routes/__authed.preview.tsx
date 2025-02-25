@@ -1,13 +1,10 @@
-import {
-  LoaderFunctionArgs,
-  MetaFunction,
-  SerializeFrom,
-} from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { Form, useLoaderData } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import useIsLoading from "~/hooks/useIsLoading";
 import { processFoodWithAI } from "~/server/ai/processFoodWithAI.server";
+import type { Info } from "./+types/__authed.preview";
 
 export const meta: MetaFunction = () => [
   {
@@ -35,7 +32,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return null;
 };
 
-export type PreviewLoaderData = SerializeFrom<typeof loader>;
+export type PreviewLoaderData = Info["loaderData"];
 
 export default function Preview() {
   const entry = useLoaderData<PreviewLoaderData>();

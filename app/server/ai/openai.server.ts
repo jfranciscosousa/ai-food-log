@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResponseFormat } from "openai/helpers/zod";
 import OpenAI from "openai";
-import { ZodType, ZodTypeDef } from "zod";
+import { ZodType, type ZodTypeDef } from "zod";
 import { SERVER_ENV } from "~/env.server";
 
 const openai = new OpenAI({ apiKey: SERVER_ENV.OPENAI_KEY });

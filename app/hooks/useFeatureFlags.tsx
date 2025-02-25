@@ -1,7 +1,7 @@
 import { useContext, useMemo } from "react";
-import { CLIENT_ENV, ClientEnv } from "~/env";
+import { CLIENT_ENV, type ClientEnv } from "~/env";
 import { UserContext } from "./useUser";
-import { UserFeatureFlags } from "~/server/data/users/userFeatureFlags.server";
+import type { UserFeatureFlags } from "~/server/data/users/userFeatureFlags.server";
 
 export default function useFeatureFlags() {
   const userContext = useContext(UserContext);

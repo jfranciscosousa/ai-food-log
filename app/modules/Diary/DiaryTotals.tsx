@@ -1,7 +1,7 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import useUser from "~/hooks/useUser";
-import { DiaryRouteData } from "~/routes/__authed.diary";
+import { type DiaryRouteData } from "~/routes/__authed.diary";
 
 export default function DiaryTotals() {
   const user = useUser();

@@ -1,8 +1,8 @@
-import { Form, NavLink } from "@remix-run/react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import { Form, NavLink } from "react-router";
 import useIsLoading from "~/hooks/useIsLoading";
 import { UserProvider } from "~/hooks/useUser";
-import { AuthedRouteData } from "~/routes/__authed";
+import type { AuthedRouteData } from "~/routes/__authed";
 import ThemeChanger from "../ThemeChanger";
 import { Button } from "../ui/button";
 

@@ -1,9 +1,14 @@
-import { FitnessLevel, Gender, User, WeightLossGoal } from "@prisma/client";
+import {
+  FitnessLevel,
+  Gender,
+  type User,
+  WeightLossGoal,
+} from "@prisma/client";
 import { zfd } from "zod-form-data";
 import { z } from "zod";
 import { encryptPassword, verifyPassword } from "./passwordUtils.server";
 import prisma from "../prisma.server";
-import { DataResult } from "../utils/types";
+import { type DataResult } from "../utils/types";
 import { formatZodErrors } from "../utils/formatZodErrors.server";
 import { calculateCalorieGoal } from "./calculateCalorieGoal.server";
 

@@ -1,8 +1,9 @@
 import get from "lodash/get";
-import { ComponentPropsWithRef, forwardRef, Ref, useId } from "react";
+import { forwardRef, useId } from "react";
+import type { ComponentPropsWithRef, Ref } from "react";
+import { cn } from "~/utils";
 import { Input } from "./input";
 import { Label } from "./label";
-import { cn } from "~/utils";
 
 export interface InputFieldProps extends ComponentPropsWithRef<"input"> {
   label: string;

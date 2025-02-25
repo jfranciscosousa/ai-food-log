@@ -2,7 +2,7 @@ import {
   format,
   formatDistance,
   formatRelative,
-  FormatRelativeOptions,
+  type FormatRelativeOptions,
 } from "date-fns";
 import { useMemo } from "react";
 import { useRootLoaderData } from "./useRootLoaderData";

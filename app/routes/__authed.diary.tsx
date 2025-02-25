@@ -1,8 +1,4 @@
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  SerializeFrom,
-} from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import DiaryEntryDeleteAll from "~/modules/Diary/DiaryEntryDeleteAll";
 import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
 import DiaryList from "~/modules/Diary/DiaryList";
@@ -16,8 +12,9 @@ import {
   getAggregateForDay,
   getEntriesForDay,
 } from "~/server/data/food.server";
+import type { Info } from "./+types/__authed.diary";
 
-export type DiaryRouteData = SerializeFrom<typeof loader>;
+export type DiaryRouteData = Info["loaderData"];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const date = new URL(request.url).searchParams.get("date") ?? undefined;
@@ -32,7 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-export type DiaryActionData = SerializeFrom<typeof action>;
+export type DiaryActionData = Info["actionData"];
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const userId = await userIdFromRequest(request);

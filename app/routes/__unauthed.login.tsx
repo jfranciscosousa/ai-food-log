@@ -2,12 +2,12 @@ import type {
   ActionFunctionArgs,
   LoaderFunction,
   MetaFunction,
-  SerializeFrom,
-} from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+} from "react-router";
+import { redirect } from "react-router";
 import Login from "~/modules/Login";
 import { authenticate, userFromRequest } from "~/server/auth.server";
 import { login } from "~/server/data/users/login.server";
+import type { Info } from "./+types/__unauthed.login";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await userFromRequest(request);
@@ -17,7 +17,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return null;
 };
 
-export type LoginActionType = SerializeFrom<typeof action>;
+export type LoginActionType = Info["actionData"];
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();

@@ -1,4 +1,4 @@
-import { createCookie, redirect } from "@remix-run/node";
+import { createCookie, redirect } from "react-router";
 import { addDays } from "date-fns";
 import prisma from "~/server/data/prisma.server";
 import { SERVER_ENV } from "~/env.server";

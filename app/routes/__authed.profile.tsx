@@ -1,9 +1,5 @@
-import type {
-  LoaderFunctionArgs,
-  MetaFunction,
-  SerializeFrom,
-} from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { useActionData } from "react-router";
 import { useEffect } from "react";
 import { Card } from "~/components/ui/card";
 import { useToast } from "~/hooks/use-toast";
@@ -11,8 +7,9 @@ import useUser from "~/hooks/useUser";
 import ProfileForm from "~/modules/Profile/ProfileForm";
 import { userIdFromRequest } from "~/server/auth.server";
 import { updateUser } from "~/server/data/users/index.server";
+import type { Info } from "./+types/__authed.profile";
 
-export type ProfileRouteActionType = SerializeFrom<typeof action>;
+export type ProfileRouteActionType = Info["actionData"];
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const userId = await userIdFromRequest(request);

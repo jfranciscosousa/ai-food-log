@@ -1,10 +1,10 @@
-import { Form, Link, useActionData, useLocation } from "@remix-run/react";
+import { Form, Link, useActionData, useLocation } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Card, CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
 import { InputField } from "~/components/ui/input-field";
 import useIsLoading from "~/hooks/useIsLoading";
-import { LoginActionType } from "~/routes/__unauthed.login";
+import { type LoginActionType } from "~/routes/__unauthed.login";
 
 export default function Login() {
   const actionData = useActionData<LoginActionType>();

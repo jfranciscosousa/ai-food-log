@@ -1,8 +1,11 @@
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "react-router";
 import { useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
-import { DiaryActionData, DiaryRouteData } from "~/routes/__authed.diary";
+import {
+  type DiaryActionData,
+  type DiaryRouteData,
+} from "~/routes/__authed.diary";
 
 export default function DiaryEntryDeleteAll() {
   const { toast } = useToast();

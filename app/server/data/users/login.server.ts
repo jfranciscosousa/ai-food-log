@@ -1,7 +1,7 @@
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import prisma from "../prisma.server";
 import { verifyPassword } from "./passwordUtils.server";
-import { DataResult } from "../utils/types";
+import type { DataResult } from "../utils/types";
 import z from "zod";
 import { zfd } from "zod-form-data";
 import { formatZodErrors } from "../utils/formatZodErrors.server";

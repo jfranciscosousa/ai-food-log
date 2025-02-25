@@ -1,11 +1,14 @@
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "react-router";
 import { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
 import { useToast } from "~/hooks/use-toast";
 import { formatDate } from "~/hooks/useDates";
 import { useIsClient } from "~/hooks/useIsClient";
-import { DiaryActionData, DiaryRouteData } from "~/routes/__authed.diary";
+import {
+  type DiaryActionData,
+  type DiaryRouteData,
+} from "~/routes/__authed.diary";
 
 export default function DiaryEntryForm() {
   const { toast } = useToast();

@@ -1,6 +1,6 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { DiaryRouteData } from "~/routes/__authed.diary";
+import { type DiaryRouteData } from "~/routes/__authed.diary";
 import DiaryEntry from "./DIaryEntry";
 
 export default function DiaryList() {

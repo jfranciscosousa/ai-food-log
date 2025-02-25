@@ -1,11 +1,11 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { redirect } from "react-router";
+import { useActionData } from "react-router";
 import { Card } from "~/components/ui/card";
 import ProfileForm from "~/modules/Profile/ProfileForm";
 import { authenticate, userFromRequest } from "~/server/auth.server";
 import { createUser } from "~/server/data/users/index.server";
-import { GenericDataError } from "~/server/data/utils/types";
+import { type GenericDataError } from "~/server/data/utils/types";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await userFromRequest(request);

@@ -1,10 +1,10 @@
-import { FoodEntry } from "@prisma/client";
+import { type FoodEntry } from "@prisma/client";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { processFoodWithAI } from "../ai/processFoodWithAI.server";
 import prisma from "./prisma.server";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
-import { DataResult } from "./utils/types";
+import { type DataResult } from "./utils/types";
 import { formatDate } from "~/hooks/useDates";
 
 function getStartAndEndOfDay(day = formatDate(new Date())): [Date, Date] {

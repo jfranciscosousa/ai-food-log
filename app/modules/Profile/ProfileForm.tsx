@@ -1,4 +1,4 @@
-import { Form, Link } from "@remix-run/react";
+import { Form, Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
@@ -7,7 +7,7 @@ import { SelectField } from "~/components/ui/select-field";
 import { FitnessLevel, Gender, WeightLossGoal } from "~/constants";
 import useIsLoading from "~/hooks/useIsLoading";
 import useUser from "~/hooks/useUser";
-import { GenericDataError } from "~/server/data/utils/types";
+import { type GenericDataError } from "~/server/data/utils/types";
 
 type Props =
   | {

@@ -1,5 +1,6 @@
 import get from "lodash/get";
-import { ComponentPropsWithRef, Ref, forwardRef, useId } from "react";
+import { forwardRef, useId } from "react";
+import type { ComponentPropsWithRef, Ref } from "react";
 import { cn } from "~/utils";
 import { Checkbox } from "./checkbox";
 

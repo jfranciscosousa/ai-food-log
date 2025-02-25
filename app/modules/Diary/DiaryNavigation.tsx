@@ -1,8 +1,8 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 import { addDays, isToday, subDays } from "date-fns";
 import { buttonVariants } from "~/components/ui/button";
 import { formatDate, formatDateWithoutTime } from "~/hooks/useDates";
-import { DiaryRouteData } from "~/routes/__authed.diary";
+import { type DiaryRouteData } from "~/routes/__authed.diary";
 import { cn } from "~/utils";
 
 export default function DiaryNavigation() {
