@@ -10,12 +10,12 @@ datasource db {
 model FoodEntryItem {
   id                      String              @id @default(uuid())
   name                    String
-  servingSize             Decimal
-  calories                Decimal
-  protein                 Decimal
-  carbs                   Decimal
-  fat                     Decimal
-  fiber                   Decimal
+  servingSize             Float
+  calories                Float
+  protein                 Float
+  carbs                   Float
+  fat                     Float
+  fiber                   Float
   foodEntryId             String
   foodEntry               FoodEntry                @relation(fields: [foodEntryId], references: [id], onDelete: Cascade)
 }
@@ -24,11 +24,11 @@ model FoodEntry {
   id                      String              @id @default(uuid())
   content                 String
   name                    String
-  calories                Decimal
-  protein                 Decimal
-  carbs                   Decimal
-  fat                     Decimal
-  fiber                   Decimal
+  calories                Float
+  protein                 Float
+  carbs                   Float
+  fat                     Float
+  fiber                   Float
   aiResponse              Json
   day                     DateTime            @default(now())
   createdAt               DateTime            @default(now())
@@ -64,14 +64,14 @@ model User {
   name            String
   password        String
   age             Int                    @default(0)
-  height          Decimal
-  weight          Decimal
-  bmr             Decimal
-  bmi             Decimal
+  height          Float
+  weight          Float
+  bmr             Float
+  bmi             Float
   gender          Gender                  @default(MALE)
   fitnessLevel    FitnessLevel
   weightLossGoal  WeightLossGoal          @default(LOW)
-  targetCalories  Decimal                 @default(2000)
+  targetCalories  Float                 @default(2000)
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
   featureFlags    Json                    @default("{}")

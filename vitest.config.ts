@@ -1,9 +1,10 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   optimizeDeps: { exclude: ["@mapbox/node-pre-gyp"] },
-  plugins: [tsconfigPaths()],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  plugins: [tsconfigPaths() as any],
   test: {
     globals: true,
     environment: "jsdom",

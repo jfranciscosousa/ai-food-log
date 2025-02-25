@@ -208,8 +208,8 @@ export async function updateUser(
       fitnessLevel,
       weightLossGoal,
       targetCalories: calculateCalorieGoal(
-        weight || user.weight.toNumber(),
-        height || user.height.toNumber(),
+        weight || user.weight,
+        height || user.height,
         age || user.age,
         gender || user.gender,
         fitnessLevel || user.fitnessLevel,

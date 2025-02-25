@@ -1,5 +1,3 @@
-import "./root.css";
-
 import { LoaderFunctionArgs } from "@remix-run/node";
 import {
   Links,
@@ -17,6 +15,8 @@ import { getCurrentTheme } from "./server/theme.server";
 import { cn } from "./utils";
 import { Toaster } from "./components/ui/toaster";
 import { useToast } from "./hooks/use-toast";
+
+import "./root.css";
 
 // Load the locale from the Accept-Language header to later
 // inject it on the app's context
