@@ -1,22 +1,106 @@
+import { Info } from "lucide-react";
+import { useMemo } from "react";
 import { useLoaderData } from "react-router";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Progress } from "~/components/ui/progress";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import useUser from "~/hooks/useUser";
 import { type DiaryRouteData } from "~/routes/__authed.diary";
 
 export default function DiaryTotals() {
   const user = useUser();
   const { entriesTotals } = useLoaderData<DiaryRouteData>();
+  const calorieProgress = (entriesTotals.calories / user.targetCalories) * 100;
+  const calorieStatus = useMemo(() => {
+    if (entriesTotals.calories > user.targetCalories) {
+      return {
+        color: "text-red-500 dark:text-red-400",
+        message: "Over target",
+      };
+    }
+    if (entriesTotals.calories === user.targetCalories) {
+      return {
+        color: "text-green-500 dark:text-green-400",
+        message: "On target",
+      };
+    }
+    return {
+      color: "text-yellow-500 dark:text-yellow-400",
+      message: "Under target",
+    };
+  }, [entriesTotals.calories, user.targetCalories]);
 
   return (
     <Card>
-      <CardHeader className="flex flex-row justify-between">
-        <span>Target: {Math.round(Number(user.targetCalories))} kcal</span>
+      <CardHeader>
+        <CardTitle>Daily Summary</CardTitle>
+        <CardDescription>Total macronutrients for the day</CardDescription>
       </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">Calories</span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Daily calorie target: {user.targetCalories}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">
+                {entriesTotals.calories}
+              </span>
+              <span className={`text-sm ${calorieStatus.color}`}>
+                {calorieStatus.message}
+              </span>
+            </div>
+          </div>
+          <Progress value={calorieProgress} className="h-2" />
+        </div>
 
-      <CardContent>
-        Totals: {entriesTotals.calories} calories, {entriesTotals.protein}g
-        protein, {entriesTotals.carbs}g carbs, {entriesTotals.fat}g fat,{" "}
-        {entriesTotals.fiber}g fiber
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">Protein</p>
+            <p className="text-2xl font-bold">
+              {entriesTotals.protein.toFixed(1)}g
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">Carbs</p>
+            <p className="text-2xl font-bold">
+              {entriesTotals.carbs.toFixed(1)}g
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">Fat</p>
+            <p className="text-2xl font-bold">
+              {entriesTotals.fat.toFixed(1)}g
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">Fiber</p>
+            <p className="text-2xl font-bold">
+              {entriesTotals.fiber.toFixed(1)}g
+            </p>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

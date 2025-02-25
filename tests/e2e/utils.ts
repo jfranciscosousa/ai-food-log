@@ -42,7 +42,8 @@ export async function createUserAndLogin(page: Page, screen: Screen) {
   await screen.getByLabelText("Email").fill(data.email);
   await screen.getByLabelText("Password").fill(password);
   await screen.getByText("Login").click();
-  await screen.findByText(`Welcome, ${data.name}!`);
+  await page.getByRole("button", { name: "User nav" }).click();
+  await screen.findByText(data.name);
 
   return data;
 }

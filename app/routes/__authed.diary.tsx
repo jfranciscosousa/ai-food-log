@@ -1,5 +1,4 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import DiaryEntryDeleteAll from "~/modules/Diary/DiaryEntryDeleteAll";
 import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
 import DiaryList from "~/modules/Diary/DiaryList";
 import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
@@ -62,21 +61,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function NotesPage() {
   return (
     <>
-      <main className="max-w-xl w-full mx-auto flex-grow overflow-hidden flex flex-col mb-4">
+      <div className="flex flex-col items-center">
         <DiaryNavigation />
-
-        <DiaryTotals />
-
-        <div className="my-4 sm:my-8 h-[1px] border" />
-
-        <DiaryList />
-      </main>
-
-      <DiaryEntryDeleteAll />
-
-      <div className="shrink-0 max-w-xl w-full mx-auto py-8">
-        <DiaryEntryForm />
       </div>
+
+      <DiaryEntryForm />
+
+      <DiaryTotals />
+
+      <DiaryList />
     </>
   );
 }

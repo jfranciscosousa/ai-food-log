@@ -1,7 +1,6 @@
 import { useFetcher, useLoaderData } from "react-router";
 import { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
-import { InputField } from "~/components/ui/input-field";
 import { useToast } from "~/hooks/use-toast";
 import { formatDate } from "~/hooks/useDates";
 import { useIsClient } from "~/hooks/useIsClient";
@@ -9,6 +8,9 @@ import {
   type DiaryActionData,
   type DiaryRouteData,
 } from "~/routes/__authed.diary";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Label } from "~/components/ui/label";
+import { Input } from "~/components/ui/input";
 
 export default function DiaryEntryForm() {
   const { toast } = useToast();
@@ -37,29 +39,34 @@ export default function DiaryEntryForm() {
   }, [isAdding]);
 
   return (
-    <fetcher.Form method="post" className="flex flex-col space-y-4">
-      <div className="flex flex-row items-end space-x-4 w-full">
-        <InputField
-          label="New entry"
-          name="content"
-          type="text"
-          required
-          ref={inputRef}
-          className="w-full"
-          inputClassName="input-bordered"
-        />
-
-        <Button
-          type="submit"
-          isLoading={fetcher.state === "submitting"}
-          name="_action"
-          value="create"
-          className="w-[120px]"
-        >
-          Submit
-        </Button>
-      </div>
-
+    <fetcher.Form method="post">
+      <Card>
+        <CardHeader>
+          <CardTitle>Add Meal</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-4">
+            <div className="grid w-full gap-1.5">
+              <Label htmlFor="meal">Meal Description</Label>
+              <div className="flex gap-2">
+                <Input
+                  name="content"
+                  placeholder="e.g. 100g of cooked rice and 250g of raw chicken breast"
+                  ref={inputRef}
+                />
+                <Button
+                  type="submit"
+                  isLoading={isAdding}
+                  name="_action"
+                  value="create"
+                >
+                  Add
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       {!isClient && <input type="hidden" name="day" value={unparsedDate} />}
       {isClient && (
         <input

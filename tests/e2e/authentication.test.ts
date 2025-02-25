@@ -71,7 +71,7 @@ test("shows login and then redirects to original page", async ({
 test("logs out and drops user on login page", async ({ page, screen }) => {
   const user = await createUserAndLogin(page, screen);
 
-  await screen.getByText("Logout").click();
+  await screen.getByText("Log out").click();
 
   expect(
     await (

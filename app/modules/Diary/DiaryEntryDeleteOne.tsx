@@ -1,9 +1,10 @@
-import { useFetcher } from "react-router";
+import { Trash2 } from "lucide-react";
 import { useEffect } from "react";
+import { useFetcher } from "react-router";
+import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
 import { type DiaryActionData } from "~/routes/__authed.diary";
 import { cn } from "~/utils";
-import { Trash2Icon } from "lucide-react";
 
 type Props = {
   entryId: string;
@@ -30,18 +31,21 @@ export default function DiaryEntryDeleteOne({ entryId }: Props) {
         fetcher.state === "submitting" ? "cursor-not-allowed" : "",
       )}
     >
-      <input type="hidden" name="id" value={entryId} />
-
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8"
         type="submit"
         name="_action"
         value="delete"
         aria-label="Delete entry"
-        disabled={fetcher.state === "submitting"}
-        className="p-4 -m-4"
+        isLoading={fetcher.state === "submitting"}
       >
-        <Trash2Icon width="16px" aria-hidden="true" />
-      </button>
+        <Trash2 className="h-4 w-4" />
+        <span className="sr-only">Delete entry</span>
+      </Button>
+
+      <input type="hidden" name="id" value={entryId} />
     </fetcher.Form>
   );
 }

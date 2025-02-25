@@ -1,26 +1,17 @@
-import { addDays, format, subDays } from "date-fns";
+import { format, addDays, subDays } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { useLoaderData, useNavigate } from "react-router";
-import { Button } from "~/components/ui/button";
-import { Calendar } from "~/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import { formatDate } from "~/hooks/useDates";
-import { type DiaryRouteData } from "~/routes/__authed.diary";
+import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Calendar } from "./ui/calendar";
 import { cn } from "~/utils";
 
-export default function DiaryNavigation() {
-  const navigate = useNavigate();
-  const { unparsedDate } = useLoaderData<DiaryRouteData>();
-  const date = unparsedDate ? new Date(unparsedDate) : new Date();
-
-  function onDateChange(newDate: Date) {
-    navigate(`/diary?date=${formatDate(newDate)}`);
-  }
-
+export function DatePicker({
+  date,
+  onDateChange,
+}: {
+  date: Date;
+  onDateChange: (date: Date) => void;
+}) {
   return (
     <div className="flex items-center gap-2">
       <Button

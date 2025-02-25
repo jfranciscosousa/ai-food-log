@@ -30,6 +30,7 @@ export default [
       "**/node_modules",
       "**/api/",
       ".react-router/**",
+      "**/playwright-report",
     ],
   },
   ...fixupConfigRules(

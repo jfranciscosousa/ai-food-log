@@ -12,5 +12,6 @@ mkswap /swapfile
 echo 10 > /proc/sys/vm/swappiness
 swapon /swapfile
 
-pnpm dlx prisma db push
+pnpm dlx prisma db push --acept-data-loss
+pnpm dlx prisma generate
 pnpm run start
