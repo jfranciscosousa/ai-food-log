@@ -36,7 +36,7 @@ export default function Profile() {
   }, [actionData, toast]);
 
   return (
-    <Card className="max-w-lg w-full mx-auto flex items-center justify-center">
+    <Card>
       <ProfileForm errors={actionData?.errors} mode="update" user={user} />
     </Card>
   );

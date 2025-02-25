@@ -1,6 +1,6 @@
 import { Form, Link, useActionData, useLocation } from "react-router";
 import { Button } from "~/components/ui/button";
-import { Card, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
 import { InputField } from "~/components/ui/input-field";
 import useIsLoading from "~/hooks/useIsLoading";
@@ -12,50 +12,57 @@ export default function Login() {
   const location = useLocation();
 
   return (
-    <Card className="max-w-lg w-full mx-auto flex items-center justify-center">
-      <Form
-        method="post"
-        action="/login"
-        className="p-10 w-full flex flex-col space-y-4"
-      >
-        <CardTitle className="mb-8">Please login</CardTitle>
+    <Card>
+      <CardHeader>
+        <CardTitle>Please login</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form
+          method="post"
+          action="/login"
+          className="w-full flex flex-col space-y-4"
+        >
+          <InputField
+            label="Email"
+            name="email"
+            type="text"
+            required
+            placeholder="hello@email.com"
+            errors={actionData?.errors}
+            defaultValue={actionData?.original?.email}
+          />
 
-        <InputField
-          label="Email"
-          name="email"
-          type="text"
-          required
-          placeholder="hello@email.com"
-          errors={actionData?.errors}
-          defaultValue={actionData?.original?.email}
-        />
+          <InputField
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="**************"
+            required
+            errors={actionData?.errors}
+            defaultValue={actionData?.original?.password}
+          />
 
-        <InputField
-          label="Password"
-          name="password"
-          type="password"
-          placeholder="**************"
-          required
-          errors={actionData?.errors}
-          defaultValue={actionData?.original?.password}
-        />
+          <CheckboxField
+            name="rememberMe"
+            label="Remember me"
+            className="pb-4"
+          />
 
-        <CheckboxField name="rememberMe" label="Remember me" className="pb-4" />
+          <input
+            name="redirectUrl"
+            type="hidden"
+            defaultValue={location.pathname + location.search}
+          />
 
-        <input
-          name="redirectUrl"
-          type="hidden"
-          defaultValue={location.pathname + location.search}
-        />
+          <Button type="submit" isLoading={isLoading}>
+            Login
+          </Button>
 
-        <Button type="submit" isLoading={isLoading}>
-          Login
-        </Button>
-
-        <Link to="/signup" className="link text-center">
-          Or sign up instead
-        </Link>
-      </Form>
+          <Link to="/signup" className="link text-center">
+            Or sign up instead
+          </Link>
+        </Form>
+      </CardContent>
     </Card>
   );
 }

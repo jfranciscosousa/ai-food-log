@@ -22,7 +22,7 @@ export async function getEntriesForDay(userId: string, date?: string) {
   const entries = await prisma.foodEntry.findMany({
     include: { items: true },
     where: { userId, day: { gte: start, lte: end } },
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
   });
 
   return entries;

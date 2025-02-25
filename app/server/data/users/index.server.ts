@@ -103,6 +103,7 @@ export async function createUser(
       password: encryptedPassword,
       height,
       weight,
+      age,
       gender,
       fitnessLevel,
       weightLossGoal,
@@ -167,7 +168,7 @@ export async function updateUser(
 
   if (!parsedSchema.success)
     return { data: null, errors: formatZodErrors(parsedSchema.error) };
-  console.log(parsedSchema.data);
+
   const {
     name,
     email,

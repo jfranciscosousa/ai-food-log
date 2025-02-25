@@ -1,4 +1,3 @@
-import { Info } from "lucide-react";
 import { useMemo } from "react";
 import { useLoaderData } from "react-router";
 import {
@@ -9,12 +8,6 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import useUser from "~/hooks/useUser";
 import { type DiaryRouteData } from "~/routes/__authed.diary";
 
@@ -49,26 +42,18 @@ export default function DiaryTotals() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Calories</span>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Daily calorie target: {user.targetCalories}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">
-                {entriesTotals.calories}
-              </span>
-              <span className={`text-sm ${calorieStatus.color}`}>
-                {calorieStatus.message}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-sm font-medium">Calories</span>
+            <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-1.5">
+                <span className="font-medium">{entriesTotals.calories}</span>
+                <span className="text-muted-foreground">/</span>
+                <span className="text-muted-foreground">
+                  {Math.round(user.targetCalories)}
+                </span>
+              </div>
+              <span className={`${calorieStatus.color}`}>
+                ({calorieStatus.message})
               </span>
             </div>
           </div>

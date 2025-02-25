@@ -34,8 +34,8 @@ export default function SignUp() {
   const errors = useActionData<GenericDataError>();
 
   return (
-    <div className="py-8 w-full overflow-auto">
-      <Card className="max-w-lg w-full mx-auto flex items-center justify-center">
+    <div className="my-8 min-w-96">
+      <Card>
         <ProfileForm errors={errors} mode="create" />
       </Card>
     </div>

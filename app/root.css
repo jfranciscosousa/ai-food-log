@@ -4,6 +4,13 @@
 
 @layer base {
   :root {
+    body[data-scroll-locked][data-scroll-locked] {
+      overflow: auto !important;
+    }
+    body[data-scroll-locked] {
+      margin-right: 0 !important;
+    }
+
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -75,16 +82,12 @@
 @layer base {
   * {
     @apply border-border;
-
   }
   body {
     @apply bg-background text-foreground;
+    scrollbar-gutter: auto;
   }
-
-
 }
-
-
 
 @layer base {
   * {

@@ -37,6 +37,7 @@ test("signs up", async ({ page, screen }) => {
     });
     expect(user.name).toEqual(NAME);
     expect(user.email).toEqual(EMAIL);
+    expect(user.age.toString()).toEqual(AGE);
     expect(user.height.toString()).toEqual(HEIGHT);
     expect(user.weight.toString()).toEqual(WEIGHT);
     expect(user.fitnessLevel).toEqual("VERY_ACTIVE");
