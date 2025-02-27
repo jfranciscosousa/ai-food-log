@@ -39,7 +39,7 @@ export default function Preview() {
   const isLoading = useIsLoading();
 
   return (
-    <main className="max-w-xl w-full mx-auto flex-grow flex flex-col mb-4">
+    <main className="max-w-xl w-full mx-auto grow flex flex-col mb-4">
       <Form method="GET" className="flex gap-4">
         <Input autoComplete="off" name="input" defaultValue={entry?.input} />
 

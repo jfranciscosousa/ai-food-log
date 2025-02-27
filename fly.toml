@@ -1,7 +1,4 @@
-# fly.toml app configuration file generated for remix-prisma-starter on 2023-04-27T11:41:14+01:00
-#
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
 
 app = "ai-food-log"
 primary_region = "mad"

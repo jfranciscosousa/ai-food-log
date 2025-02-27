@@ -11,7 +11,7 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: remix-prisma-starter-test
+          POSTGRES_DB: ai-food-log-test
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
@@ -77,8 +77,7 @@ jobs:
           pnpm test:e2e
         env:
           SECRET_KEY_BASE: supersecret42069
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/remix-prisma-starter-test
-          DATABASE_URL_NON_POOLING: postgres://postgres:postgres@localhost:5432/remix-prisma-starter-test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/ai-food-log-test
           SECURE_AUTH_COOKIE: false
           NODE_ENV: production
           PORT: 3001
