@@ -1,10 +1,10 @@
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 import { CLIENT_ENV, type ClientEnv } from "~/env";
-import { UserContext } from "./useUser";
 import type { UserFeatureFlags } from "~/server/data/users/userFeatureFlags.server";
+import { useOptionalUser } from "./useUser";
 
 export default function useFeatureFlags() {
-  const userContext = useContext(UserContext);
+  const user = useOptionalUser();
 
   return useMemo(
     () => ({
@@ -13,8 +13,8 @@ export default function useFeatureFlags() {
         !!CLIENT_ENV[flag],
       // Check the current user feature flags. If there's no user, this returns false, always
       hasUserFeatureFlag: (flag: keyof UserFeatureFlags): boolean =>
-        !!userContext?.featureFlags?.[flag],
+        !!user?.featureFlags?.[flag],
     }),
-    [userContext?.featureFlags],
+    [user?.featureFlags],
   );
 }

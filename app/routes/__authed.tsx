@@ -31,7 +31,7 @@ export default function AppPage() {
   }
 
   return (
-    <LoggedInLayout user={user}>
+    <LoggedInLayout>
       <Outlet />
     </LoggedInLayout>
   );

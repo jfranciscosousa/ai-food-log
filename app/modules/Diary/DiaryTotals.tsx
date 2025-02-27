@@ -13,6 +13,7 @@ import { type DiaryRouteData } from "~/routes/__authed.diary";
 
 export default function DiaryTotals() {
   const user = useUser();
+
   const { entriesTotals } = useLoaderData<DiaryRouteData>();
   const calorieProgress = (entriesTotals.calories / user.targetCalories) * 100;
   const calorieStatus = useMemo(() => {

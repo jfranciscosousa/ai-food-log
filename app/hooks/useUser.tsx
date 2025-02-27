@@ -1,32 +1,10 @@
-import { createContext, type ReactNode, useContext } from "react";
-import { type AuthedRouteData } from "~/routes/__authed";
+import { useRouteLoaderData } from "react-router";
+import type { Info } from "../routes/+types/__authed";
 
-export const UserContext = createContext<AuthedRouteData["user"] | undefined>(
-  undefined,
-);
-
-export function UserProvider({
-  children,
-  user,
-}: {
-  children: ReactNode;
-  user: NonNullable<AuthedRouteData["user"]>;
-}) {
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+export function useOptionalUser(): Info["loaderData"]["user"] | undefined {
+  return useRouteLoaderData("routes/__authed")?.user;
 }
 
-export function useOptionalUser() {
-  const userContext = useContext(UserContext);
-
-  return userContext;
-}
-
-export default function useUser(): NonNullable<AuthedRouteData["user"]> {
-  const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    throw new Error("useUser has to be used within <UserContext.Provider>");
-  }
-
-  return userContext;
+export default function useUser(): NonNullable<Info["loaderData"]["user"]> {
+  return useRouteLoaderData("routes/__authed")!.user;
 }

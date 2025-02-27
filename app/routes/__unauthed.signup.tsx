@@ -34,10 +34,8 @@ export default function SignUp() {
   const errors = useActionData<GenericDataError>();
 
   return (
-    <div className="my-8 min-w-96">
-      <Card>
-        <ProfileForm errors={errors} mode="create" />
-      </Card>
-    </div>
+    <Card className="md:w-xl w-full">
+      <ProfileForm errors={errors} mode="create" />
+    </Card>
   );
 }

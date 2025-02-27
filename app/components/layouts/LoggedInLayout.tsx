@@ -1,11 +1,9 @@
 import type { ReactNode } from "react";
-import { UserProvider } from "~/hooks/useUser";
-import type { AuthedRouteData } from "~/routes/__authed";
 import ThemeChanger from "../ThemeChanger";
 import { UserNav } from "../UserNav";
 import { BaseLayout } from "./BaseLayout";
 
-function InnerLoggedInLayout({ children }: { children: ReactNode }) {
+export default function LoggedInLayout({ children }: { children: ReactNode }) {
   return (
     <BaseLayout>
       <div className="flex items-center justify-between">
@@ -20,19 +18,5 @@ function InnerLoggedInLayout({ children }: { children: ReactNode }) {
 
       {children}
     </BaseLayout>
-  );
-}
-
-export default function LoggedInLayout({
-  user,
-  children,
-}: {
-  user: NonNullable<AuthedRouteData["user"]>;
-  children: ReactNode;
-}) {
-  return (
-    <UserProvider user={user}>
-      <InnerLoggedInLayout>{children}</InnerLoggedInLayout>
-    </UserProvider>
   );
 }

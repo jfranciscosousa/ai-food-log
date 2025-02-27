@@ -12,7 +12,7 @@ export default function Login() {
   const location = useLocation();
 
   return (
-    <Card>
+    <Card className="md:w-xl w-full">
       <CardHeader>
         <CardTitle>Please login</CardTitle>
       </CardHeader>

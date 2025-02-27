@@ -1,4 +1,4 @@
-import { LogOut, User, User2 } from "lucide-react";
+import { LogOut, Notebook, ScanEye, User, User2 } from "lucide-react";
 import { Form, NavLink } from "react-router";
 import { Button } from "~/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import useUser from "~/hooks/useUser";
 
 export function UserNav() {
   const user = useUser();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,7 +40,7 @@ export function UserNav() {
               prefetch="intent"
               className={({ isActive }) => (isActive ? "underline" : "")}
             >
-              <User className="mr-2 h-4 w-4" />
+              <Notebook className="mr-2 h-4 w-4" />
               <span>Diary</span>
             </NavLink>
           </DropdownMenuItem>
@@ -50,7 +51,7 @@ export function UserNav() {
               prefetch="intent"
               className={({ isActive }) => (isActive ? "underline" : "")}
             >
-              <User className="mr-2 h-4 w-4" />
+              <ScanEye className="mr-2 h-4 w-4" />
               <span>Preview</span>
             </NavLink>
           </DropdownMenuItem>
