@@ -19,7 +19,7 @@
     "test:vitest:watch": "vitest",
     "ts-check": "react-router typegen && tsc --project tsconfig.json --skipLibCheck --noEmit",
     "ts-watch": "react-router typegen && tsc --project tsconfig.json --watch --skipLibCheck --noEmit",
-    "ts-run": "dotenv ts-node",
+    "ts-run": "dotenv tsx",
     "validate-env": "npm run ts-run tasks/validateConfig.ts"
   },
   "lint-staged": {
@@ -98,7 +98,7 @@
     "prettier": "^3.5.2",
     "prisma": "6.4.1",
     "tailwindcss": "^4.0.9",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
     "type-fest": "^4.35.0",
     "typescript": "^5.7.3",
     "vite": "^6.2.0",
