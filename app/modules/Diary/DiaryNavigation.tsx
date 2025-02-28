@@ -1,6 +1,6 @@
 import { addDays, format, subDays } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { useLoaderData, useNavigate } from "react-router";
+import { Link, useLoaderData, useNavigate } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
 import {
@@ -10,7 +10,6 @@ import {
 } from "~/components/ui/popover";
 import { formatDate } from "~/hooks/useDates";
 import { type DiaryRouteData } from "~/routes/__authed.diary";
-import { cn } from "~/utils";
 
 export default function DiaryNavigation() {
   const navigate = useNavigate();
@@ -23,18 +22,16 @@ export default function DiaryNavigation() {
 
   return (
     <div className="flex items-center gap-2">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => onDateChange(subDays(date, 1))}
-      >
-        <ChevronLeft className="h-4 w-4" />
+      <Button variant="outline" size="icon" asChild>
+        <Link to={`?date=${formatDate(subDays(date, 1))}`} prefetch="intent">
+          <ChevronLeft className="h-4 w-4" />
+        </Link>
       </Button>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className={cn("w-[240px] justify-start text-left font-normal")}
+            className="w-[240px] flex justify-start text-left font-normal"
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {format(date, "PPP")}
@@ -49,12 +46,13 @@ export default function DiaryNavigation() {
           />
         </PopoverContent>
       </Popover>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => onDateChange(addDays(date, 1))}
-      >
-        <ChevronRight className="h-4 w-4" />
+      <Button variant="outline" size="icon" asChild>
+        <Link
+          to={`/diary?date=${formatDate(addDays(date, 1))}`}
+          prefetch="intent"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Link>
       </Button>
     </div>
   );
