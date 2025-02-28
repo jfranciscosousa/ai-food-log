@@ -17,6 +17,7 @@ import {
 import { type DiaryRouteData } from "~/routes/__authed.diary";
 import DiaryEntryDeleteOne from "./DiaryEntryDeleteOne";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import { DiaryEntryUpdate } from "./DiaryEntryUpdate";
 
 type Props = {
   entry: DiaryRouteData["entriesForToday"][number];
@@ -33,7 +34,11 @@ export default function DiaryEntry({ entry }: Props) {
             Original prompt: {entry.content}
           </div>
         </div>
-        <DiaryEntryDeleteOne entryId={entry.id} />
+
+        <div className="flex gap-2">
+          <DiaryEntryUpdate entry={entry} />
+          <DiaryEntryDeleteOne entryId={entry.id} />
+        </div>
       </CardHeader>
       <CardContent>
         <ScrollArea>

@@ -1,7 +1,6 @@
 import { useFetcher, useLoaderData } from "react-router";
 import { useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
-import { useToast } from "~/hooks/use-toast";
 import { formatDate } from "~/hooks/useDates";
 import { useIsClient } from "~/hooks/useIsClient";
 import {
@@ -13,7 +12,6 @@ import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 
 export default function DiaryEntryForm() {
-  const { toast } = useToast();
   const { unparsedDate } = useLoaderData<DiaryRouteData>();
   const fetcher = useFetcher<DiaryActionData>();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -21,15 +19,6 @@ export default function DiaryEntryForm() {
     fetcher.state === "submitting" &&
     fetcher.formData?.get("_action") === "create";
   const isClient = useIsClient();
-
-  useEffect(() => {
-    if (fetcher.data?.errors) {
-      toast({
-        title: "Unhandled error while creating entry!",
-        variant: "destructive",
-      });
-    }
-  }, [fetcher.data, toast]);
 
   useEffect(() => {
     if (!isAdding || !inputRef.current) return;

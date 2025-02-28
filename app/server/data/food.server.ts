@@ -120,6 +120,82 @@ export async function createEntry(
   return { data: result, errors: null };
 }
 
+export const updateEntryParams = zfd.formData({
+  id: zfd.text(),
+  content: zfd.text(),
+});
+
+export type UpdateEntryParams = z.infer<typeof updateEntryParams> | FormData;
+
+export async function updateEntry(
+  userId: string,
+  params: UpdateEntryParams,
+): Promise<DataResult<FoodEntry>> {
+  const parsedSchema = updateEntryParams.safeParse(params);
+
+  if (!parsedSchema.success) {
+    return { data: null, errors: formatZodErrors(parsedSchema.error) };
+  }
+
+  const { id, content } = parsedSchema.data;
+
+  const aiResponse = await processFoodWithAI(content);
+
+  const result = await prisma.$transaction(async (tx) => {
+    const entry = await tx.foodEntry.findUnique({ where: { id } });
+
+    if (!entry) return null;
+
+    await tx.foodEntry.update({
+      where: { id },
+      data: {
+        name: aiResponse.name,
+        aiResponse,
+        content,
+      },
+    });
+
+    await tx.foodEntryItem.deleteMany({ where: { foodEntryId: entry.id } });
+
+    await tx.foodEntryItem.createMany({
+      data: aiResponse.items.map((item) => ({
+        ...item,
+        foodEntryId: entry.id,
+      })),
+    });
+
+    const itemTotals = await tx.foodEntryItem.aggregate({
+      _sum: {
+        calories: true,
+        carbs: true,
+        fat: true,
+        fiber: true,
+        protein: true,
+      },
+      where: { foodEntryId: entry.id },
+    });
+
+    await tx.foodEntry.update({
+      where: { id: entry.id },
+      data: {
+        calories: itemTotals._sum.calories || 0,
+        carbs: itemTotals._sum.carbs || 0,
+        fat: itemTotals._sum.fat || 0,
+        fiber: itemTotals._sum.fiber || 0,
+        protein: itemTotals._sum.protein || 0,
+      },
+    });
+
+    return entry;
+  });
+
+  if (!result) {
+    return { data: null, errors: { id: "Entry not found in the system." } };
+  }
+
+  return { data: result, errors: null };
+}
+
 export const deleteEntryParams = zfd.formData({
   id: zfd.text(),
 });

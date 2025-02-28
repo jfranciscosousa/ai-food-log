@@ -1,8 +1,9 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
+import { toast } from "~/hooks/use-toast";
+import DiaryDailySummary from "~/modules/Diary/DiaryDailySummary";
 import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
 import DiaryList from "~/modules/Diary/DiaryList";
 import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
-import DiaryTotals from "~/modules/Diary/DiaryTotals";
 import { userIdFromRequest } from "~/server/auth.server";
 import {
   createEntry,
@@ -10,13 +11,15 @@ import {
   deleteEntry,
   getAggregateForDay,
   getEntriesForDay,
+  updateEntry,
 } from "~/server/data/food.server";
-import type { Info } from "./+types/__authed.diary";
+import type { Info, Route } from "./+types/__authed.diary";
 
 export type DiaryRouteData = Info["loaderData"];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const date = new URL(request.url).searchParams.get("date") ?? undefined;
+  const date =
+    new URL(request.url).searchParams.get("date") ?? new Date().toISOString();
   const userId = await userIdFromRequest(request);
   const entries = await getEntriesForDay(userId, date);
   const entriesTotals = await getAggregateForDay(userId, date);
@@ -30,7 +33,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export type DiaryActionData = Info["actionData"];
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request }: Route.ActionArgs) => {
   const userId = await userIdFromRequest(request);
   const formData = await request.formData();
   const form = Object.fromEntries(formData);
@@ -41,6 +44,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         return {
           _action: "create" as const,
           ...(await createEntry(userId, formData)),
+        };
+      case "update":
+        return {
+          _action: "update" as const,
+          ...(await updateEntry(userId, formData)),
         };
       case "delete":
         return {
@@ -58,6 +66,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
+export async function clientAction(args: Route.ClientActionArgs) {
+  const result = await args.serverAction();
+
+  if (result?.errors) {
+    toast({
+      title: "Unhandled error!",
+      variant: "destructive",
+    });
+  }
+
+  return result;
+}
+
 export default function NotesPage() {
   return (
     <>
@@ -67,7 +88,7 @@ export default function NotesPage() {
 
       <DiaryEntryForm />
 
-      <DiaryTotals />
+      <DiaryDailySummary />
 
       <DiaryList />
     </>

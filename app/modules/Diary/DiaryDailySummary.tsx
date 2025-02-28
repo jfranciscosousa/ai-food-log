@@ -10,8 +10,9 @@ import {
 import { Progress } from "~/components/ui/progress";
 import useUser from "~/hooks/useUser";
 import { type DiaryRouteData } from "~/routes/__authed.diary";
+import { DiaryClearDay } from "./DiaryClearDay";
 
-export default function DiaryTotals() {
+export default function DiaryDailySummary() {
   const user = useUser();
 
   const { entriesTotals } = useLoaderData<DiaryRouteData>();
@@ -37,9 +38,13 @@ export default function DiaryTotals() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Daily Summary</CardTitle>
-        <CardDescription>Total macronutrients for the day</CardDescription>
+      <CardHeader className="flex flex-row items-start justify-between">
+        <div className="flex flex-col gap-2">
+          <CardTitle>Daily Summary</CardTitle>
+          <CardDescription>Total macronutrients for the day</CardDescription>
+        </div>
+
+        <DiaryClearDay />
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
