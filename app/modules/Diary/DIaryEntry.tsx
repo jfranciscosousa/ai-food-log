@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/table";
 import { type DiaryRouteData } from "~/routes/__authed.diary";
 import DiaryEntryDeleteOne from "./DiaryEntryDeleteOne";
+import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 
 type Props = {
   entry: DiaryRouteData["entriesForToday"][number];
@@ -35,44 +36,48 @@ export default function DiaryEntry({ entry }: Props) {
         <DiaryEntryDeleteOne entryId={entry.id} />
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Ingredient</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Calories</TableHead>
-              <TableHead>Protein</TableHead>
-              <TableHead>Carbs</TableHead>
-              <TableHead>Fat</TableHead>
-              <TableHead>Fiber</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {entry.items.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.servingSize}g</TableCell>
-                <TableCell>{item.calories}kcal</TableCell>
-                <TableCell>{item.protein}g</TableCell>
-                <TableCell>{item.carbs}g</TableCell>
-                <TableCell>{item.fat}g</TableCell>
-                <TableCell>{item.fiber}g</TableCell>
+        <ScrollArea>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Ingredient</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Calories</TableHead>
+                <TableHead>Protein</TableHead>
+                <TableHead>Carbs</TableHead>
+                <TableHead>Fat</TableHead>
+                <TableHead>Fiber</TableHead>
               </TableRow>
-            ))}
-            <TableRow className="border-t-2">
-              <TableCell colSpan={2} className="font-medium">
-                Meal Totals
-              </TableCell>
-              <TableCell className="font-medium">
-                {entry.calories}kcal
-              </TableCell>
-              <TableCell className="font-medium">{entry.protein}g</TableCell>
-              <TableCell className="font-medium">{entry.carbs}g</TableCell>
-              <TableCell className="font-medium">{entry.fat}g</TableCell>
-              <TableCell className="font-medium">{entry.fiber}g</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {entry.items.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.servingSize}g</TableCell>
+                  <TableCell>{item.calories}kcal</TableCell>
+                  <TableCell>{item.protein}g</TableCell>
+                  <TableCell>{item.carbs}g</TableCell>
+                  <TableCell>{item.fat}g</TableCell>
+                  <TableCell>{item.fiber}g</TableCell>
+                </TableRow>
+              ))}
+              <TableRow className="border-t-2">
+                <TableCell colSpan={2} className="font-medium">
+                  Meal Totals
+                </TableCell>
+                <TableCell className="font-medium">
+                  {entry.calories}kcal
+                </TableCell>
+                <TableCell className="font-medium">{entry.protein}g</TableCell>
+                <TableCell className="font-medium">{entry.carbs}g</TableCell>
+                <TableCell className="font-medium">{entry.fat}g</TableCell>
+                <TableCell className="font-medium">{entry.fiber}g</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </CardContent>
     </Card>
   );
