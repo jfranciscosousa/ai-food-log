@@ -6,8 +6,8 @@ import { useToast } from "~/hooks/use-toast";
 import useUser from "~/hooks/useUser";
 import ProfileForm from "~/modules/Profile/ProfileForm";
 import { userIdFromRequest } from "~/server/auth.server";
-import { updateUser } from "~/server/data/users/index.server";
 import type { Info } from "./+types/__authed.profile";
+import Users from "~/server/data/users.server";
 
 export type ProfileRouteActionType = Info["actionData"];
 
@@ -15,7 +15,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
   const userId = await userIdFromRequest(request);
   const form = await request.formData();
 
-  return updateUser(userId, form);
+  return Users.updateUser(userId, form);
 };
 
 export const meta: MetaFunction = () => [

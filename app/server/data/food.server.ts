@@ -17,7 +17,7 @@ function getStartAndEndOfDay(day = formatDate(new Date())): [Date, Date] {
   return [startOfDay, endOfDay];
 }
 
-export async function getEntriesForDay(userId: string, date?: string) {
+async function getEntriesForDay(userId: string, date?: string) {
   const [start, end] = getStartAndEndOfDay(date);
   const entries = await prisma.foodEntry.findMany({
     include: { items: true },
@@ -28,7 +28,7 @@ export async function getEntriesForDay(userId: string, date?: string) {
   return entries;
 }
 
-export async function getAggregateForDay(userId: string, date?: string) {
+async function getAggregateForDay(userId: string, date?: string) {
   const [start, end] = getStartAndEndOfDay(date);
   const entries = await prisma.foodEntry.aggregate({
     _sum: {
@@ -57,7 +57,7 @@ export const createEntryParams = zfd.formData({
 
 export type CreateEntryParams = z.infer<typeof createEntryParams> | FormData;
 
-export async function createEntry(
+async function createEntry(
   userId: string,
   params: CreateEntryParams,
 ): Promise<DataResult<FoodEntry>> {
@@ -127,7 +127,7 @@ export const updateEntryParams = zfd.formData({
 
 export type UpdateEntryParams = z.infer<typeof updateEntryParams> | FormData;
 
-export async function updateEntry(
+async function updateEntry(
   userId: string,
   params: UpdateEntryParams,
 ): Promise<DataResult<FoodEntry>> {
@@ -202,7 +202,7 @@ export const deleteEntryParams = zfd.formData({
 
 export type DeleteEntryParams = z.infer<typeof deleteEntryParams> | FormData;
 
-export async function deleteEntry(userId: string, params: DeleteEntryParams) {
+async function deleteEntry(userId: string, params: DeleteEntryParams) {
   const parsedSchema = deleteEntryParams.safeParse(params);
 
   if (!parsedSchema.success)
@@ -223,7 +223,7 @@ export type DeleteAllEntriesParams =
   | z.infer<typeof deleteAllEntriesParams>
   | FormData;
 
-export async function deleteAllEntries(
+async function deleteAllEntries(
   userId: string,
   params: DeleteAllEntriesParams,
 ) {
@@ -239,3 +239,14 @@ export async function deleteAllEntries(
     where: { userId, day: { gte: start, lte: end } },
   });
 }
+
+const Food = {
+  getEntriesForDay,
+  getAggregateForDay,
+  createEntry,
+  updateEntry,
+  deleteEntry,
+  deleteAllEntries,
+};
+
+export default Food;

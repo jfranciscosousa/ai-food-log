@@ -4,13 +4,13 @@ import {
   type User,
   WeightLossGoal,
 } from "@prisma/client";
-import { zfd } from "zod-form-data";
 import { z } from "zod";
-import { encryptPassword, verifyPassword } from "./passwordUtils.server";
-import prisma from "../prisma.server";
-import { type DataResult } from "../utils/types";
-import { formatZodErrors } from "../utils/formatZodErrors.server";
-import { calculateCalorieGoal } from "./calculateCalorieGoal.server";
+import { zfd } from "zod-form-data";
+import prisma from "./prisma.server";
+import { calculateCalorieGoal } from "./users/calculateCalorieGoal.server";
+import { encryptPassword, verifyPassword } from "./users/passwordUtils.server";
+import { formatZodErrors } from "./utils/formatZodErrors.server";
+import { type DataResult } from "./utils/types";
 
 export const createUserParams = zfd.formData({
   inviteToken: zfd.text(),
@@ -44,7 +44,7 @@ export const createUserParams = zfd.formData({
 
 export type CreateUserParams = z.infer<typeof createUserParams> | FormData;
 
-export async function findUserByEmail(
+async function findUserByEmail(
   email: string,
 ): Promise<Omit<User, "password"> | null> {
   const user = await prisma.user.findUnique({ where: { email } });
@@ -54,7 +54,40 @@ export async function findUserByEmail(
   return user;
 }
 
-export async function createUser(
+export const loginSchema = zfd.formData({
+  email: zfd.text(z.string().email()),
+  password: zfd.text(),
+  redirectUrl: zfd.text(z.string().optional()),
+  rememberMe: zfd.checkbox().optional(),
+});
+
+export type LoginParams = z.infer<typeof loginSchema> | FormData;
+
+export async function login(
+  params: LoginParams,
+): Promise<DataResult<User & { rememberMe?: boolean }>> {
+  const parsedSchema = loginSchema.safeParse(params);
+
+  if (!parsedSchema.success)
+    return { data: null, errors: formatZodErrors(parsedSchema.error) };
+
+  const { email, password, rememberMe } = parsedSchema.data;
+
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user)
+    return { data: null, errors: { email: "Email/Password combo not found" } };
+
+  if (await verifyPassword(user.password, password)) {
+    user.password = "";
+
+    return { data: { ...user, rememberMe }, errors: null };
+  }
+
+  return { data: null, errors: { email: "Email/Password combo not found" } };
+}
+
+async function createUser(
   params: CreateUserParams,
 ): Promise<DataResult<Omit<User, "password"> & { rememberMe?: boolean }>> {
   const parsedSchema = createUserParams.safeParse(params);
@@ -160,7 +193,7 @@ const updateUserParams = zfd.formData({
 
 export type UpdateUserParams = z.infer<typeof updateUserParams> | FormData;
 
-export async function updateUser(
+async function updateUser(
   userId: string,
   params: UpdateUserParams,
 ): Promise<DataResult<Omit<User, "password">>> {
@@ -229,7 +262,7 @@ export async function updateUser(
   return { data: updatedUser, errors: null };
 }
 
-export async function deleteUser(user: User): Promise<Omit<User, "password">> {
+async function deleteUser(user: User): Promise<Omit<User, "password">> {
   const [_, deletedUser] = await prisma.$transaction([
     prisma.foodEntry.deleteMany({ where: { userId: user.id } }),
     prisma.user.delete({ where: { id: user.id } }),
@@ -239,3 +272,12 @@ export async function deleteUser(user: User): Promise<Omit<User, "password">> {
 
   return deletedUser;
 }
+
+const Users = {
+  login,
+  createUser,
+  updateUser,
+  deleteUser,
+};
+
+export default Users;

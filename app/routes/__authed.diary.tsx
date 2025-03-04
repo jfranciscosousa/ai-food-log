@@ -5,15 +5,8 @@ import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
 import DiaryList from "~/modules/Diary/DiaryList";
 import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
 import { userIdFromRequest } from "~/server/auth.server";
-import {
-  createEntry,
-  deleteAllEntries,
-  deleteEntry,
-  getAggregateForDay,
-  getEntriesForDay,
-  updateEntry,
-} from "~/server/data/food.server";
 import type { Info, Route } from "./+types/__authed.diary";
+import Food from "~/server/data/food.server";
 
 export type DiaryRouteData = Info["loaderData"];
 
@@ -21,8 +14,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const date =
     new URL(request.url).searchParams.get("date") ?? new Date().toISOString();
   const userId = await userIdFromRequest(request);
-  const entries = await getEntriesForDay(userId, date);
-  const entriesTotals = await getAggregateForDay(userId, date);
+  const entries = await Food.getEntriesForDay(userId, date);
+  const entriesTotals = await Food.getAggregateForDay(userId, date);
 
   return {
     entriesForToday: entries,
@@ -43,22 +36,22 @@ export const action = async ({ request }: Route.ActionArgs) => {
       case "create":
         return {
           _action: "create" as const,
-          ...(await createEntry(userId, formData)),
+          ...(await Food.createEntry(userId, formData)),
         };
       case "update":
         return {
           _action: "update" as const,
-          ...(await updateEntry(userId, formData)),
+          ...(await Food.updateEntry(userId, formData)),
         };
       case "delete":
         return {
           _action: "delete" as const,
-          ...(await deleteEntry(userId, formData)),
+          ...(await Food.deleteEntry(userId, formData)),
         };
       case "delete-all":
         return {
           _action: "delete-all" as const,
-          ...(await deleteAllEntries(userId, formData)),
+          ...(await Food.deleteAllEntries(userId, formData)),
         };
     }
   } catch (_error) {

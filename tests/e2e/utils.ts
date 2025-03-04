@@ -5,8 +5,8 @@ import {
   type LocatorFixtures as TestingLibraryFixtures,
 } from "@playwright-testing-library/test/fixture.js";
 import { test as base, type Page } from "@playwright/test";
-import { createUser } from "~/server/data/users/index.server";
 import { truncateAll } from "./truncateAll";
+import Users from "~/server/data/users.server";
 
 export const USER_TEST_PASSWORD = "foobar";
 
@@ -21,7 +21,7 @@ export const expect = test.expect;
 
 export async function createUserAndLogin(page: Page, screen: Screen) {
   const password = USER_TEST_PASSWORD;
-  const { errors, data } = await createUser({
+  const { errors, data } = await Users.createUser({
     inviteToken: "xico o maior da minha aldeia",
     email: faker.internet.email(),
     name: faker.name.firstName(),

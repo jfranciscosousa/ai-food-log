@@ -4,7 +4,7 @@ import { useActionData } from "react-router";
 import { Card } from "~/components/ui/card";
 import ProfileForm from "~/modules/Profile/ProfileForm";
 import { authenticate, userFromRequest } from "~/server/auth.server";
-import { createUser } from "~/server/data/users/index.server";
+import Users from "~/server/data/users.server";
 import { type GenericDataError } from "~/server/data/utils/types";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -17,7 +17,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const form = await request.formData();
-  const result = await createUser(form);
+  const result = await Users.createUser(form);
 
   if (result.errors) return result.errors;
 
