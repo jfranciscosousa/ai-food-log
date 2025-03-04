@@ -22,11 +22,11 @@ export default function DiaryNavigation() {
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant="outline" size="icon" asChild>
-        <Link to={`?date=${formatDate(subDays(date, 1))}`} prefetch="intent">
+      <Link to={`?date=${formatDate(subDays(date, 1))}`} prefetch="intent">
+        <Button variant="outline" size="icon" asChild>
           <ChevronLeft className="h-4 w-4" />
-        </Link>
-      </Button>
+        </Button>
+      </Link>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -46,14 +46,14 @@ export default function DiaryNavigation() {
           />
         </PopoverContent>
       </Popover>
-      <Button variant="outline" size="icon" asChild>
-        <Link
-          to={`/diary?date=${formatDate(addDays(date, 1))}`}
-          prefetch="intent"
-        >
+      <Link
+        to={`/diary?date=${formatDate(addDays(date, 1))}`}
+        prefetch="intent"
+      >
+        <Button variant="outline" size="icon" asChild>
           <ChevronRight className="h-4 w-4" />
-        </Link>
-      </Button>
+        </Button>
+      </Link>
     </div>
   );
 }

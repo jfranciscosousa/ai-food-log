@@ -1,6 +1,6 @@
-import { useFetcher } from "react-router";
 import { Moon, Sun } from "lucide-react";
 import { useEffect } from "react";
+import { Form, useNavigation } from "react-router";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -13,17 +13,17 @@ import { useToast } from "~/hooks/use-toast";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 
 export default function ThemeChanger() {
-  const fetcher = useFetcher();
+  const { state, formData } = useNavigation();
   const { currentTheme } = useRootLoaderData();
   const { toast } = useToast();
 
   useEffect(() => {
-    const theme = fetcher.formData?.get("theme");
+    const theme = formData?.get("theme");
 
-    if (typeof theme === "string" && fetcher.state === "loading") {
+    if (typeof theme === "string" && state === "loading") {
       toast({ title: `Theme changed to ${theme}` });
     }
-  }, [fetcher.formData, fetcher.state, toast]);
+  }, [formData, state, toast]);
 
   return (
     <DropdownMenu>
@@ -35,7 +35,7 @@ export default function ThemeChanger() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <fetcher.Form action="/theme" method="post">
+        <Form action="/theme" method="post">
           <button className="contents" type="submit" name="theme" value="light">
             <DropdownMenuCheckboxItem checked={currentTheme === "light"}>
               Light
@@ -56,7 +56,7 @@ export default function ThemeChanger() {
               System
             </DropdownMenuCheckboxItem>
           </button>
-        </fetcher.Form>
+        </Form>
       </DropdownMenuContent>
     </DropdownMenu>
   );
