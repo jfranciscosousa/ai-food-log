@@ -9,7 +9,7 @@ import { Input } from "~/components/ui/input";
 import useIsLoading from "~/hooks/useIsLoading";
 import { processFoodWithAI } from "~/server/ai/processFoodWithAI.server";
 import type { Info } from "./+types/__authed.preview";
-import DiaryEntry from "~/modules/Diary/DIaryEntry";
+import DiaryEntry from "~/modules/Diary/DiaryEntry";
 
 export const meta: MetaFunction = () => [
   {

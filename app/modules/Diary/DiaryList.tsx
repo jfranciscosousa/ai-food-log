@@ -1,6 +1,6 @@
 import { useLoaderData } from "react-router";
 import { type DiaryRouteData } from "~/routes/__authed.diary";
-import DiaryEntry from "./DIaryEntry";
+import DiaryEntry from "./DiaryEntry";
 
 export default function DiaryList() {
   const { entriesForToday } = useLoaderData<DiaryRouteData>();
