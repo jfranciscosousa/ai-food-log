@@ -28,7 +28,9 @@ test("signs up", async ({ page, screen }) => {
   await screen
     .getByLabelText("Invite token")
     .fill("xico o maior da minha aldeia");
-  await screen.getByText("Sign up", { selector: "button > span" }).click();
+  await screen
+    .getByText("Sign up", { selector: "button > span > span" })
+    .click();
 
   await page.waitForURL("/diary");
   await waitFor(async () => {
@@ -51,7 +53,7 @@ test("logins", async ({ page, screen }) => {
   await page.goto("/");
   await screen.getByLabelText("Email").fill(EMAIL);
   await screen.getByLabelText("Password").fill(PASSWORD);
-  await screen.getByText("Login", { selector: "button > span" }).click();
+  await screen.getByText("Login", { selector: "button > span > span" }).click();
 
   await page.waitForURL("/diary");
 });
@@ -64,7 +66,7 @@ test("shows login and then redirects to original page", async ({
 
   await screen.getByLabelText("Email").fill(EMAIL);
   await screen.getByLabelText("Password").fill(PASSWORD);
-  await screen.getByText("Login", { selector: "button > span" }).click();
+  await screen.getByText("Login", { selector: "button > span > span" }).click();
 
   await page.waitForURL("/profile");
 });
@@ -76,7 +78,7 @@ test("logs out and drops user on login page", async ({ page, screen }) => {
 
   expect(
     await (
-      await screen.findByText("Login", { selector: "button > span" })
+      await screen.findByText("Login", { selector: "button > span > span" })
     ).count(),
   ).toBe(1);
   expect(await screen.queryByText(user.name).count()).toBe(0);
