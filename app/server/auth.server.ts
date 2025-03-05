@@ -8,7 +8,6 @@ const authCookie = createCookie("auth", {
   sameSite: "strict",
   httpOnly: true,
   secure: SERVER_ENV.SECURE_AUTH_COOKIE,
-  maxAge: 31_536_000, // one year
 });
 
 export async function authenticate(
