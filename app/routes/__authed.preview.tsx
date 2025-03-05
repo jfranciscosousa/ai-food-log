@@ -5,6 +5,7 @@ import { Input } from "~/components/ui/input";
 import useIsLoading from "~/hooks/useIsLoading";
 import { processFoodWithAI } from "~/server/ai/processFoodWithAI.server";
 import type { Info } from "./+types/__authed.preview";
+import DiaryEntry from "~/modules/Diary/DIaryEntry";
 
 export const meta: MetaFunction = () => [
   {
@@ -12,12 +13,21 @@ export const meta: MetaFunction = () => [
   },
 ];
 
+const dumbCache = new Map<
+  string,
+  Awaited<ReturnType<typeof processFoodWithAI>>
+>();
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const input = url.searchParams.get("input");
 
   if (input) {
-    const entry = await processFoodWithAI(input);
+    const val = dumbCache.get(input);
+    const entry = val ? val : await processFoodWithAI(input);
+
+    dumbCache.set(input, entry);
+
     const totals = {
       calories: entry.items.reduce((acc, item) => acc + item.calories, 0),
       protein: entry.items.reduce((acc, item) => acc + item.protein, 0),
@@ -40,7 +50,7 @@ export default function Preview() {
 
   return (
     <main className="max-w-xl w-full mx-auto grow flex flex-col mb-4">
-      <Form method="GET" className="flex gap-4">
+      <Form method="GET" className="flex gap-4 mb-6">
         <Input autoComplete="off" name="input" defaultValue={entry?.input} />
 
         <Button isLoading={isLoading} className="w-[120px]">
@@ -49,25 +59,18 @@ export default function Preview() {
       </Form>
 
       {entry && (
-        <div className="mt-4">
-          <p className="text-lg font-bold">{entry.name}</p>
-
-          <ul className="pb-4">
-            {entry.items.map((item, index) => (
-              <li key={index} className="list-disc ml-4">
-                {item.name}, {item.servingSize}g, {item.calories} calories,{" "}
-                {item.protein}g protein, {item.carbs}g carbs, {item.fat}g fat,{" "}
-                {item.fiber}g fiber
-              </li>
-            ))}
-          </ul>
-
-          <p>
-            Totals: {entry.totals.calories} calories, {entry.totals.protein}g
-            protein, {entry.totals.carbs}g carbs, {entry.totals.fat}g fat,{" "}
-            {entry.totals.fiber}g fiber
-          </p>
-        </div>
+        <DiaryEntry
+          entry={{
+            calories: String(Math.round(entry.totals.calories)),
+            carbs: String(Math.round(entry.totals.carbs)),
+            content: entry.input,
+            fat: String(Math.round(entry.totals.fat)),
+            fiber: String(Math.round(entry.totals.fiber)),
+            items: entry.items,
+            name: entry.name,
+            protein: String(Math.round(entry.totals.protein)),
+          }}
+        />
       )}
     </main>
   );

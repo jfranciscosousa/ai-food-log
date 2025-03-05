@@ -14,13 +14,31 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { type DiaryRouteData } from "~/routes/__authed.diary";
 import DiaryEntryDeleteOne from "./DiaryEntryDeleteOne";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { DiaryEntryUpdate } from "./DiaryEntryUpdate";
 
 type Props = {
-  entry: DiaryRouteData["entriesForToday"][number];
+  entry: {
+    id?: string;
+    name: string;
+    createdAt?: string;
+    content: string;
+    calories: string;
+    protein: string;
+    carbs: string;
+    fat: string;
+    fiber: string;
+    items: {
+      name: string;
+      servingSize: number;
+      calories: number;
+      protein: number;
+      carbs: number;
+      fat: number;
+      fiber: number;
+    }[];
+  };
 };
 
 export default function DiaryEntry({ entry }: Props) {
@@ -29,16 +47,22 @@ export default function DiaryEntry({ entry }: Props) {
       <CardHeader className="flex flex-row items-start justify-between space-y-0">
         <div>
           <CardTitle className="text-lg">{entry.name}</CardTitle>
-          <CardDescription>{format(entry.createdAt, "h:mm a")}</CardDescription>
+          {entry.createdAt && (
+            <CardDescription>
+              {format(entry.createdAt, "h:mm a")}
+            </CardDescription>
+          )}
           <div className="text-xs text-muted-foreground">
             Original prompt: {entry.content}
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <DiaryEntryUpdate entry={entry} />
-          <DiaryEntryDeleteOne entryId={entry.id} />
-        </div>
+        {entry.id && (
+          <div className="flex gap-2">
+            <DiaryEntryUpdate entryId={entry.id} entryContent={entry.content} />
+            <DiaryEntryDeleteOne entryId={entry.id} />
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <ScrollArea>
@@ -66,18 +90,23 @@ export default function DiaryEntry({ entry }: Props) {
                   <TableCell>{item.fiber}g</TableCell>
                 </TableRow>
               ))}
-              <TableRow className="border-t-2">
-                <TableCell colSpan={2} className="font-medium">
-                  Meal Totals
-                </TableCell>
-                <TableCell className="font-medium">
-                  {entry.calories}kcal
-                </TableCell>
-                <TableCell className="font-medium">{entry.protein}g</TableCell>
-                <TableCell className="font-medium">{entry.carbs}g</TableCell>
-                <TableCell className="font-medium">{entry.fat}g</TableCell>
-                <TableCell className="font-medium">{entry.fiber}g</TableCell>
-              </TableRow>
+
+              {entry.items.length > 1 && (
+                <TableRow className="border-t-2">
+                  <TableCell colSpan={2} className="font-medium">
+                    Meal Totals
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {entry.calories}kcal
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {entry.protein}g
+                  </TableCell>
+                  <TableCell className="font-medium">{entry.carbs}g</TableCell>
+                  <TableCell className="font-medium">{entry.fat}g</TableCell>
+                  <TableCell className="font-medium">{entry.fiber}g</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
 

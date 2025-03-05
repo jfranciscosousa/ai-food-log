@@ -14,14 +14,16 @@ import {
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
 import { toast } from "~/hooks/use-toast";
-import type { DiaryActionData, DiaryRouteData } from "~/routes/__authed.diary";
+import type { DiaryActionData } from "~/routes/__authed.diary";
 
 interface UpdateMealModalProps {
-  entry: DiaryRouteData["entriesForToday"][number];
+  entryId: string;
+  entryContent: string;
 }
 
 function Form({
-  entry,
+  entryId,
+  entryContent,
   setOpen,
 }: UpdateMealModalProps & { setOpen: (open: boolean) => void }) {
   const fetcher = useFetcher<DiaryActionData>();
@@ -56,10 +58,10 @@ function Form({
       <InputField
         label="Meal description"
         name="content"
-        defaultValue={entry.content}
+        defaultValue={entryContent}
         className="py-6"
       />
-      <input type="hidden" name="id" value={entry.id} />
+      <input type="hidden" name="id" value={entryId} />
 
       <AlertDialogFooter>
         <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
@@ -76,7 +78,7 @@ function Form({
   );
 }
 
-export function DiaryEntryUpdate({ entry }: UpdateMealModalProps) {
+export function DiaryEntryUpdate(props: UpdateMealModalProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -92,7 +94,7 @@ export function DiaryEntryUpdate({ entry }: UpdateMealModalProps) {
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
-        {open && <Form entry={entry} setOpen={setOpen} />}
+        {open && <Form {...props} setOpen={setOpen} />}
       </AlertDialogContent>
     </AlertDialog>
   );
