@@ -1,5 +1,9 @@
-import type { LoaderFunctionArgs, MetaFunction } from "react-router";
-import { Form, useLoaderData } from "react-router";
+import type {
+  HeadersArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "react-router";
+import { data, Form, useLoaderData } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import useIsLoading from "~/hooks/useIsLoading";
@@ -13,20 +17,12 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-const dumbCache = new Map<
-  string,
-  Awaited<ReturnType<typeof processFoodWithAI>>
->();
-
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const input = url.searchParams.get("input");
 
   if (input) {
-    const val = dumbCache.get(input);
-    const entry = val ? val : await processFoodWithAI(input);
-
-    dumbCache.set(input, entry);
+    const entry = await processFoodWithAI(input);
 
     const totals = {
       calories: entry.items.reduce((acc, item) => acc + item.calories, 0),
@@ -36,11 +32,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       fiber: entry.items.reduce((acc, item) => acc + item.fiber, 0),
     };
 
-    return { ...entry, totals, input };
+    return data(
+      { ...entry, totals, input },
+      { headers: { "Cache-Control": "max-age=3600, public" } },
+    );
   }
 
   return null;
 };
+
+export function headers({ loaderHeaders }: HeadersArgs) {
+  return loaderHeaders;
+}
 
 export type PreviewLoaderData = Info["loaderData"];
 
@@ -61,14 +64,14 @@ export default function Preview() {
       {entry && (
         <DiaryEntry
           entry={{
-            calories: String(Math.round(entry.totals.calories)),
-            carbs: String(Math.round(entry.totals.carbs)),
+            calories: entry.totals.calories,
+            carbs: entry.totals.carbs,
             content: entry.input,
-            fat: String(Math.round(entry.totals.fat)),
-            fiber: String(Math.round(entry.totals.fiber)),
+            fat: entry.totals.fat,
+            fiber: entry.totals.fiber,
             items: entry.items,
             name: entry.name,
-            protein: String(Math.round(entry.totals.protein)),
+            protein: entry.totals.protein,
           }}
         />
       )}

@@ -11,6 +11,7 @@ import { Progress } from "~/components/ui/progress";
 import useUser from "~/hooks/useUser";
 import { type DiaryRouteData } from "~/routes/__authed.diary";
 import { DiaryClearDay } from "./DiaryClearDay";
+import { formatNumber } from "~/lib/math";
 
 export default function DiaryDailySummary() {
   const user = useUser();
@@ -52,10 +53,12 @@ export default function DiaryDailySummary() {
             <span className="text-sm font-medium">Calories</span>
             <div className="flex items-center gap-2 text-sm">
               <div className="flex items-center gap-1.5">
-                <span className="font-medium">{entriesTotals.calories}</span>
+                <span className="font-medium">
+                  {formatNumber(entriesTotals.calories, 0)}
+                </span>
                 <span className="text-muted-foreground">/</span>
                 <span className="text-muted-foreground">
-                  {Math.round(user.targetCalories)}
+                  {formatNumber(user.targetCalories, 0)}
                 </span>
               </div>
               <span className={`${calorieStatus.color}`}>
@@ -70,25 +73,25 @@ export default function DiaryDailySummary() {
           <div className="space-y-1">
             <p className="text-sm font-medium text-muted-foreground">Protein</p>
             <p className="text-2xl font-bold">
-              {entriesTotals.protein.toFixed(1)}g
+              {formatNumber(entriesTotals.protein)}g
             </p>
           </div>
           <div className="space-y-1">
             <p className="text-sm font-medium text-muted-foreground">Carbs</p>
             <p className="text-2xl font-bold">
-              {entriesTotals.carbs.toFixed(1)}g
+              {formatNumber(entriesTotals.carbs)}g
             </p>
           </div>
           <div className="space-y-1">
             <p className="text-sm font-medium text-muted-foreground">Fat</p>
             <p className="text-2xl font-bold">
-              {entriesTotals.fat.toFixed(1)}g
+              {formatNumber(entriesTotals.fat)}g
             </p>
           </div>
           <div className="space-y-1">
             <p className="text-sm font-medium text-muted-foreground">Fiber</p>
             <p className="text-2xl font-bold">
-              {entriesTotals.fiber.toFixed(1)}g
+              {formatNumber(entriesTotals.fiber)}g
             </p>
           </div>
         </div>

@@ -17,18 +17,19 @@ import {
 import DiaryEntryDeleteOne from "./DiaryEntryDeleteOne";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { DiaryEntryUpdate } from "./DiaryEntryUpdate";
+import { formatNumber } from "~/lib/math";
 
 type Props = {
   entry: {
     id?: string;
     name: string;
-    createdAt?: string;
+    createdAt?: Date;
     content: string;
-    calories: string;
-    protein: string;
-    carbs: string;
-    fat: string;
-    fiber: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    fiber: number;
     items: {
       name: string;
       servingSize: number;
@@ -83,11 +84,11 @@ export default function DiaryEntry({ entry }: Props) {
                 <TableRow key={index}>
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.servingSize}g</TableCell>
-                  <TableCell>{item.calories}kcal</TableCell>
-                  <TableCell>{item.protein}g</TableCell>
-                  <TableCell>{item.carbs}g</TableCell>
-                  <TableCell>{item.fat}g</TableCell>
-                  <TableCell>{item.fiber}g</TableCell>
+                  <TableCell>{formatNumber(item.calories)}kcal</TableCell>
+                  <TableCell>{formatNumber(item.protein)}g</TableCell>
+                  <TableCell>{formatNumber(item.carbs)}g</TableCell>
+                  <TableCell>{formatNumber(item.fat)}g</TableCell>
+                  <TableCell>{formatNumber(item.fiber)}g</TableCell>
                 </TableRow>
               ))}
 
@@ -97,14 +98,20 @@ export default function DiaryEntry({ entry }: Props) {
                     Meal Totals
                   </TableCell>
                   <TableCell className="font-medium">
-                    {entry.calories}kcal
+                    {formatNumber(entry.calories)}kcal
                   </TableCell>
                   <TableCell className="font-medium">
-                    {entry.protein}g
+                    {formatNumber(entry.protein)}g
                   </TableCell>
-                  <TableCell className="font-medium">{entry.carbs}g</TableCell>
-                  <TableCell className="font-medium">{entry.fat}g</TableCell>
-                  <TableCell className="font-medium">{entry.fiber}g</TableCell>
+                  <TableCell className="font-medium">
+                    {formatNumber(entry.carbs)}g
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {formatNumber(entry.fat)}g
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {formatNumber(entry.fiber)}g
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>

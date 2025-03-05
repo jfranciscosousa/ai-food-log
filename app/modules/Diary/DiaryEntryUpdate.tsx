@@ -32,14 +32,9 @@ function Form({
   useEffect(() => {
     if (fetcher.data?._action !== "update") return;
 
-    if (fetcher.data?.errors) {
+    if (!fetcher.data?.errors) {
       toast({
-        title: "Unhandled error while creating entry!",
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Entry updated successfully!",
+        title: "Entry updated successfully.",
       });
       setOpen(false);
     }
