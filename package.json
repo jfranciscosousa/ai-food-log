@@ -104,7 +104,6 @@
     "type-fest": "^4.37.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.0",
-    "vite-plugin-pwa": "^0.21.1",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.7"
   },

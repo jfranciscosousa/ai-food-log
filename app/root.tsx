@@ -121,7 +121,7 @@ function Document({
             type="image/svg+xml"
           />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-          <link rel="manifest" href="/manifest.webmanifest" />
+          <link rel="manifest" href="/manifest-v1.webmanifest" />
           {title ? <title>{title}</title> : null}
           <Meta />
           <Links />
