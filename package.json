@@ -20,7 +20,8 @@
     "ts-check": "react-router typegen && tsc --project tsconfig.json --skipLibCheck --noEmit",
     "ts-watch": "react-router typegen && tsc --project tsconfig.json --watch --skipLibCheck --noEmit",
     "ts-run": "dotenv tsx",
-    "validate-env": "npm run ts-run tasks/validateConfig.ts"
+    "validate-env": "npm run ts-run tasks/validateConfig.ts",
+    "generate-pwa-assets": "pwa-assets-generator"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": "eslint --cache --fix"
@@ -80,6 +81,7 @@
     "@types/react-dom": "^19.0.4",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
+    "@vite-pwa/assets-generator": "^0.2.6",
     "@vitest/ui": "^3.0.7",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
@@ -102,6 +104,7 @@
     "type-fest": "^4.37.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.0",
+    "vite-plugin-pwa": "^0.21.1",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.7"
   },
