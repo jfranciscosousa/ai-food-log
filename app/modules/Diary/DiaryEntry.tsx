@@ -103,26 +103,34 @@ export default function DiaryEntry({ entry }: Props) {
               <p className="text-xs font-medium text-muted-foreground">
                 Calories
               </p>
-              <p className="text-base font-bold">{entry.calories}kcal</p>
+              <p className="text-base font-bold">
+                {formatNumber(entry.calories)}kcal
+              </p>
             </div>
 
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">
                 Protein
               </p>
-              <p className="text-base font-bold">{entry.protein}g</p>
+              <p className="text-base font-bold">
+                {formatNumber(entry.protein)}g
+              </p>
             </div>
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">Carbs</p>
-              <p className="text-base font-bold">{entry.carbs}g</p>
+              <p className="text-base font-bold">
+                {formatNumber(entry.carbs)}g
+              </p>
             </div>
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">Fat</p>
-              <p className="text-base font-bold">{entry.fat}g</p>
+              <p className="text-base font-bold">{formatNumber(entry.fat)}g</p>
             </div>
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">Fiber</p>
-              <p className="text-base font-bold">{entry.fiber}g</p>
+              <p className="text-base font-bold">
+                {formatNumber(entry.fiber)}g
+              </p>
             </div>
           </div>
         </div>
