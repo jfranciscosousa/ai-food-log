@@ -94,11 +94,9 @@ export function ErrorBoundary() {
 
 function Document({
   children,
-  title,
   className,
 }: {
   children: React.ReactNode;
-  title?: string;
   className?: string;
 }) {
   return (
@@ -122,7 +120,7 @@ function Document({
           />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
           <link rel="manifest" href="/manifest-v1.webmanifest" />
-          {title ? <title>{title}</title> : null}
+          <title>AI Food Log</title>
           <Meta />
           <Links />
         </head>
