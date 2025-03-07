@@ -98,7 +98,7 @@ export default function DiaryEntry({ entry }: Props) {
             </div>
           </div>
 
-          <div className="grid grid-cols-5 gap-4">
+          <div className="flex flex-row gap-6">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">
                 Calories
