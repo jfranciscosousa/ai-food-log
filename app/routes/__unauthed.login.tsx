@@ -7,7 +7,7 @@ import { redirect } from "react-router";
 import Login from "~/modules/Login";
 import { authenticate, userFromRequest } from "~/server/auth.server";
 import type { Info } from "./+types/__unauthed.login";
-import Users from "~/server/data/users.server";
+import { UsersService } from "~/server/data/users.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await userFromRequest(request);
@@ -22,7 +22,7 @@ export type LoginActionType = Info["actionData"];
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const original = Object.fromEntries(formData) as Record<string, string>;
-  const result = await Users.login(formData);
+  const result = await UsersService.login(formData);
 
   if (result.errors) return { errors: result.errors, original };
 

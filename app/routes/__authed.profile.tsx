@@ -7,7 +7,7 @@ import useUser from "~/hooks/useUser";
 import ProfileForm from "~/modules/Profile/ProfileForm";
 import { userIdFromRequest } from "~/server/auth.server";
 import type { Info } from "./+types/__authed.profile";
-import Users from "~/server/data/users.server";
+import { UsersService } from "~/server/data/users.server";
 
 export type ProfileRouteActionType = Info["actionData"];
 
@@ -15,7 +15,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
   const userId = await userIdFromRequest(request);
   const form = await request.formData();
 
-  return Users.updateUser(userId, form);
+  return UsersService.update(userId, form);
 };
 
 export const meta: MetaFunction = () => [

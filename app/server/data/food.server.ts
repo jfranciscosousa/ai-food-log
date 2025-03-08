@@ -7,92 +7,51 @@ import { formatZodErrors } from "./utils/formatZodErrors.server";
 import { type DataResult } from "./utils/types";
 import { formatDate } from "~/hooks/useDates";
 
-function getStartAndEndOfDay(day = formatDate(new Date())): [Date, Date] {
-  const startOfDay = new Date(day);
-  startOfDay.setHours(0, 0, 0, 0); // Set to start of the day
-
-  const endOfDay = new Date(day);
-  endOfDay.setHours(23, 59, 59, 999); // Set to end of the day
-
-  return [startOfDay, endOfDay];
-}
-
-async function getEntriesForDay(userId: string, date?: string) {
-  const [start, end] = getStartAndEndOfDay(date);
-  const entries = await prisma.foodEntry.findMany({
-    include: { items: true },
-    where: { userId, day: { gte: start, lte: end } },
-    orderBy: { createdAt: "desc" },
+export class FoodService {
+  static readonly createEntryParams = zfd.formData({
+    content: zfd.text(),
+    day: zfd.text(),
   });
 
-  return entries;
-}
-
-async function getAggregateForDay(userId: string, date?: string) {
-  const [start, end] = getStartAndEndOfDay(date);
-  const entries = await prisma.foodEntry.aggregate({
-    _sum: {
-      calories: true,
-      carbs: true,
-      fat: true,
-      fiber: true,
-      protein: true,
-    },
-    where: { userId, day: { gte: start, lte: end } },
+  static readonly updateEntryParams = zfd.formData({
+    id: zfd.text(),
+    content: zfd.text(),
   });
 
-  return {
-    calories: entries._sum.calories || 0,
-    protein: entries._sum.protein || 0,
-    carbs: entries._sum.carbs || 0,
-    fat: entries._sum.fat || 0,
-    fiber: entries._sum.fiber || 0,
-  };
-}
+  static readonly deleteEntryParams = zfd.formData({
+    id: zfd.text(),
+  });
 
-export const createEntryParams = zfd.formData({
-  content: zfd.text(),
-  day: zfd.text(),
-});
+  static readonly deleteAllEntriesParams = zfd.formData({
+    day: zfd.text(),
+  });
 
-export type CreateEntryParams = z.infer<typeof createEntryParams> | FormData;
+  private static getStartAndEndOfDay(
+    day = formatDate(new Date()),
+  ): [Date, Date] {
+    const startOfDay = new Date(day);
+    startOfDay.setHours(0, 0, 0, 0); // Set to start of the day
 
-async function createEntry(
-  userId: string,
-  params: CreateEntryParams,
-): Promise<DataResult<FoodEntry>> {
-  const parsedSchema = createEntryParams.safeParse(params);
+    const endOfDay = new Date(day);
+    endOfDay.setHours(23, 59, 59, 999); // Set to end of the day
 
-  if (!parsedSchema.success) {
-    return { data: null, errors: formatZodErrors(parsedSchema.error) };
+    return [startOfDay, endOfDay];
   }
 
-  const aiResponse = await processFoodWithAI(parsedSchema.data.content);
-
-  const result = await prisma.$transaction(async (tx) => {
-    const entry = await tx.foodEntry.create({
-      data: {
-        ...parsedSchema.data,
-        day: new Date(parsedSchema.data.day),
-        userId,
-        name: aiResponse.name,
-        aiResponse,
-        calories: 0,
-        protein: 0,
-        carbs: 0,
-        fat: 0,
-        fiber: 0,
-      },
+  static async getEntriesForDay(userId: string, date?: string) {
+    const [start, end] = this.getStartAndEndOfDay(date);
+    const entries = await prisma.foodEntry.findMany({
+      include: { items: true },
+      where: { userId, day: { gte: start, lte: end } },
+      orderBy: { createdAt: "desc" },
     });
 
-    await tx.foodEntryItem.createMany({
-      data: aiResponse.items.map((item) => ({
-        ...item,
-        foodEntryId: entry.id,
-      })),
-    });
+    return entries;
+  }
 
-    const itemTotals = await tx.foodEntryItem.aggregate({
+  static async getAggregateForDay(userId: string, date?: string) {
+    const [start, end] = this.getStartAndEndOfDay(date);
+    const entries = await prisma.foodEntry.aggregate({
       _sum: {
         calories: true,
         carbs: true,
@@ -100,153 +59,188 @@ async function createEntry(
         fiber: true,
         protein: true,
       },
-      where: { foodEntryId: entry.id },
+      where: { userId, day: { gte: start, lte: end } },
     });
 
-    await tx.foodEntry.update({
-      where: { id: entry.id },
-      data: {
-        calories: itemTotals._sum.calories || 0,
-        carbs: itemTotals._sum.carbs || 0,
-        fat: itemTotals._sum.fat || 0,
-        fiber: itemTotals._sum.fiber || 0,
-        protein: itemTotals._sum.protein || 0,
-      },
-    });
-
-    return entry;
-  });
-
-  return { data: result, errors: null };
-}
-
-export const updateEntryParams = zfd.formData({
-  id: zfd.text(),
-  content: zfd.text(),
-});
-
-export type UpdateEntryParams = z.infer<typeof updateEntryParams> | FormData;
-
-async function updateEntry(
-  userId: string,
-  params: UpdateEntryParams,
-): Promise<DataResult<FoodEntry>> {
-  const parsedSchema = updateEntryParams.safeParse(params);
-
-  if (!parsedSchema.success) {
-    return { data: null, errors: formatZodErrors(parsedSchema.error) };
+    return {
+      calories: entries._sum.calories || 0,
+      protein: entries._sum.protein || 0,
+      carbs: entries._sum.carbs || 0,
+      fat: entries._sum.fat || 0,
+      fiber: entries._sum.fiber || 0,
+    };
   }
 
-  const { id, content } = parsedSchema.data;
+  static async createEntry(
+    userId: string,
+    params: z.infer<typeof FoodService.createEntryParams> | FormData,
+  ): Promise<DataResult<FoodEntry>> {
+    const parsedSchema = this.createEntryParams.safeParse(params);
 
-  const aiResponse = await processFoodWithAI(content);
+    if (!parsedSchema.success) {
+      return { data: null, errors: formatZodErrors(parsedSchema.error) };
+    }
 
-  const result = await prisma.$transaction(async (tx) => {
-    const entry = await tx.foodEntry.findUnique({ where: { id } });
+    const aiResponse = await processFoodWithAI(parsedSchema.data.content);
 
-    if (!entry) return null;
+    const result = await prisma.$transaction(async (tx) => {
+      const entry = await tx.foodEntry.create({
+        data: {
+          ...parsedSchema.data,
+          day: new Date(parsedSchema.data.day),
+          userId,
+          name: aiResponse.name,
+          aiResponse,
+          calories: 0,
+          protein: 0,
+          carbs: 0,
+          fat: 0,
+          fiber: 0,
+        },
+      });
 
-    await tx.foodEntry.update({
-      where: { id },
-      data: {
-        name: aiResponse.name,
-        aiResponse,
-        content,
-      },
+      await tx.foodEntryItem.createMany({
+        data: aiResponse.items.map((item) => ({
+          ...item,
+          foodEntryId: entry.id,
+        })),
+      });
+
+      const itemTotals = await tx.foodEntryItem.aggregate({
+        _sum: {
+          calories: true,
+          carbs: true,
+          fat: true,
+          fiber: true,
+          protein: true,
+        },
+        where: { foodEntryId: entry.id },
+      });
+
+      await tx.foodEntry.update({
+        where: { id: entry.id },
+        data: {
+          calories: itemTotals._sum.calories || 0,
+          carbs: itemTotals._sum.carbs || 0,
+          fat: itemTotals._sum.fat || 0,
+          fiber: itemTotals._sum.fiber || 0,
+          protein: itemTotals._sum.protein || 0,
+        },
+      });
+
+      return entry;
     });
 
-    await tx.foodEntryItem.deleteMany({ where: { foodEntryId: entry.id } });
-
-    await tx.foodEntryItem.createMany({
-      data: aiResponse.items.map((item) => ({
-        ...item,
-        foodEntryId: entry.id,
-      })),
-    });
-
-    const itemTotals = await tx.foodEntryItem.aggregate({
-      _sum: {
-        calories: true,
-        carbs: true,
-        fat: true,
-        fiber: true,
-        protein: true,
-      },
-      where: { foodEntryId: entry.id },
-    });
-
-    await tx.foodEntry.update({
-      where: { id: entry.id },
-      data: {
-        calories: itemTotals._sum.calories || 0,
-        carbs: itemTotals._sum.carbs || 0,
-        fat: itemTotals._sum.fat || 0,
-        fiber: itemTotals._sum.fiber || 0,
-        protein: itemTotals._sum.protein || 0,
-      },
-    });
-
-    return entry;
-  });
-
-  if (!result) {
-    return { data: null, errors: { id: "Entry not found in the system." } };
+    return { data: result, errors: null };
   }
 
-  return { data: result, errors: null };
+  static async updateEntry(
+    userId: string,
+    params: z.infer<typeof FoodService.updateEntryParams> | FormData,
+  ): Promise<DataResult<FoodEntry>> {
+    const parsedSchema = this.updateEntryParams.safeParse(params);
+
+    if (!parsedSchema.success) {
+      return { data: null, errors: formatZodErrors(parsedSchema.error) };
+    }
+
+    const { id, content } = parsedSchema.data;
+
+    const aiResponse = await processFoodWithAI(content);
+
+    const result = await prisma.$transaction(async (tx) => {
+      const entry = await tx.foodEntry.findUnique({ where: { id, userId } });
+
+      if (!entry) return null;
+
+      await tx.foodEntry.update({
+        where: { id },
+        data: {
+          name: aiResponse.name,
+          aiResponse,
+          content,
+        },
+      });
+
+      await tx.foodEntryItem.deleteMany({ where: { foodEntryId: entry.id } });
+
+      await tx.foodEntryItem.createMany({
+        data: aiResponse.items.map((item) => ({
+          ...item,
+          foodEntryId: entry.id,
+        })),
+      });
+
+      const itemTotals = await tx.foodEntryItem.aggregate({
+        _sum: {
+          calories: true,
+          carbs: true,
+          fat: true,
+          fiber: true,
+          protein: true,
+        },
+        where: { foodEntryId: entry.id },
+      });
+
+      await tx.foodEntry.update({
+        where: { id: entry.id },
+        data: {
+          calories: itemTotals._sum.calories || 0,
+          carbs: itemTotals._sum.carbs || 0,
+          fat: itemTotals._sum.fat || 0,
+          fiber: itemTotals._sum.fiber || 0,
+          protein: itemTotals._sum.protein || 0,
+        },
+      });
+
+      return entry;
+    });
+
+    if (!result) {
+      return { data: null, errors: { id: "Entry not found in the system." } };
+    }
+
+    return { data: result, errors: null };
+  }
+
+  static async deleteEntry(
+    userId: string,
+    params: z.infer<typeof FoodService.deleteEntryParams> | FormData,
+  ): Promise<DataResult<FoodEntry>> {
+    const parsedSchema = this.deleteEntryParams.safeParse(params);
+
+    if (!parsedSchema.success) {
+      return { data: null, errors: formatZodErrors(parsedSchema.error) };
+    }
+
+    const { id } = parsedSchema.data;
+
+    const deletedEntry = await prisma.foodEntry.delete({
+      where: { userId, id },
+    });
+
+    return { data: deletedEntry, errors: null };
+  }
+
+  static async deleteAllEntries(
+    userId: string,
+    params: z.infer<typeof FoodService.deleteAllEntriesParams> | FormData,
+  ): Promise<DataResult<{ count: number }>> {
+    const parsedSchema = this.deleteAllEntriesParams.safeParse(params);
+
+    if (!parsedSchema.success) {
+      return { data: null, errors: formatZodErrors(parsedSchema.error) };
+    }
+
+    const { day } = parsedSchema.data;
+
+    const [start, end] = this.getStartAndEndOfDay(day);
+    const result = await prisma.foodEntry.deleteMany({
+      where: { userId, day: { gte: start, lte: end } },
+    });
+
+    return { data: { count: result.count }, errors: null };
+  }
 }
 
-export const deleteEntryParams = zfd.formData({
-  id: zfd.text(),
-});
-
-export type DeleteEntryParams = z.infer<typeof deleteEntryParams> | FormData;
-
-async function deleteEntry(userId: string, params: DeleteEntryParams) {
-  const parsedSchema = deleteEntryParams.safeParse(params);
-
-  if (!parsedSchema.success)
-    return { data: null, errors: formatZodErrors(parsedSchema.error) };
-
-  const { id } = parsedSchema.data;
-
-  await prisma.foodEntry.delete({
-    where: { userId, id },
-  });
-}
-
-export const deleteAllEntriesParams = zfd.formData({
-  day: zfd.text(),
-});
-
-export type DeleteAllEntriesParams =
-  | z.infer<typeof deleteAllEntriesParams>
-  | FormData;
-
-async function deleteAllEntries(
-  userId: string,
-  params: DeleteAllEntriesParams,
-) {
-  const parsedSchema = deleteAllEntriesParams.safeParse(params);
-
-  if (!parsedSchema.success)
-    return { data: null, errors: formatZodErrors(parsedSchema.error) };
-
-  const { day } = parsedSchema.data;
-
-  const [start, end] = getStartAndEndOfDay(day);
-  await prisma.foodEntry.deleteMany({
-    where: { userId, day: { gte: start, lte: end } },
-  });
-}
-
-const Food = {
-  getEntriesForDay,
-  getAggregateForDay,
-  createEntry,
-  updateEntry,
-  deleteEntry,
-  deleteAllEntries,
-};
-
-export default Food;
+export default FoodService;
