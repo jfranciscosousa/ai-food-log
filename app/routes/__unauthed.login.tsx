@@ -1,13 +1,15 @@
-import type {
-  ActionFunctionArgs,
-  LoaderFunction,
-  MetaFunction,
-} from "react-router";
+import type { ActionFunctionArgs, LoaderFunction } from "react-router";
 import { redirect } from "react-router";
 import Login from "~/modules/Login";
 import { authenticate, userFromRequest } from "~/server/auth.server";
-import type { Info } from "./+types/__unauthed.login";
 import { UsersService } from "~/server/data/users.server";
+import type { Info } from "./+types/__unauthed.login";
+
+export const meta = () => [
+  {
+    title: "Login | AI Food Log",
+  },
+];
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await userFromRequest(request);
@@ -31,12 +33,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     rememberMe: result.data.rememberMe,
   }) as never;
 };
-
-export const meta: MetaFunction = () => [
-  {
-    title: "Login",
-  },
-];
 
 export default function LoginPage() {
   return <Login />;

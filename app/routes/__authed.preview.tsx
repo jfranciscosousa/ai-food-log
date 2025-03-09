@@ -1,19 +1,15 @@
-import type {
-  HeadersArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "react-router";
+import type { HeadersArgs, LoaderFunctionArgs } from "react-router";
 import { data, Form, useLoaderData } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import useIsLoading from "~/hooks/useIsLoading";
+import DiaryEntry from "~/modules/Diary/DiaryEntry";
 import { processFoodWithAI } from "~/server/ai/processFoodWithAI.server";
 import type { Info } from "./+types/__authed.preview";
-import DiaryEntry from "~/modules/Diary/DiaryEntry";
 
-export const meta: MetaFunction = () => [
+export const meta = () => [
   {
-    title: "Preview",
+    title: "Preview | AI Food Log",
   },
 ];
 

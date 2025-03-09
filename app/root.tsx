@@ -37,6 +37,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
+export const meta = () => [{ title: "AI Food Log" }];
+
 function applySystemTheme() {
   const theme = window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
@@ -120,7 +122,6 @@ function Document({
           />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
           <link rel="manifest" href="/manifest-v1.webmanifest" />
-          <title>AI Food Log</title>
           <Meta />
           <Links />
         </head>

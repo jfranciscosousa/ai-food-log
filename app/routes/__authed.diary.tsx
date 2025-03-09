@@ -8,6 +8,12 @@ import { userIdFromRequest } from "~/server/auth.server";
 import type { Info, Route } from "./+types/__authed.diary";
 import { FoodService } from "~/server/data/food.server";
 
+export const meta = () => [
+  {
+    title: "Diary | AI Food Log",
+  },
+];
+
 export type DiaryRouteData = Info["loaderData"];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
