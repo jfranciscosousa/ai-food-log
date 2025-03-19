@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { completion } from "./openai.server";
 
-export async function processFoodWithAI(content: string) {
+export async function processFoodWithAI(content: string | File) {
   const response = await completion(
     `Convert the following prompt into a meal structure.
 

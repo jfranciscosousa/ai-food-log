@@ -9,7 +9,8 @@ import { formatDate } from "~/hooks/useDates";
 
 export class FoodService {
   static readonly createEntryParams = zfd.formData({
-    content: zfd.text(),
+    content: zfd.text(z.string().optional()),
+    image: zfd.file(z.instanceof(File).optional()),
     day: zfd.text(),
   });
 
@@ -81,12 +82,21 @@ export class FoodService {
       return { data: null, errors: formatZodErrors(parsedSchema.error) };
     }
 
-    const aiResponse = await processFoodWithAI(parsedSchema.data.content);
+    if (!(parsedSchema.data.content || parsedSchema.data.image)) {
+      return {
+        data: null,
+        errors: { content: "required either content or image" },
+      };
+    }
+
+    const aiResponse = await processFoodWithAI(
+      parsedSchema.data.content! || parsedSchema.data.image!,
+    );
 
     const result = await prisma.$transaction(async (tx) => {
       const entry = await tx.foodEntry.create({
         data: {
-          ...parsedSchema.data,
+          content: parsedSchema.data.content || "Generated from photo",
           day: new Date(parsedSchema.data.day),
           userId,
           name: aiResponse.name,
@@ -96,6 +106,7 @@ export class FoodService {
           carbs: 0,
           fat: 0,
           fiber: 0,
+          fromImage: !!parsedSchema.data.image,
         },
       });
 

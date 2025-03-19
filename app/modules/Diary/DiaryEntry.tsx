@@ -42,6 +42,7 @@ type Props = {
       fat: number;
       fiber: number;
     }[];
+    fromImage?: boolean;
   };
 };
 
@@ -65,7 +66,13 @@ export default function DiaryEntry({ entry }: Props) {
 
         {entry.id && (
           <div className="flex gap-2">
-            <DiaryEntryUpdate entryId={entry.id} entryContent={entry.content} />
+            {/** TODO: edit image */}
+            {!entry.fromImage && (
+              <DiaryEntryUpdate
+                entryId={entry.id}
+                entryContent={entry.content}
+              />
+            )}
             <DiaryEntryDeleteOne entryId={entry.id} />
           </div>
         )}

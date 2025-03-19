@@ -36,6 +36,7 @@ model FoodEntry {
   userId                  String
   user                    User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   items                   FoodEntryItem[]
+  fromImage               Boolean             @default(false)
 }
 
 enum FitnessLevel {

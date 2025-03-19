@@ -27,6 +27,7 @@
     "*.{js,ts,jsx,tsx}": "eslint --cache --fix"
   },
   "dependencies": {
+    "@mjackson/form-data-parser": "^0.7.0",
     "@prisma/client": "6.4.1",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-avatar": "^1.1.3",
