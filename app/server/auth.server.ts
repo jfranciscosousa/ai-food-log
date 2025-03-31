@@ -5,7 +5,7 @@ import { SERVER_ENV } from "~/env.server";
 
 const authCookie = createCookie("auth", {
   secrets: [SERVER_ENV.SECRET_KEY_BASE],
-  sameSite: "strict",
+  sameSite: "lax",
   httpOnly: true,
   secure: SERVER_ENV.SECURE_AUTH_COOKIE,
 });
