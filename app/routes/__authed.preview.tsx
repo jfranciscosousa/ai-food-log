@@ -5,7 +5,7 @@ import { Input } from "~/components/ui/input";
 import useIsLoading from "~/hooks/useIsLoading";
 import DiaryEntry from "~/modules/Diary/DiaryEntry";
 import { processFoodWithAI } from "~/server/ai/processFoodWithAI.server";
-import type { Info } from "./+types/__authed.preview";
+import type { Route } from "./+types/__authed.preview";
 
 export const meta = () => [
   {
@@ -41,7 +41,7 @@ export function headers({ loaderHeaders }: HeadersArgs) {
   return loaderHeaders;
 }
 
-export type PreviewLoaderData = Info["loaderData"];
+export type PreviewLoaderData = Route.ComponentProps["loaderData"];
 
 export default function Preview() {
   const entry = useLoaderData<PreviewLoaderData>();

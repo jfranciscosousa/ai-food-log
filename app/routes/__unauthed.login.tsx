@@ -3,7 +3,7 @@ import { redirect } from "react-router";
 import Login from "~/modules/Login";
 import { authenticate, userFromRequest } from "~/server/auth.server";
 import { UsersService } from "~/server/data/users.server";
-import type { Info } from "./+types/__unauthed.login";
+import type { Route } from "./+types/__unauthed.login";
 
 export const meta = () => [
   {
@@ -19,7 +19,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return null;
 };
 
-export type LoginActionType = Info["actionData"];
+export type LoginActionType = Route.ComponentProps["actionData"];
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();

@@ -24,7 +24,7 @@ export async function completion<T extends ZodType<any, ZodTypeDef, any>>(
       ? { type: "image_url", image_url: { url: await fileToBase64(prompt) } }
       : { type: "text", text: prompt };
 
-  return openai.beta.chat.completions.parse({
+  return openai.chat.completions.parse({
     model: "gpt-4o",
     messages: [
       { role: "system", content: system },

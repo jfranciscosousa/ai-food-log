@@ -5,9 +5,9 @@ import LoggedInLayout from "~/components/layouts/LoggedInLayout";
 import LoggedOutLayout from "~/components/layouts/LoggedOutLayout";
 import Login from "~/modules/Login";
 import { userFromRequest } from "~/server/auth.server";
-import type { Info } from "./+types/__authed";
+import type { Route } from "./+types/__authed";
 
-export type AuthedRouteData = Info["loaderData"];
+export type AuthedRouteData = Route.ComponentProps["loaderData"];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await userFromRequest(request);

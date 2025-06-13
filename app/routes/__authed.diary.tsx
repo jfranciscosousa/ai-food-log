@@ -5,7 +5,7 @@ import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
 import DiaryList from "~/modules/Diary/DiaryList";
 import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
 import { userIdFromRequest } from "~/server/auth.server";
-import type { Info, Route } from "./+types/__authed.diary";
+import type { Route } from "./+types/__authed.diary";
 import { FoodService } from "~/server/data/food.server";
 
 export const meta = () => [
@@ -14,7 +14,7 @@ export const meta = () => [
   },
 ];
 
-export type DiaryRouteData = Info["loaderData"];
+export type DiaryRouteData = Route.ComponentProps["loaderData"];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const date =
@@ -30,7 +30,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-export type DiaryActionData = Info["actionData"];
+export type DiaryActionData = Route.ComponentProps["actionData"];
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const userId = await userIdFromRequest(request);

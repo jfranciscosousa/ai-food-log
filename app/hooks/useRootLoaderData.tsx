@@ -1,7 +1,7 @@
 import { useRouteLoaderData } from "react-router";
-import type { Info } from "../+types/root";
+import type { Route } from "../+types/root";
 
-export type RootLoaderType = Info["loaderData"];
+export type RootLoaderType = Route.ComponentProps["loaderData"];
 
 export function useRootLoaderData(): RootLoaderType {
   return useRouteLoaderData("root")!;

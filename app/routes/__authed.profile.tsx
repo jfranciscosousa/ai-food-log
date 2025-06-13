@@ -7,7 +7,7 @@ import useUser from "~/hooks/useUser";
 import ProfileForm from "~/modules/Profile/ProfileForm";
 import { userIdFromRequest } from "~/server/auth.server";
 import { UsersService } from "~/server/data/users.server";
-import type { Info } from "./+types/__authed.profile";
+import type { Route } from "./+types/__authed.profile";
 
 export const meta = () => [
   {
@@ -15,7 +15,7 @@ export const meta = () => [
   },
 ];
 
-export type ProfileRouteActionType = Info["actionData"];
+export type ProfileRouteActionType = Route.ComponentProps["actionData"];
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const userId = await userIdFromRequest(request);
