@@ -1,5 +1,5 @@
 import { type FoodEntry } from "@prisma/client";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { zfd } from "zod-form-data";
 import { processFoodWithAI } from "../ai/processFoodWithAI.server";
 import prisma from "./prisma.server";

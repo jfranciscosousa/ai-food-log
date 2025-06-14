@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { completion } from "./openai.server";
 
 export async function processFoodWithAI(content: string | File) {
-  const response = await completion(
+  return completion(
     `Convert the following prompt into a meal structure.
 
     Some considerations:
@@ -37,15 +37,4 @@ export async function processFoodWithAI(content: string | File) {
       ),
     }),
   );
-  const message = response.choices[0].message;
-
-  if (message.refusal) {
-    throw new Error(`OpenAI refused prompt with: ${message.refusal}`);
-  }
-
-  if (!message.parsed) {
-    throw new Error(`OpenAI returned a null response.`);
-  }
-
-  return message.parsed;
 }

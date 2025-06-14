@@ -14,3 +14,4 @@ playwright-report/
 
 !.env.sample
 !.env.*.sample
+.env*.local

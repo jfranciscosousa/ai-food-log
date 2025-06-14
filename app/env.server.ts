@@ -1,4 +1,4 @@
-import z from "zod";
+import z from "zod/v4";
 import { generateErrorMessage } from "zod-error";
 
 export const serverEnvSchema = z.object({
@@ -7,6 +7,7 @@ export const serverEnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   SECRET_KEY_BASE: z.string(),
   OPENAI_KEY: z.string(),
+  VERCEL_OIDC_TOKEN: z.string(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
@@ -15,10 +16,11 @@ export type ServerEnv = z.infer<typeof serverEnvSchema>;
 function buildEnv(): ServerEnv {
   try {
     return serverEnvSchema.parse(process.env);
-  } catch (error: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     console.error("Warning: invalid server env vars!");
     console.error(
-      generateErrorMessage((error as z.ZodError).issues, {
+      generateErrorMessage(error.issues, {
         delimiter: { error: "\n" },
       }),
     );

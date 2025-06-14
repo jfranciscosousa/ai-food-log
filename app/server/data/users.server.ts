@@ -4,7 +4,7 @@ import {
   type User,
   WeightLossGoal,
 } from "@prisma/client";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { zfd } from "zod-form-data";
 import prisma from "./prisma.server";
 import { calculateCalorieGoal } from "./users/calculateCalorieGoal.server";
@@ -17,7 +17,7 @@ export type UserWithoutPassword = Omit<User, "password"> & { password?: never };
 export class UsersService {
   static readonly createUserParams = zfd.formData({
     inviteToken: zfd.text(),
-    email: zfd.text(z.string().email()),
+    email: zfd.text(z.email()),
     name: zfd.text(),
     password: zfd.text(),
     passwordConfirmation: zfd.text(),
@@ -46,14 +46,14 @@ export class UsersService {
   });
 
   static readonly loginSchema = zfd.formData({
-    email: zfd.text(z.string().email()),
+    email: zfd.text(z.email()),
     password: zfd.text(),
     redirectUrl: zfd.text(z.string().optional()),
     rememberMe: zfd.checkbox().optional(),
   });
 
   static readonly updateUserParams = zfd.formData({
-    email: zfd.text(z.string().email().optional()),
+    email: zfd.text(z.email().optional()),
     name: zfd.text(z.string().optional()),
     currentPassword: zfd.text(),
     newPassword: zfd.text(z.string().optional()),

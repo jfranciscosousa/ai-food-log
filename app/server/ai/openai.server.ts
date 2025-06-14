@@ -1,10 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { zodResponseFormat } from "openai/helpers/zod";
-import OpenAI from "openai";
-import { type ZodType, type ZodTypeDef } from "zod";
-import { SERVER_ENV } from "~/env.server";
-
-const openai = new OpenAI({ apiKey: SERVER_ENV.OPENAI_KEY });
+import { z, type ZodType } from "zod/v4";
+import { gateway } from "@vercel/ai-sdk-gateway";
+import { generateObject } from "ai";
 
 async function fileToBase64(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -14,23 +10,37 @@ async function fileToBase64(file: File): Promise<string> {
   return `data:${file.type};base64,${base64String}`;
 }
 
-export async function completion<T extends ZodType<any, ZodTypeDef, any>>(
+export async function completion<T extends ZodType>(
   system: string,
   prompt: string | File,
   schema: T,
-) {
+): Promise<z.infer<T>> {
   const promptObj =
     prompt instanceof File
-      ? { type: "image_url", image_url: { url: await fileToBase64(prompt) } }
-      : { type: "text", text: prompt };
+      ? {
+          messages: [
+            {
+              content: [
+                {
+                  type: "file" as const,
+                  data: await fileToBase64(prompt),
+                  mediaType: prompt.type,
+                },
+              ],
+              role: "user" as const,
+            },
+          ],
+        }
+      : { prompt };
 
-  return openai.chat.completions.parse({
-    model: "gpt-4o",
-    messages: [
-      { role: "system", content: system },
-      { role: "user", content: [promptObj as any] },
-    ],
-    response_format: zodResponseFormat(schema, "schema"),
-    temperature: 0,
+  const response = await generateObject({
+    model: gateway("openai/gpt-4.1"),
+    system,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    schema: schema as any,
+    temperature: 0.1,
+    ...promptObj,
   });
+
+  return response.object;
 }
