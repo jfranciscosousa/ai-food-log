@@ -7,7 +7,8 @@ export const serverEnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   SECRET_KEY_BASE: z.string(),
   OPENAI_KEY: z.string(),
-  VERCEL_OIDC_TOKEN: z.string(),
+  // Only needed in dev
+  VERCEL_OIDC_TOKEN: z.string().optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
