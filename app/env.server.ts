@@ -15,6 +15,7 @@ export type ServerEnv = z.infer<typeof serverEnvSchema>;
 /** Zod will filter all the keys not specified on the schema */
 function buildEnv(): ServerEnv {
   try {
+    console.log(serverEnvSchema.parse(process.env));
     return serverEnvSchema.parse(process.env);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

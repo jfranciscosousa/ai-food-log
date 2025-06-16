@@ -3,6 +3,7 @@ import { addDays } from "date-fns";
 import prisma from "~/server/data/prisma.server";
 import { SERVER_ENV } from "~/env.server";
 
+console.log("SERVER_ENV", SERVER_ENV);
 const authCookie = createCookie("auth", {
   secrets: [SERVER_ENV.SECRET_KEY_BASE],
   sameSite: "lax",
