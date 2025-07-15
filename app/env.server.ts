@@ -1,4 +1,4 @@
-import z from "zod/v4";
+import z from "zod";
 import { generateErrorMessage } from "zod-error";
 
 export const serverEnvSchema = z.object({

@@ -4,7 +4,7 @@ import {
   type User,
   WeightLossGoal,
 } from "@prisma/client";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { zfd } from "zod-form-data";
 import prisma from "./prisma.server";
 import { calculateCalorieGoal } from "./users/calculateCalorieGoal.server";

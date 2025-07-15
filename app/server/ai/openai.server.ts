@@ -1,4 +1,4 @@
-import { z, type ZodType } from "zod/v4";
+import { z, type ZodType } from "zod";
 import { gateway } from "@vercel/ai-sdk-gateway";
 import { generateObject } from "ai";
 

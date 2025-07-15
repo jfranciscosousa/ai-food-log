@@ -1,5 +1,5 @@
 import capitalize from "lodash/capitalize.js";
-import type { ZodError } from "zod/v4";
+import type { ZodError } from "zod";
 
 export function formatZodErrors(zodError: ZodError) {
   return Object.fromEntries(
