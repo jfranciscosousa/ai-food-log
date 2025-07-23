@@ -60,7 +60,9 @@ export const action = async ({ request }: Route.ActionArgs) => {
           ...(await FoodService.deleteAllEntries(userId, formData)),
         };
     }
-  } catch (_error) {
+  } catch (error) {
+    console.error(error);
+
     return { _action: form._action, errors: { content: "unknown" } };
   }
 };
