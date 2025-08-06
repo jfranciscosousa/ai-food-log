@@ -1,5 +1,4 @@
 import { z, type ZodType } from "zod";
-import { gateway } from "@vercel/ai-sdk-gateway";
 import { generateObject } from "ai";
 
 async function fileToBase64(file: File): Promise<string> {
@@ -34,10 +33,10 @@ export async function completion<T extends ZodType>(
       : { prompt };
 
   const response = await generateObject({
-    model: gateway("openai/gpt-4.1"),
+    model: "openai/gpt-4.1-mini",
     system,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    schema: schema as any,
+    // @ts-expect-error I can't get this type to work but... this works.
+    schema: schema as unknown,
     temperature: 0.1,
     ...promptObj,
   });

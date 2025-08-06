@@ -81,4 +81,4 @@ jobs:
           SECURE_AUTH_COOKIE: false
           NODE_ENV: production
           PORT: 3001
-          OPENAI_KEY: foobar
+          AI_GATEWAY_API_KEY: foobar
