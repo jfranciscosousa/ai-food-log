@@ -24,7 +24,7 @@ export async function createUserAndLogin(page: Page, screen: Screen) {
   const { errors, data } = await UsersService.create({
     inviteToken: "xico o maior da minha aldeia",
     email: faker.internet.email(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     password,
     passwordConfirmation: password,
     height: 183,
