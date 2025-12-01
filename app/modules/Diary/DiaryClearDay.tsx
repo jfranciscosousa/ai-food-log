@@ -29,6 +29,8 @@ export function DiaryClearDay() {
       toast({
         title: "All entries cleared for the day.",
       });
+
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOpen(false);
     }
   }, [fetcher.data, setOpen]);

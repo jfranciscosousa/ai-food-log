@@ -1,4 +1,4 @@
-import { z, type ZodType } from "zod";
+import { type ZodType } from "zod";
 import { generateObject } from "ai";
 
 async function fileToBase64(file: File): Promise<string> {
@@ -13,7 +13,7 @@ export async function completion<T extends ZodType>(
   system: string,
   prompt: string | File,
   schema: T,
-): Promise<z.infer<T>> {
+) {
   const promptObj =
     prompt instanceof File
       ? {
@@ -35,8 +35,8 @@ export async function completion<T extends ZodType>(
   const response = await generateObject({
     model: "openai/gpt-4.1-mini",
     system,
-    // @ts-expect-error I can't get this type to work but... this works.
-    schema: schema as unknown,
+
+    schema,
     temperature: 0.1,
     ...promptObj,
   });
