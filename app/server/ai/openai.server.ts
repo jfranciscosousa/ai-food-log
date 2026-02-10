@@ -1,5 +1,4 @@
-import { type ZodType } from "zod";
-import { generateObject } from "ai";
+import { generateText, Output, type FlexibleSchema } from "ai";
 
 async function fileToBase64(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -9,10 +8,10 @@ async function fileToBase64(file: File): Promise<string> {
   return `data:${file.type};base64,${base64String}`;
 }
 
-export async function completion<T extends ZodType>(
+export async function completion<T>(
   system: string,
   prompt: string | File,
-  schema: T,
+  schema: FlexibleSchema<T>,
 ) {
   const promptObj =
     prompt instanceof File
@@ -32,14 +31,19 @@ export async function completion<T extends ZodType>(
         }
       : { prompt };
 
-  const response = await generateObject({
-    model: "openai/gpt-4.1-mini",
+  const response = await generateText({
+    model: "openai/gpt-5-mini",
+
     system,
 
-    schema,
+    output: Output.object({
+      schema,
+    }),
+
     temperature: 0.1,
+
     ...promptObj,
   });
 
-  return response.object;
+  return response.output;
 }
