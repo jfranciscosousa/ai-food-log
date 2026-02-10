@@ -93,6 +93,13 @@ export class FoodService {
       parsedSchema.data.content! || parsedSchema.data.image!,
     );
 
+    if (aiResponse.invalid) {
+      return {
+        data: null,
+        errors: { content: "Prompt is not a valid meal description." },
+      };
+    }
+
     const result = await prisma.$transaction(async (tx) => {
       const entry = await tx.foodEntry.create({
         data: {
@@ -158,6 +165,13 @@ export class FoodService {
     const { id, content } = parsedSchema.data;
 
     const aiResponse = await processFoodWithAI(content);
+
+    if (aiResponse.invalid) {
+      return {
+        data: null,
+        errors: { content: "Prompt is not a valid meal description." },
+      };
+    }
 
     const result = await prisma.$transaction(async (tx) => {
       const entry = await tx.foodEntry.findUnique({ where: { id, userId } });

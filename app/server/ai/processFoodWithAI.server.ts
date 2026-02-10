@@ -1,19 +1,30 @@
 import { z } from "zod";
 import { completion } from "./openai.server";
 
-export async function processFoodWithAI(content: string | File) {
+export async function processFoodWithAI(prompt: string | File) {
   return completion(
-    `Convert the following prompt into a meal structure.
+    `
+    You are a meal tracker helper. You convert human text, like descriptions of meals with weights and convert it into macros.
+
+    Convert the following prompt into a meal structure.
 
     Some considerations:
     - if the user specifies raw or uncooked, please make sure you represent those values diferently. Raw or uncooked food usually doesn't account
     for water weight lost during cooking time so please adjust.
     - if the user specifies the macros like protein fat carbs fiber, please calculate the calories from it. for example user might say "whey protein shake with 50g calories and 20g carbs"
     you should fill in the calories for this item. don't even bother looking for ingredients, just return the macros
+
+    Additional notes:
+    - If the user prompt doesn't align with an actual meal specification, return
     `,
-    content,
+    prompt,
     z.object({
       name: z.string().describe("A short name that describes the meal"),
+      invalid: z
+        .boolean()
+        .describe(
+          "If the prompt is not a valid specification, set this as true otherwise set it as false",
+        ),
       items: z.array(
         z
           .object({
