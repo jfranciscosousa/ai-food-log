@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useFetcher, useLoaderData } from "react-router";
+import { useState } from "react";
+import { useSearchParams } from "react-router";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -14,26 +14,36 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/hooks/use-toast";
-import type { DiaryRouteData } from "~/routes/__authed.diary";
+import { trpc } from "~/utils/trpc";
 
 export function DiaryClearDay() {
   const [open, setOpen] = useState(false);
-  const fetcher = useFetcher();
-  const { unparsedDate } = useLoaderData<DiaryRouteData>();
-  const formattedDate = format(unparsedDate, "MMMM d, yyyy");
+  const [searchParams] = useSearchParams();
+  const date = searchParams.get("date") ?? new Date().toISOString();
+  const formattedDate = format(date, "MMMM d, yyyy");
+  const utils = trpc.useUtils();
 
-  useEffect(() => {
-    if (fetcher.data?._action !== "delete-all") return;
-
-    if (!fetcher.data?.errors) {
+  const deleteAll = trpc.food.deleteAllEntries.useMutation({
+    onSuccess: () => {
+      utils.food.getEntriesForDay.invalidate();
+      utils.food.getAggregateForDay.invalidate();
       toast({
         title: "All entries cleared for the day.",
       });
-
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOpen(false);
-    }
-  }, [fetcher.data, setOpen]);
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to clear entries",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDelete = () => {
+    deleteAll.mutate({ day: date });
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -53,18 +63,13 @@ export function DiaryClearDay() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <fetcher.Form method="POST">
-            <Button
-              variant="destructive"
-              type="submit"
-              name="_action"
-              value="delete-all"
-              isLoading={fetcher.state !== "idle"}
-            >
-              <input type="hidden" name="day" value={unparsedDate} />
-              Delete all
-            </Button>
-          </fetcher.Form>
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            isLoading={deleteAll.isPending}
+          >
+            Delete all
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

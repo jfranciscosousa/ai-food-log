@@ -24,7 +24,7 @@ test("renders profile", async ({ page, screen }) => {
 
   await page.goto("/profile");
 
-  expect(page.getByText(user.name)).toBeTruthy();
+  expect(await screen.findByDisplayValue(user.name)).toBeTruthy();
   expect(page.getByText(user.email)).toBeTruthy();
 });
 
@@ -37,7 +37,7 @@ test("updates profile", async ({ page, screen }) => {
   const newWeight = String(faker.number.int({ min: 0, max: 100 }));
 
   await page.goto("/profile");
-  await page.getByLabel("Name").fill(newName);
+  await (await screen.findByLabelText("Name")).fill(newName);
   await page.getByLabel("Email").fill(newEmail);
   await screen.getByLabelText("Height (cm)").fill(newHeight);
   await screen.getByLabelText("Weight (kg)").fill(newWeight);
@@ -75,7 +75,7 @@ test("does not update profile if password confirmation does not match", async ({
   const newPassword = faker.internet.password({ length: 8 });
 
   await page.goto("/profile");
-  await page.getByLabel("New password").fill(newPassword);
+  await (await screen.findByLabelText("New password")).fill(newPassword);
   await page.getByLabel("Confirm password").fill(newPassword + "bad");
   await page.getByLabel("Current password").fill(USER_TEST_PASSWORD);
   await page.getByText("Update profile").click();
@@ -99,7 +99,7 @@ test("does not update profile if password is bad", async ({ page, screen }) => {
   const newName = faker.person.firstName();
 
   await page.goto("/profile");
-  await page.getByLabel("Name").fill(newName);
+  await (await screen.findByLabelText("Name")).fill(newName);
   await page.getByLabel("Current password").fill("bad_password");
   await page.getByText("Update profile").click();
 

@@ -1,14 +1,25 @@
-import { useRouteLoaderData } from "react-router";
-import type { Route } from "../routes/+types/__authed";
+import { trpc } from "~/utils/trpc";
+import type { UserWithoutPassword } from "~/server/data/users.server";
+import { useRootLoaderData } from "./useRootLoaderData";
 
-export function useOptionalUser():
-  | Route.ComponentProps["loaderData"]["user"]
-  | undefined {
-  return useRouteLoaderData("routes/__authed")?.user;
+export function useOptionalUser(): UserWithoutPassword | undefined {
+  const { data: user } = trpc.auth.me.useQuery(undefined, {
+    initialData: useRootLoaderData().currentUser,
+  });
+
+  return user ?? undefined;
 }
 
-export default function useUser(): NonNullable<
-  Route.ComponentProps["loaderData"]["user"]
-> {
-  return useRouteLoaderData("routes/__authed")!.user;
+export default function useUser(): UserWithoutPassword {
+  const { data: user } = trpc.auth.me.useQuery(undefined, {
+    initialData: useRootLoaderData().currentUser,
+  });
+
+  if (!user) {
+    throw new Error(
+      "User not found - this hook should only be used in authenticated routes",
+    );
+  }
+
+  return user;
 }

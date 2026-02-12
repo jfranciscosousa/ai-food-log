@@ -1,3 +1,12 @@
-import { type LoaderFunction, redirect } from "react-router";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
-export const loader: LoaderFunction = async () => redirect("/diary");
+export default function Index() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate("/diary");
+  }, [navigate]);
+
+  return null;
+}

@@ -1,7 +1,7 @@
-import { createCookie, redirect } from "react-router";
 import { addDays } from "date-fns";
-import prisma from "~/server/data/prisma.server";
+import { createCookie } from "react-router";
 import { SERVER_ENV } from "~/env.server";
+import prisma from "~/server/data/prisma.server";
 
 const authCookie = createCookie("auth", {
   secrets: [SERVER_ENV.SECRET_KEY_BASE],
@@ -12,34 +12,24 @@ const authCookie = createCookie("auth", {
 
 export async function authenticate(
   user: { id: string },
-  { redirectUrl = "/", rememberMe = false } = {},
+  headers: Headers,
+  { rememberMe = false } = {},
 ) {
-  return redirect(redirectUrl, {
-    status: 302,
-    headers: {
-      location: redirectUrl,
-      "Set-Cookie": await authCookie.serialize(
-        {
-          userId: user.id,
-        },
-        {
-          expires: rememberMe
-            ? addDays(new Date(), 1)
-            : addDays(new Date(), 30),
-        },
-      ),
-    },
-  });
+  headers.append(
+    "Set-Cookie",
+    await authCookie.serialize(
+      {
+        userId: user.id,
+      },
+      {
+        expires: rememberMe ? addDays(new Date(), 1) : addDays(new Date(), 30),
+      },
+    ),
+  );
 }
 
-export async function logout() {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: "/login",
-      "Set-Cookie": await authCookie.serialize({}),
-    },
-  });
+export async function logout(headers: Headers) {
+  headers.append("Set-Cookie", await authCookie.serialize({}));
 }
 
 export async function userIdFromRequest(request: Request) {
@@ -70,8 +60,12 @@ export async function userFromRequest(request: Request) {
       fitnessLevel: true,
       weightLossGoal: true,
       targetCalories: true,
+      bmr: true,
+      bmi: true,
     },
   });
 
   return user;
 }
+
+export { authCookie };

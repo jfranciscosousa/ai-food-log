@@ -1,5 +1,5 @@
 import { waitFor } from "@playwright-testing-library/test";
-import { createUserAndLogin, expect, test } from "./utils";
+import { createUser, createUserAndLogin, expect, test } from "./utils";
 import prisma from "~/server/data/prisma.server";
 import { verifyPassword } from "~/server/data/users/passwordUtils.server";
 
@@ -13,7 +13,7 @@ const PASSWORD = "foobar";
 test("signs up", async ({ page, screen }) => {
   await page.goto("/signup");
 
-  await screen.getByLabelText("Email").fill(EMAIL);
+  await (await screen.findByLabelText("Email")).fill(EMAIL);
   await screen.getByLabelText("Name").fill(NAME);
   await screen.getByLabelText("Age").fill(AGE);
   await screen.getByLabelText("Height (cm)").fill(HEIGHT);
@@ -32,7 +32,7 @@ test("signs up", async ({ page, screen }) => {
     .getByText("Sign up", { selector: "button > span > span" })
     .click();
 
-  await page.waitForURL("/diary");
+  await expect(page).toHaveURL("/diary");
   await waitFor(async () => {
     const user = await prisma.user.findFirstOrThrow({
       where: { email: EMAIL },
@@ -50,25 +50,28 @@ test("signs up", async ({ page, screen }) => {
 });
 
 test("logins", async ({ page, screen }) => {
+  const user = await createUser();
+
   await page.goto("/");
-  await screen.getByLabelText("Email").fill(EMAIL);
+  await (await screen.findByLabelText("Email")).fill(user.email);
   await screen.getByLabelText("Password").fill(PASSWORD);
   await screen.getByText("Login", { selector: "button > span > span" }).click();
 
-  await page.waitForURL("/diary");
+  await expect(page).toHaveURL("/diary");
 });
 
 test("shows login and then redirects to original page", async ({
   page,
   screen,
 }) => {
-  await page.goto("/profile");
+  const user = await createUser();
 
-  await screen.getByLabelText("Email").fill(EMAIL);
+  await page.goto("/profile");
+  await (await screen.findByLabelText("Email")).fill(user.email);
   await screen.getByLabelText("Password").fill(PASSWORD);
   await screen.getByText("Login", { selector: "button > span > span" }).click();
 
-  await page.waitForURL("/profile");
+  await expect(page).toHaveURL("/profile");
 });
 
 test("logs out and drops user on login page", async ({ page, screen }) => {

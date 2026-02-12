@@ -5,7 +5,6 @@ import {
   WeightLossGoal,
 } from "@prisma/client";
 import { z } from "zod";
-import { zfd } from "zod-form-data";
 import prisma from "./prisma.server";
 import { calculateCalorieGoal } from "./users/calculateCalorieGoal.server";
 import { encryptPassword, verifyPassword } from "./users/passwordUtils.server";
@@ -15,74 +14,66 @@ import { type DataResult } from "./utils/types";
 export type UserWithoutPassword = Omit<User, "password"> & { password?: never };
 
 export class UsersService {
-  static readonly createUserParams = zfd.formData({
-    inviteToken: zfd.text(),
-    email: zfd.text(z.email()),
-    name: zfd.text(),
-    password: zfd.text(),
-    passwordConfirmation: zfd.text(),
-    age: zfd.numeric(),
-    height: zfd.numeric(),
-    weight: zfd.numeric(),
-    gender: zfd.text(z.enum([Gender.MALE, Gender.FEMALE])),
-    fitnessLevel: zfd.text(
-      z.enum([
+  // Plain object schemas (for tRPC)
+  static readonly createUserParams = z.object({
+    inviteToken: z.string(),
+    email: z.string().email(),
+    name: z.string(),
+    password: z.string(),
+    passwordConfirmation: z.string(),
+    age: z.number(),
+    height: z.number(),
+    weight: z.number(),
+    gender: z.enum([Gender.MALE, Gender.FEMALE]),
+    fitnessLevel: z.enum([
+      FitnessLevel.EXTRA_ACTIVE,
+      FitnessLevel.LIGHTLY_ACTIVE,
+      FitnessLevel.MODERATELY_ACTIVE,
+      FitnessLevel.SEDENTARY,
+      FitnessLevel.VERY_ACTIVE,
+    ]),
+    weightLossGoal: z.enum([
+      WeightLossGoal.MAINTAIN,
+      WeightLossGoal.LOW,
+      WeightLossGoal.MEDIUM,
+      WeightLossGoal.HIGH,
+    ]),
+    rememberMe: z.boolean().optional(),
+  });
+
+  static readonly loginSchema = z.object({
+    email: z.string().email(),
+    password: z.string(),
+    rememberMe: z.boolean().optional(),
+  });
+
+  static readonly updateUserParams = z.object({
+    email: z.string().email().optional(),
+    name: z.string().optional(),
+    currentPassword: z.string(),
+    newPassword: z.string().optional(),
+    passwordConfirmation: z.string().optional(),
+    gender: z.enum([Gender.MALE, Gender.FEMALE]),
+    age: z.number().optional(),
+    height: z.number().optional(),
+    weight: z.number().optional(),
+    fitnessLevel: z
+      .enum([
         FitnessLevel.EXTRA_ACTIVE,
         FitnessLevel.LIGHTLY_ACTIVE,
         FitnessLevel.MODERATELY_ACTIVE,
         FitnessLevel.SEDENTARY,
         FitnessLevel.VERY_ACTIVE,
-      ]),
-    ),
-    weightLossGoal: zfd.text(
-      z.enum([
+      ])
+      .optional(),
+    weightLossGoal: z
+      .enum([
         WeightLossGoal.MAINTAIN,
         WeightLossGoal.LOW,
         WeightLossGoal.MEDIUM,
         WeightLossGoal.HIGH,
-      ]),
-    ),
-    rememberMe: zfd.checkbox().optional(),
-  });
-
-  static readonly loginSchema = zfd.formData({
-    email: zfd.text(z.email()),
-    password: zfd.text(),
-    redirectUrl: zfd.text(z.string().optional()),
-    rememberMe: zfd.checkbox().optional(),
-  });
-
-  static readonly updateUserParams = zfd.formData({
-    email: zfd.text(z.email().optional()),
-    name: zfd.text(z.string().optional()),
-    currentPassword: zfd.text(),
-    newPassword: zfd.text(z.string().optional()),
-    passwordConfirmation: zfd.text(z.string().optional()),
-    gender: zfd.text(z.enum([Gender.MALE, Gender.FEMALE])),
-    age: zfd.numeric(z.number().optional()),
-    height: zfd.numeric(z.number().optional()),
-    weight: zfd.numeric(z.number().optional()),
-    fitnessLevel: zfd.text(
-      z
-        .enum([
-          FitnessLevel.EXTRA_ACTIVE,
-          FitnessLevel.LIGHTLY_ACTIVE,
-          FitnessLevel.MODERATELY_ACTIVE,
-          FitnessLevel.SEDENTARY,
-          FitnessLevel.VERY_ACTIVE,
-        ])
-        .optional(),
-    ),
-    weightLossGoal: zfd.text(
-      z
-        .enum([
-          WeightLossGoal.MAINTAIN,
-          WeightLossGoal.LOW,
-          WeightLossGoal.MEDIUM,
-          WeightLossGoal.HIGH,
-        ])
-        .optional(),
-    ),
+      ])
+      .optional(),
   });
 
   static omitPassword(user: User): UserWithoutPassword {

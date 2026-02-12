@@ -1,16 +1,25 @@
-import { type LoaderFunctionArgs } from "react-router";
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import acceptLanguage from "accept-language-parser";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  type LoaderFunctionArgs,
+} from "react-router";
 import ErrorPage from "./components/Error500Page";
+import { Toaster } from "./components/ui/toaster";
 import { CLIENT_ENV } from "./env";
+import { useToast } from "./hooks/use-toast";
 import { useRootLoaderData } from "./hooks/useRootLoaderData";
 import { getCurrentTheme } from "./server/theme.server";
 import { cn } from "./utils";
-import { Toaster } from "./components/ui/toaster";
-import { useToast } from "./hooks/use-toast";
+import { createTRPCClient, trpc } from "./utils/trpc";
 
 import "./root.css";
+import { userFromRequest } from "./server/auth.server";
 
 // Load the locale from the Accept-Language header to later
 // inject it on the app's context
@@ -34,6 +43,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     ENV: CLIENT_ENV,
     rootTime: new Date().toISOString(),
     currentTheme: await getCurrentTheme(request),
+    currentUser: await userFromRequest(request),
   };
 };
 
@@ -58,6 +68,20 @@ const applySystemThemeString = `
 `;
 
 export default function App() {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 1000 * 60, // 1 minute
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  );
+
+  const [trpcClient] = useState(() => createTRPCClient());
+
   const { ENV, currentTheme } = useRootLoaderData();
   const { toast } = useToast();
 
@@ -66,19 +90,23 @@ export default function App() {
   }, [currentTheme, toast]);
 
   return (
-    <Document className={currentTheme}>
-      <script
-        // Set the variables for our `envVars` modules
-        dangerouslySetInnerHTML={{
-          __html: `window.ENV = ${JSON.stringify(ENV)};
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <Document className={currentTheme}>
+          <script
+            // Set the variables for our `envVars` modules
+            dangerouslySetInnerHTML={{
+              __html: `window.ENV = ${JSON.stringify(ENV)};
 
           // Only apply the system theme if there's nothing on the cookie
           ${currentTheme === "system" ? applySystemThemeString : ""}`,
-        }}
-      />
+            }}
+          />
 
-      <Outlet />
-    </Document>
+          <Outlet />
+        </Document>
+      </QueryClientProvider>
+    </trpc.Provider>
   );
 }
 

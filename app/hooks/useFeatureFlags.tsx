@@ -12,8 +12,10 @@ export default function useFeatureFlags() {
       hasGlobalFeatureFlag: (flag: keyof ClientEnv): boolean =>
         !!CLIENT_ENV[flag],
       // Check the current user feature flags. If there's no user, this returns false, always
-      hasUserFeatureFlag: (flag: keyof UserFeatureFlags): boolean =>
-        !!user?.featureFlags?.[flag],
+      hasUserFeatureFlag: (flag: keyof UserFeatureFlags): boolean => {
+        const flags = user?.featureFlags as UserFeatureFlags | undefined;
+        return !!flags?.[flag];
+      },
     }),
     [user?.featureFlags],
   );

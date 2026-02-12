@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useLoaderData } from "react-router";
 import {
   Card,
   CardContent,
@@ -9,16 +8,40 @@ import {
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import useUser from "~/hooks/useUser";
-import { type DiaryRouteData } from "~/routes/__authed.diary";
-import { DiaryClearDay } from "./DiaryClearDay";
 import { formatNumber } from "~/lib/math";
+import { DiaryClearDay } from "./DiaryClearDay";
 
-export default function DiaryDailySummary() {
+interface DiaryDailySummaryProps {
+  totals?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    fiber: number;
+  };
+}
+
+export default function DiaryDailySummary({ totals }: DiaryDailySummaryProps) {
   const user = useUser();
 
-  const { entriesTotals } = useLoaderData<DiaryRouteData>();
-  const calorieProgress = (entriesTotals.calories / user.targetCalories) * 100;
+  const entriesTotals = totals ?? {
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+    fiber: 0,
+  };
+
+  const calorieProgress = user
+    ? (entriesTotals.calories / user.targetCalories) * 100
+    : 0;
   const calorieStatus = useMemo(() => {
+    if (!user) {
+      return {
+        color: "text-muted-foreground",
+        message: "Loading...",
+      };
+    }
     if (entriesTotals.calories > user.targetCalories) {
       return {
         color: "text-red-500 dark:text-red-400",
@@ -35,7 +58,7 @@ export default function DiaryDailySummary() {
       color: "text-yellow-500 dark:text-yellow-400",
       message: "Under target",
     };
-  }, [entriesTotals.calories, user.targetCalories]);
+  }, [entriesTotals.calories, user]);
 
   return (
     <Card>
@@ -58,7 +81,7 @@ export default function DiaryDailySummary() {
                 </span>
                 <span className="text-muted-foreground">/</span>
                 <span className="text-muted-foreground">
-                  {formatNumber(user.targetCalories, 0)}
+                  {user ? formatNumber(user.targetCalories, 0) : "..."}
                 </span>
               </div>
               <span className={`${calorieStatus.color}`}>

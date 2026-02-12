@@ -1,15 +1,34 @@
-import { Form, Link, useActionData, useLocation } from "react-router";
+import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
 import { InputField } from "~/components/ui/input-field";
-import useIsLoading from "~/hooks/useIsLoading";
-import { type LoginActionType } from "~/routes/__unauthed.login";
+import { trpc } from "~/utils/trpc";
 
 export default function Login() {
-  const actionData = useActionData<LoginActionType>();
-  const isLoading = useIsLoading();
-  const location = useLocation();
+  const utils = trpc.useUtils();
+
+  const login = trpc.auth.login.useMutation({
+    onSuccess: async () => {
+      await utils.auth.me.invalidate();
+    },
+  });
+
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    login.mutate({
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      rememberMe: formData.get("rememberMe") === "on",
+    });
+  };
+
+  const errors =
+    login.error?.data && "cause" in login.error.data
+      ? (login.error.data.cause as Record<string, string>)
+      : undefined;
 
   return (
     <Card className="md:w-xl w-full">
@@ -17,9 +36,8 @@ export default function Login() {
         <CardTitle>Please login</CardTitle>
       </CardHeader>
       <CardContent>
-        <Form
-          method="post"
-          action="/login"
+        <form
+          onSubmit={handleSubmit}
           className="w-full flex flex-col space-y-4"
         >
           <InputField
@@ -28,8 +46,7 @@ export default function Login() {
             type="text"
             required
             placeholder="hello@email.com"
-            errors={actionData?.errors}
-            defaultValue={actionData?.original?.email}
+            errors={errors}
           />
 
           <InputField
@@ -38,8 +55,7 @@ export default function Login() {
             type="password"
             placeholder="**************"
             required
-            errors={actionData?.errors}
-            defaultValue={actionData?.original?.password}
+            errors={errors}
           />
 
           <CheckboxField
@@ -48,20 +64,14 @@ export default function Login() {
             className="pb-4"
           />
 
-          <input
-            name="redirectUrl"
-            type="hidden"
-            defaultValue={location.pathname + location.search}
-          />
-
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" isLoading={login.isPending}>
             Login
           </Button>
 
           <Link to="/signup" className="link text-center">
             Or sign up instead
           </Link>
-        </Form>
+        </form>
       </CardContent>
     </Card>
   );

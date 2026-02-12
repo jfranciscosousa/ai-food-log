@@ -1,44 +1,59 @@
-import { Camera } from "lucide-react";
-import { useEffect, useRef, type ChangeEvent } from "react";
-import { useFetcher, useLoaderData } from "react-router";
+import { useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { formatDate } from "~/hooks/useDates";
-import { useIsClient } from "~/hooks/useIsClient";
-import {
-  type DiaryActionData,
-  type DiaryRouteData,
-} from "~/routes/__authed.diary";
+import { useToast } from "~/hooks/use-toast";
+import { trpc } from "~/utils/trpc";
 
-export default function DiaryEntryForm() {
-  const { unparsedDate } = useLoaderData<DiaryRouteData>();
-  const fetcher = useFetcher<DiaryActionData>();
+interface DiaryEntryFormProps {
+  date: string;
+}
+
+export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const inputImageRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  const utils = trpc.useUtils();
 
-  const isAdding =
-    fetcher.state === "submitting" &&
-    fetcher.formData?.get("_action") === "create";
-  const isClient = useIsClient();
+  const createEntry = trpc.food.createEntry.useMutation({
+    onSuccess: () => {
+      utils.food.getEntriesForDay.invalidate();
+      utils.food.getAggregateForDay.invalidate();
+      if (inputRef.current) {
+        inputRef.current.value = "";
+        inputRef.current.focus();
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to create entry",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
-  useEffect(() => {
-    if (!isAdding || !inputRef.current) return;
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const content = formData.get("content") as string;
 
-    inputRef.current.value = "";
-    inputRef.current.focus();
-  }, [isAdding]);
+    if (!content?.trim()) {
+      toast({
+        title: "Please enter a meal description",
+        variant: "destructive",
+      });
+      return;
+    }
 
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    fetcher.submit(event.target.form, {
-      method: "POST",
-      encType: "multipart/form-data",
+    createEntry.mutate({
+      content,
+      day: date,
     });
-  }
+  };
 
   return (
-    <fetcher.Form method="post" encType="multipart/form-data">
+    <form onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
           <CardTitle>Add Meal</CardTitle>
@@ -53,20 +68,7 @@ export default function DiaryEntryForm() {
                   placeholder="e.g. 100g of cooked rice and 250g of raw chicken breast"
                   ref={inputRef}
                 />
-                <input
-                  ref={inputImageRef}
-                  className="hidden"
-                  type="file"
-                  name="image"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-                <input type="hidden" name="_action" value="create" />
-
-                <Button type="button" isLoading={isAdding}>
-                  <Camera onClick={() => inputImageRef.current?.click()} />
-                </Button>
-                <Button type="submit" isLoading={isAdding}>
+                <Button type="submit" isLoading={createEntry.isPending}>
                   Add
                 </Button>
               </div>
@@ -74,14 +76,6 @@ export default function DiaryEntryForm() {
           </div>
         </CardContent>
       </Card>
-      {!isClient && <input type="hidden" name="day" value={unparsedDate} />}
-      {isClient && (
-        <input
-          type="hidden"
-          name="day"
-          value={unparsedDate || formatDate(new Date())}
-        />
-      )}
-    </fetcher.Form>
+    </form>
   );
 }

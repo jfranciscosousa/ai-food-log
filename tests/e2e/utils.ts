@@ -7,6 +7,7 @@ import {
 import { test as base, type Page } from "@playwright/test";
 import { truncateAll } from "./truncateAll";
 import { UsersService } from "~/server/data/users.server";
+import type z from "zod";
 
 export const USER_TEST_PASSWORD = "foobar";
 
@@ -19,28 +20,40 @@ test.beforeEach(truncateAll);
 
 export const expect = test.expect;
 
-export async function createUserAndLogin(page: Page, screen: Screen) {
-  const password = USER_TEST_PASSWORD;
-  const { errors, data } = await UsersService.create({
+export async function createUser(
+  params: Partial<z.infer<typeof UsersService.createUserParams>> = {},
+) {
+  const defaults = {
     inviteToken: "xico o maior da minha aldeia",
     email: faker.internet.email(),
     name: faker.person.firstName(),
-    password,
-    passwordConfirmation: password,
+    password: USER_TEST_PASSWORD,
+    passwordConfirmation: USER_TEST_PASSWORD,
     height: 183,
     weight: 100,
     fitnessLevel: "SEDENTARY",
     age: 36,
     gender: "FEMALE",
     weightLossGoal: "MEDIUM",
+  } as const;
+
+  const { data, errors } = await UsersService.create({
+    ...defaults,
+    ...params,
   });
 
   if (!data) throw errors;
 
+  return data;
+}
+
+export async function createUserAndLogin(page: Page, screen: Screen) {
+  const data = await createUser();
+
   await page.goto("/");
 
-  await screen.getByLabelText("Email").fill(data.email);
-  await screen.getByLabelText("Password").fill(password);
+  await (await screen.findByLabelText("Email")).fill(data.email);
+  await screen.getByLabelText("Password").fill(USER_TEST_PASSWORD);
   await screen.getByText("Login").click();
   await page.getByRole("button", { name: "User nav" }).click();
   await screen.findByText(data.name);

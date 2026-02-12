@@ -1,34 +1,26 @@
-import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, useLoaderData } from "react-router";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router";
 import ErrorPage from "~/components/Error500Page";
 import LoggedInLayout from "~/components/layouts/LoggedInLayout";
-import LoggedOutLayout from "~/components/layouts/LoggedOutLayout";
-import Login from "~/modules/Login";
-import { userFromRequest } from "~/server/auth.server";
-import type { Route } from "./+types/__authed";
-
-export type AuthedRouteData = Route.ComponentProps["loaderData"];
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await userFromRequest(request);
-
-  return { user };
-};
+import { useOptionalUser } from "~/hooks/useUser";
 
 export function ErrorBoundary() {
   return <ErrorPage />;
 }
 
 export default function AppPage() {
-  const { user } = useLoaderData<AuthedRouteData>();
+  const navigate = useNavigate();
+  const user = useOptionalUser();
 
-  if (!user) {
-    return (
-      <LoggedOutLayout>
-        <Login />
-      </LoggedOutLayout>
-    );
-  }
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", {
+        state: { from: window.location.pathname + window.location.search },
+      });
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
 
   return (
     <LoggedInLayout>
