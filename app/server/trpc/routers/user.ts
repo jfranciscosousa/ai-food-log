@@ -1,8 +1,8 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { UsersService } from "../../data/users.server";
 import { FitnessLevel, Gender, WeightLossGoal } from "@prisma/client";
+import { createValidationError } from "../errors";
 
 const updateUserInput = z.object({
   email: z.string().email().optional(),
@@ -40,11 +40,7 @@ export const userRouter = router({
       const result = await UsersService.update(ctx.userId, input);
 
       if (result.errors) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Failed to update profile",
-          cause: result.errors,
-        });
+        throw createValidationError("Failed to update profile", result.errors);
       }
 
       return result.data;

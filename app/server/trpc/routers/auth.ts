@@ -1,15 +1,14 @@
 import { FitnessLevel, Gender, WeightLossGoal } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { authenticate, logout, userFromRequest } from "../../auth.server";
 import { UsersService } from "../../data/users.server";
 import { publicProcedure, router } from "../trpc";
+import { createValidationError } from "../errors";
 
 // Convert FormData schemas to plain object schemas
 const loginInput = z.object({
   email: z.string().email(),
   password: z.string(),
-  redirectUrl: z.string().optional(),
   rememberMe: z.boolean().optional(),
 });
 
@@ -44,11 +43,7 @@ export const authRouter = router({
     const result = await UsersService.login(input);
 
     if (result.errors) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Invalid credentials",
-        cause: result.errors,
-      });
+      throw createValidationError("Invalid credentials", result.errors);
     }
 
     await authenticate(result.data, ctx.resHeaders, {
@@ -64,11 +59,7 @@ export const authRouter = router({
       const result = await UsersService.create(input);
 
       if (result.errors) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Signup failed",
-          cause: result.errors,
-        });
+        throw createValidationError("Signup failed", result.errors);
       }
 
       await authenticate(result.data, ctx.resHeaders, {

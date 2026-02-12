@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
@@ -6,7 +6,6 @@ import { InputField } from "~/components/ui/input-field";
 import { trpc } from "~/utils/trpc";
 
 export default function Login() {
-  const location = useLocation();
   const utils = trpc.useUtils();
 
   const login = trpc.auth.login.useMutation({
@@ -23,7 +22,6 @@ export default function Login() {
       email: formData.get("email") as string,
       password: formData.get("password") as string,
       rememberMe: formData.get("rememberMe") === "on",
-      redirectUrl: formData.get("redirectUrl") as string,
     });
   };
 
@@ -64,12 +62,6 @@ export default function Login() {
             name="rememberMe"
             label="Remember me"
             className="pb-4"
-          />
-
-          <input
-            name="redirectUrl"
-            type="hidden"
-            defaultValue={location.pathname + location.search}
           />
 
           <Button type="submit" isLoading={login.isPending}>

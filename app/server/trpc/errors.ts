@@ -1,5 +1,17 @@
 import type { TRPCClientErrorLike } from "@trpc/client";
 import type { InferrableClientTypes } from "@trpc/server/unstable-core-do-not-import";
+import { TRPCError } from "@trpc/server";
+
+export function createValidationError(
+  message: string,
+  validationErrors: Record<string, string>,
+) {
+  return new TRPCError({
+    code: "BAD_REQUEST",
+    message,
+    cause: { validationErrors },
+  });
+}
 
 export function extractTrpcFormErrors<T extends InferrableClientTypes>(
   trpcError?: TRPCClientErrorLike<T> | null,
@@ -8,7 +20,26 @@ export function extractTrpcFormErrors<T extends InferrableClientTypes>(
 
   if (!errorData) return {};
 
-  if (!("cause" in errorData)) return {};
+  // Check for Zod validation errors first
+  if ("zodError" in errorData && errorData.zodError) {
+    const zodError = errorData.zodError as {
+      fieldErrors?: Record<string, string[]>;
+    };
+    if (zodError.fieldErrors) {
+      // Convert Zod's array format to single string per field
+      return Object.fromEntries(
+        Object.entries(zodError.fieldErrors).map(([key, messages]) => [
+          key,
+          Array.isArray(messages) ? messages[0] : messages,
+        ]),
+      );
+    }
+  }
 
-  return errorData.cause as Record<string, string>;
+  // Check for custom validation errors
+  if ("validationErrors" in errorData && errorData.validationErrors) {
+    return errorData.validationErrors as Record<string, string>;
+  }
+
+  return {};
 }

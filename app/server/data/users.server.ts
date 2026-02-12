@@ -44,7 +44,6 @@ export class UsersService {
   static readonly loginSchema = z.object({
     email: z.string().email(),
     password: z.string(),
-    redirectUrl: z.string().optional(),
     rememberMe: z.boolean().optional(),
   });
 

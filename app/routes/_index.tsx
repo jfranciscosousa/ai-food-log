@@ -1,5 +1,12 @@
-import { Navigate } from "react-router";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function Index() {
-  return <Navigate to="/diary" replace />;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate("/diary");
+  }, [navigate]);
+
+  return null;
 }

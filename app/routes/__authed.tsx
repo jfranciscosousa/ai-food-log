@@ -1,4 +1,5 @@
-import { Navigate, Outlet } from "react-router";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router";
 import ErrorPage from "~/components/Error500Page";
 import LoggedInLayout from "~/components/layouts/LoggedInLayout";
 import { useOptionalUser } from "~/hooks/useUser";
@@ -8,9 +9,18 @@ export function ErrorBoundary() {
 }
 
 export default function AppPage() {
+  const navigate = useNavigate();
   const user = useOptionalUser();
 
-  if (!user) return <Navigate to="/login" />;
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", {
+        state: { from: window.location.pathname + window.location.search },
+      });
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
 
   return (
     <LoggedInLayout>

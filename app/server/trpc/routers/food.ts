@@ -1,8 +1,8 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { FoodService } from "../../data/food.server";
 import { processFoodWithAI } from "../../ai/processFoodWithAI.server";
+import { createValidationError } from "../errors";
 
 export const foodRouter = router({
   getEntriesForDay: protectedProcedure
@@ -28,11 +28,7 @@ export const foodRouter = router({
       const result = await FoodService.createEntry(ctx.userId, input);
 
       if (result.errors) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Failed to create entry",
-          cause: result.errors,
-        });
+        throw createValidationError("Failed to create entry", result.errors);
       }
 
       return result.data;
@@ -49,11 +45,7 @@ export const foodRouter = router({
       const result = await FoodService.updateEntry(ctx.userId, input);
 
       if (result.errors) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Failed to update entry",
-          cause: result.errors,
-        });
+        throw createValidationError("Failed to update entry", result.errors);
       }
 
       return result.data;
@@ -65,11 +57,7 @@ export const foodRouter = router({
       const result = await FoodService.deleteEntry(ctx.userId, input);
 
       if (result.errors) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Failed to delete entry",
-          cause: result.errors,
-        });
+        throw createValidationError("Failed to delete entry", result.errors);
       }
 
       return result.data;
@@ -81,11 +69,7 @@ export const foodRouter = router({
       const result = await FoodService.deleteAllEntries(ctx.userId, input);
 
       if (result.errors) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Failed to delete entries",
-          cause: result.errors,
-        });
+        throw createValidationError("Failed to delete entries", result.errors);
       }
 
       return result.data;
