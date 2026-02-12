@@ -1,13 +1,14 @@
-import { useLoaderData } from "react-router";
-import { type DiaryRouteData } from "~/routes/__authed.diary";
 import DiaryEntry from "./DiaryEntry";
+import type { FoodEntry, FoodEntryItem } from "@prisma/client";
 
-export default function DiaryList() {
-  const { entriesForToday } = useLoaderData<DiaryRouteData>();
+interface DiaryListProps {
+  entries: (FoodEntry & { items: FoodEntryItem[] })[];
+}
 
+export default function DiaryList({ entries }: DiaryListProps) {
   return (
     <div className="flex flex-col gap-4 ">
-      {entriesForToday.map((entry) => (
+      {entries.map((entry) => (
         <DiaryEntry key={entry.id} entry={entry} />
       ))}
     </div>

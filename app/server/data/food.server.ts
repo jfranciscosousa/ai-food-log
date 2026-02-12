@@ -1,6 +1,5 @@
 import { type FoodEntry } from "@prisma/client";
 import { z } from "zod";
-import { zfd } from "zod-form-data";
 import { processFoodWithAI } from "../ai/processFoodWithAI.server";
 import prisma from "./prisma.server";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
@@ -8,23 +7,24 @@ import { type DataResult } from "./utils/types";
 import { formatDate } from "~/hooks/useDates";
 
 export class FoodService {
-  static readonly createEntryParams = zfd.formData({
-    content: zfd.text(z.string().optional()),
-    image: zfd.file(z.instanceof(File).optional()),
-    day: zfd.text(),
+  // Plain object schemas (for tRPC)
+  static readonly createEntryParams = z.object({
+    content: z.string().optional(),
+    image: z.instanceof(File).optional(),
+    day: z.string(),
   });
 
-  static readonly updateEntryParams = zfd.formData({
-    id: zfd.text(),
-    content: zfd.text(),
+  static readonly updateEntryParams = z.object({
+    id: z.string(),
+    content: z.string(),
   });
 
-  static readonly deleteEntryParams = zfd.formData({
-    id: zfd.text(),
+  static readonly deleteEntryParams = z.object({
+    id: z.string(),
   });
 
-  static readonly deleteAllEntriesParams = zfd.formData({
-    day: zfd.text(),
+  static readonly deleteAllEntriesParams = z.object({
+    day: z.string(),
   });
 
   private static getStartAndEndOfDay(

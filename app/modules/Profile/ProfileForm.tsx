@@ -1,28 +1,70 @@
-import { Form, Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "~/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
 import { FitnessLevel, Gender, WeightLossGoal } from "~/constants";
-import useIsLoading from "~/hooks/useIsLoading";
-import useUser from "~/hooks/useUser";
-import { type GenericDataError } from "~/server/data/utils/types";
+import { useToast } from "~/hooks/use-toast";
+import type { UserWithoutPassword } from "~/server/data/users.server";
+import { extractTrpcFormErrors } from "~/server/trpc/errors";
+import { trpc } from "~/utils/trpc";
 
 type Props =
   | {
-      errors?: GenericDataError | null;
       mode: "create";
       user?: undefined;
     }
   | {
-      errors?: GenericDataError | null;
       mode: "update";
-      user: ReturnType<typeof useUser>;
+      user: UserWithoutPassword;
     };
 
-export default function ProfileForm({ errors, mode, user }: Props) {
-  const isLoading = useIsLoading();
+export default function ProfileForm({ mode, user }: Props) {
+  const navigate = useNavigate();
+  const utils = trpc.useUtils();
+  const { toast } = useToast();
+
+  const signup = trpc.auth.signup.useMutation({
+    onSuccess: async () => {
+      await utils.auth.me.invalidate();
+      navigate("/diary");
+    },
+  });
+
+  const updateProfile = trpc.user.update.useMutation({
+    onSuccess: () => {
+      utils.auth.me.invalidate();
+      toast({ title: "Updated profile!" });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to update profile!",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const mutation = mode === "create" ? signup : updateProfile;
+
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    const processedData = {
+      ...data,
+      age: data.age ? Number(data.age) : undefined,
+      height: data.height ? Number(data.height) : undefined,
+      weight: data.weight ? Number(data.weight) : undefined,
+      rememberMe: formData.get("rememberMe") === "on",
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutation.mutate(processedData as any);
+  };
+
+  const errors = extractTrpcFormErrors(signup.error || updateProfile.error);
 
   return (
     <>
@@ -33,7 +75,7 @@ export default function ProfileForm({ errors, mode, user }: Props) {
       </CardHeader>
 
       <CardContent>
-        <Form method="post" className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <InputField
             label="Email"
             name="email"
@@ -183,7 +225,11 @@ export default function ProfileForm({ errors, mode, user }: Props) {
                 className="pb-4"
               />
 
-              <Button type="submit" className="mt-8" isLoading={isLoading}>
+              <Button
+                type="submit"
+                className="mt-8"
+                isLoading={mutation.isPending}
+              >
                 Sign up
               </Button>
 
@@ -195,12 +241,16 @@ export default function ProfileForm({ errors, mode, user }: Props) {
 
           {mode === "update" && (
             <>
-              <Button type="submit" className="mt-8" isLoading={isLoading}>
+              <Button
+                type="submit"
+                className="mt-8"
+                isLoading={mutation.isPending}
+              >
                 Update profile
               </Button>
             </>
           )}
-        </Form>
+        </form>
       </CardContent>
     </>
   );

@@ -1,6 +1,5 @@
 import { Edit2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useFetcher } from "react-router";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -14,7 +13,7 @@ import {
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
 import { toast } from "~/hooks/use-toast";
-import type { DiaryActionData } from "~/routes/__authed.diary";
+import { trpc } from "~/utils/trpc";
 
 interface UpdateMealModalProps {
   entryId: string;
@@ -26,22 +25,37 @@ function Form({
   entryContent,
   setOpen,
 }: UpdateMealModalProps & { setOpen: (open: boolean) => void }) {
-  const fetcher = useFetcher<DiaryActionData>();
-  const isUpdating = fetcher.state === "submitting";
+  const [content, setContent] = useState(entryContent);
+  const utils = trpc.useUtils();
 
-  useEffect(() => {
-    if (fetcher.data?._action !== "update") return;
-
-    if (!fetcher.data?.errors) {
+  const updateEntry = trpc.food.updateEntry.useMutation({
+    onSuccess: () => {
+      utils.food.getEntriesForDay.invalidate();
+      utils.food.getAggregateForDay.invalidate();
       toast({
         title: "Entry updated successfully.",
       });
       setOpen(false);
-    }
-  }, [fetcher.data, setOpen]);
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to update entry",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    updateEntry.mutate({
+      id: entryId,
+      content,
+    });
+  };
 
   return (
-    <fetcher.Form method="POST">
+    <form onSubmit={handleSubmit}>
       <AlertDialogHeader>
         <AlertDialogTitle>Edit meal prompt</AlertDialogTitle>
         <AlertDialogDescription>
@@ -53,23 +67,18 @@ function Form({
       <InputField
         label="Meal description"
         name="content"
-        defaultValue={entryContent}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
         className="py-6"
       />
-      <input type="hidden" name="id" value={entryId} />
 
       <AlertDialogFooter>
         <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
-        <Button
-          type="submit"
-          name="_action"
-          value="update"
-          isLoading={isUpdating}
-        >
+        <Button type="submit" isLoading={updateEntry.isPending}>
           Save Changes
         </Button>
       </AlertDialogFooter>
-    </fetcher.Form>
+    </form>
   );
 }
 

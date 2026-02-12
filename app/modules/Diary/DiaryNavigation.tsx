@@ -1,6 +1,6 @@
 import { addDays, format, subDays } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { Link, useLoaderData, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
 import {
@@ -9,11 +9,11 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { formatDate } from "~/hooks/useDates";
-import { type DiaryRouteData } from "~/routes/__authed.diary";
 
 export default function DiaryNavigation() {
   const navigate = useNavigate();
-  const { unparsedDate } = useLoaderData<DiaryRouteData>();
+  const [searchParams] = useSearchParams();
+  const unparsedDate = searchParams.get("date") ?? new Date().toISOString();
   const date = unparsedDate ? new Date(unparsedDate) : new Date();
 
   function onDateChange(newDate: Date) {

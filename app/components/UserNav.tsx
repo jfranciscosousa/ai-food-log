@@ -1,5 +1,5 @@
 import { LogOut, Notebook, ScanEye, User, User2 } from "lucide-react";
-import { Form, NavLink } from "react-router";
+import { NavLink } from "react-router";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -11,9 +11,16 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import useUser from "~/hooks/useUser";
+import { trpc } from "~/utils/trpc";
 
 export function UserNav() {
   const user = useUser();
+  const utils = trpc.useUtils();
+  const logout = trpc.auth.logout.useMutation({
+    onSuccess: () => {
+      utils.auth.me.invalidate();
+    },
+  });
 
   return (
     <DropdownMenu>
@@ -69,12 +76,16 @@ export function UserNav() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-red-600 dark:text-red-400" asChild>
-          <Form method="post" action="/logout">
-            <button type="submit" className="flex items-center">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </button>
-          </Form>
+          <button
+            type="button"
+            className="flex items-center"
+            onClick={() => {
+              logout.mutate();
+            }}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
