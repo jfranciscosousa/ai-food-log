@@ -1,33 +1,19 @@
-import { Navigate, Outlet, useNavigate } from "react-router";
-import { useEffect } from "react";
-import LoggedOutLayout from "~/components/layouts/LoggedOutLayout";
+import { Navigate, Outlet } from "react-router";
 import ErrorPage from "~/components/Error500Page";
-import { trpc } from "~/utils/trpc";
+import LoggedOutLayout from "~/components/layouts/LoggedOutLayout";
+import { useOptionalUser } from "~/hooks/useUser";
 
 export function ErrorBoundary() {
   return <ErrorPage />;
 }
 
 export default function UnauthedLayout() {
-  const navigate = useNavigate();
-  const { data: user, isLoading } = trpc.auth.me.useQuery(undefined, {
-    retry: false,
-  });
+  const user = useOptionalUser();
 
-  useEffect(() => {
-    if (!isLoading && user) {
-      navigate("/diary");
-    }
-  }, [user, isLoading, navigate]);
-
-  if (isLoading) {
-    return null; // or a loading spinner
-  }
+  if (user) return <Navigate to="/diary" />;
 
   return (
     <LoggedOutLayout>
-      {user && <Navigate to="/diary" />}
-
       <Outlet />
     </LoggedOutLayout>
   );

@@ -7,9 +7,9 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { DiaryClearDay } from "./DiaryClearDay";
+import useUser from "~/hooks/useUser";
 import { formatNumber } from "~/lib/math";
-import { trpc } from "~/utils/trpc";
+import { DiaryClearDay } from "./DiaryClearDay";
 
 interface DiaryDailySummaryProps {
   totals?: {
@@ -22,7 +22,7 @@ interface DiaryDailySummaryProps {
 }
 
 export default function DiaryDailySummary({ totals }: DiaryDailySummaryProps) {
-  const { data: user } = trpc.auth.me.useQuery();
+  const user = useUser();
 
   const entriesTotals = totals ?? {
     calories: 0,
