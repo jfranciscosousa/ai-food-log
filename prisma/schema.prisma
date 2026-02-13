@@ -24,6 +24,7 @@ model FoodEntry {
   id                      String              @id @default(uuid())
   content                 String
   name                    String
+  icon                    String?
   calories                Float
   protein                 Float
   carbs                   Float

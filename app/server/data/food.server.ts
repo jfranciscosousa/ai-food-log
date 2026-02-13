@@ -107,6 +107,7 @@ export class FoodService {
           day: new Date(parsedSchema.data.day),
           userId,
           name: aiResponse.name,
+          icon: aiResponse.icon,
           aiResponse,
           calories: 0,
           protein: 0,
@@ -182,6 +183,7 @@ export class FoodService {
         where: { id },
         data: {
           name: aiResponse.name,
+          icon: aiResponse.icon,
           aiResponse,
           content,
         },

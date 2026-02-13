@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { formatNumber } from "~/lib/math";
+import { DynamicIcon } from "~/components/DynamicIcon";
 import DiaryEntryDeleteOne from "./DiaryEntryDeleteOne";
 import { DiaryEntryUpdate } from "./DiaryEntryUpdate";
 
@@ -26,6 +27,7 @@ type Props = {
   entry: {
     id?: string;
     name: string;
+    icon?: string | null;
     createdAt?: Date;
     content: string;
     calories: number;
@@ -53,7 +55,12 @@ export default function DiaryEntry({ entry }: Props) {
     <Card>
       <CardHeader className="flex flex-row items-start justify-between space-y-0">
         <div>
-          <CardTitle className="text-lg">{entry.name}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            {entry.icon && (
+              <DynamicIcon name={entry.icon} className="h-5 w-5 shrink-0" />
+            )}
+            {entry.name}
+          </CardTitle>
           {entry.createdAt && (
             <CardDescription>
               {format(entry.createdAt, "h:mm a")}

@@ -20,6 +20,11 @@ export async function processFoodWithAI(prompt: string | File) {
     prompt,
     z.object({
       name: z.string().describe("A short name that describes the meal"),
+      icon: z
+        .string()
+        .describe(
+          "A lucide-react icon name (in PascalCase) that best represents this meal or time of day. Examples: Coffee (morning coffee), Pizza (pizza meal), Apple (fruit/healthy), Beef (meat), Croissant (breakfast), Moon (late night snack), Sun (breakfast), Sunset (dinner), Cookie (dessert), Salad (salad), Drumstick (chicken), Fish, Milk, Egg, Cake, IceCream, Wine, Beer, Soup, Sandwich, Popcorn, Cherry",
+        ),
       invalid: z
         .boolean()
         .describe(
