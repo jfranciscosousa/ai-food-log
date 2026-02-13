@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Trash2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -7,22 +8,21 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
+import { Button } from "~/components/ui/button";
 import useUser from "~/hooks/useUser";
 import { formatNumber } from "~/lib/math";
 import { DiaryClearDay } from "./DiaryClearDay";
+import { trpc } from "~/utils/trpc";
 
 interface DiaryDailySummaryProps {
-  totals?: {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-    fiber: number;
-  };
+  date: string;
 }
 
-export default function DiaryDailySummary({ totals }: DiaryDailySummaryProps) {
+export default function DiaryDailySummary({ date }: DiaryDailySummaryProps) {
   const user = useUser();
+  const { data: totals, isLoading } = trpc.food.getAggregateForDay.useQuery({
+    date,
+  });
 
   const entriesTotals = totals ?? {
     calories: 0,
@@ -59,6 +59,42 @@ export default function DiaryDailySummary({ totals }: DiaryDailySummaryProps) {
       message: "Under target",
     };
   }, [entriesTotals.calories, user]);
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader className="flex flex-row items-start justify-between">
+          <div className="flex flex-col gap-2">
+            <CardTitle>Daily Summary</CardTitle>
+            <CardDescription>Total macronutrients for the day</CardDescription>
+          </div>
+
+          <Button variant="destructive" size="sm" className="gap-2" disabled>
+            <Trash2 className="h-4 w-4" />
+            Clear Day
+          </Button>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="h-5 w-20 animate-pulse rounded bg-muted" />
+              <div className="h-5 w-48 animate-pulse rounded bg-muted" />
+            </div>
+            <div className="h-2 w-full animate-pulse rounded bg-muted" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="space-y-1">
+                <div className="h-5 w-16 animate-pulse rounded bg-muted" />
+                <div className="h-8 w-20 animate-pulse rounded bg-muted" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
