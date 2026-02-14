@@ -80,6 +80,38 @@ export class UsersService {
     targetFiber: z.number().optional(),
   });
 
+  static readonly updateHealthParams = z.object({
+    gender: z.enum([Gender.MALE, Gender.FEMALE]),
+    age: z.number(),
+    height: z.number(),
+    weight: z.number(),
+    fitnessLevel: z.enum([
+      FitnessLevel.EXTRA_ACTIVE,
+      FitnessLevel.LIGHTLY_ACTIVE,
+      FitnessLevel.MODERATELY_ACTIVE,
+      FitnessLevel.SEDENTARY,
+      FitnessLevel.VERY_ACTIVE,
+    ]),
+    weightLossGoal: z.enum([
+      WeightLossGoal.MAINTAIN,
+      WeightLossGoal.LOW,
+      WeightLossGoal.MEDIUM,
+      WeightLossGoal.HIGH,
+    ]),
+    targetProtein: z.number().optional(),
+    targetCarbs: z.number().optional(),
+    targetFat: z.number().optional(),
+    targetFiber: z.number().optional(),
+  });
+
+  static readonly updateAccountParams = z.object({
+    email: z.string().email(),
+    name: z.string(),
+    currentPassword: z.string(),
+    newPassword: z.string().optional(),
+    passwordConfirmation: z.string().optional(),
+  });
+
   static omitPassword(user: User): UserWithoutPassword {
     const { password, ...rest } = user;
     const _ = password;
@@ -277,6 +309,117 @@ export class UsersService {
         targetCarbs,
         targetFat,
         targetFiber,
+      },
+    });
+
+    return { data: this.omitPassword(updatedUser), errors: null };
+  }
+
+  static async updateHealth(
+    userId: string,
+    params: z.infer<typeof UsersService.updateHealthParams> | FormData,
+  ): Promise<DataResult<UserWithoutPassword>> {
+    const parsedSchema = this.updateHealthParams.safeParse(params);
+
+    if (!parsedSchema.success) {
+      return { data: null, errors: formatZodErrors(parsedSchema.error) };
+    }
+
+    const {
+      age,
+      height,
+      weight,
+      gender,
+      fitnessLevel,
+      weightLossGoal,
+      targetProtein,
+      targetCarbs,
+      targetFat,
+      targetFiber,
+    } = parsedSchema.data;
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return {
+        data: null,
+        errors: { userid: "User not found!" },
+      };
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        height,
+        weight,
+        age,
+        gender,
+        fitnessLevel,
+        weightLossGoal,
+        targetCalories: calculateCalorieGoal(
+          weight,
+          height,
+          age,
+          gender,
+          fitnessLevel,
+          weightLossGoal,
+        ),
+        targetProtein,
+        targetCarbs,
+        targetFat,
+        targetFiber,
+      },
+    });
+
+    return { data: this.omitPassword(updatedUser), errors: null };
+  }
+
+  static async updateAccount(
+    userId: string,
+    params: z.infer<typeof UsersService.updateAccountParams> | FormData,
+  ): Promise<DataResult<UserWithoutPassword>> {
+    const parsedSchema = this.updateAccountParams.safeParse(params);
+
+    if (!parsedSchema.success) {
+      return { data: null, errors: formatZodErrors(parsedSchema.error) };
+    }
+
+    const { name, email, newPassword, passwordConfirmation, currentPassword } =
+      parsedSchema.data;
+
+    if (newPassword && newPassword !== passwordConfirmation) {
+      return {
+        data: null,
+        errors: { passwordConfirmation: "Passwords do not match" },
+      };
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return {
+        data: null,
+        errors: { userid: "User not found!" },
+      };
+    }
+
+    if (!(await verifyPassword(user.password, currentPassword))) {
+      return {
+        data: null,
+        errors: { currentPassword: "Wrong password" },
+      };
+    }
+
+    const encryptedPassword = newPassword
+      ? await encryptPassword(newPassword)
+      : undefined;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        email,
+        name,
+        ...(encryptedPassword && { password: encryptedPassword }),
       },
     });
 

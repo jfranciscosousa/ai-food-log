@@ -65,12 +65,12 @@ export function UserNav() {
 
           <DropdownMenuItem asChild>
             <NavLink
-              to="/profile"
+              to="/settings"
               prefetch="intent"
               className={({ isActive }) => (isActive ? "underline" : "")}
             >
               <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+              <span>Settings</span>
             </NavLink>
           </DropdownMenuItem>
         </DropdownMenuGroup>

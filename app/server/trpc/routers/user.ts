@@ -37,6 +37,38 @@ const updateUserInput = z.object({
   targetFiber: z.number().optional(),
 });
 
+const updateHealthInput = z.object({
+  gender: z.enum([Gender.MALE, Gender.FEMALE]),
+  age: z.number(),
+  height: z.number(),
+  weight: z.number(),
+  fitnessLevel: z.enum([
+    FitnessLevel.EXTRA_ACTIVE,
+    FitnessLevel.LIGHTLY_ACTIVE,
+    FitnessLevel.MODERATELY_ACTIVE,
+    FitnessLevel.SEDENTARY,
+    FitnessLevel.VERY_ACTIVE,
+  ]),
+  weightLossGoal: z.enum([
+    WeightLossGoal.MAINTAIN,
+    WeightLossGoal.LOW,
+    WeightLossGoal.MEDIUM,
+    WeightLossGoal.HIGH,
+  ]),
+  targetProtein: z.number().optional(),
+  targetCarbs: z.number().optional(),
+  targetFat: z.number().optional(),
+  targetFiber: z.number().optional(),
+});
+
+const updateAccountInput = z.object({
+  email: z.string().email(),
+  name: z.string(),
+  currentPassword: z.string(),
+  newPassword: z.string().optional(),
+  passwordConfirmation: z.string().optional(),
+});
+
 export const userRouter = router({
   update: protectedProcedure
     .input(updateUserInput)
@@ -45,6 +77,36 @@ export const userRouter = router({
 
       if (result.errors) {
         throw createValidationError("Failed to update profile", result.errors);
+      }
+
+      return result.data;
+    }),
+
+  updateHealth: protectedProcedure
+    .input(updateHealthInput)
+    .mutation(async ({ ctx, input }) => {
+      const result = await UsersService.updateHealth(ctx.userId, input);
+
+      if (result.errors) {
+        throw createValidationError(
+          "Failed to update health settings",
+          result.errors,
+        );
+      }
+
+      return result.data;
+    }),
+
+  updateAccount: protectedProcedure
+    .input(updateAccountInput)
+    .mutation(async ({ ctx, input }) => {
+      const result = await UsersService.updateAccount(ctx.userId, input);
+
+      if (result.errors) {
+        throw createValidationError(
+          "Failed to update account settings",
+          result.errors,
+        );
       }
 
       return result.data;
