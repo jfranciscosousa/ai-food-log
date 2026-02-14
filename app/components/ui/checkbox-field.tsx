@@ -29,7 +29,13 @@ const CheckboxField = forwardRef(
 
     return (
       <div className={cn("items-top flex space-x-2 pb-4", className)}>
-        <Checkbox {...props} className={inputClassName} ref={ref} id={id} />
+        <Checkbox
+          {...props}
+          className={inputClassName}
+          ref={ref}
+          id={id}
+          name={name}
+        />
         <div className="grid gap-1.5 leading-none">
           <label
             htmlFor={id}

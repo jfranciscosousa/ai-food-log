@@ -3,6 +3,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
 import { InputField } from "~/components/ui/input-field";
+import { extractTrpcFormErrors } from "~/server/trpc/errors";
 import { trpc } from "~/utils/trpc";
 
 export default function Login() {
@@ -18,6 +19,7 @@ export default function Login() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
+
     login.mutate({
       email: formData.get("email") as string,
       password: formData.get("password") as string,
@@ -25,10 +27,7 @@ export default function Login() {
     });
   };
 
-  const errors =
-    login.error?.data && "cause" in login.error.data
-      ? (login.error.data.cause as Record<string, string>)
-      : undefined;
+  const errors = extractTrpcFormErrors(login.error);
 
   return (
     <Card className="md:w-xl w-full">

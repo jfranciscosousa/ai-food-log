@@ -43,6 +43,7 @@ type OnboardingProps = {
   isLoading?: boolean;
   errors?: Record<string, string>;
   onComplete: (data: OnboardingData) => void;
+  onExit?: () => void;
 };
 
 // Map field names to their step index
@@ -75,7 +76,12 @@ function getFirstErrorStep(errors?: Record<string, string>): number | null {
   return errorSteps[0] ?? null;
 }
 
-export function Onboarding({ isLoading, errors, onComplete }: OnboardingProps) {
+export function Onboarding({
+  isLoading,
+  errors,
+  onComplete,
+  onExit,
+}: OnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [step1Data, setStep1Data] = useState<Step1Data>({
     email: "",
@@ -163,6 +169,8 @@ export function Onboarding({ isLoading, errors, onComplete }: OnboardingProps) {
   const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1);
+    } else if (onExit) {
+      onExit();
     }
   };
 
@@ -238,12 +246,7 @@ export function Onboarding({ isLoading, errors, onComplete }: OnboardingProps) {
           </div>
 
           <div className="flex justify-between pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleBack}
-              disabled={currentStep === 0}
-            >
+            <Button type="button" variant="outline" onClick={handleBack}>
               Back
             </Button>
 

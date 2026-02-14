@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Onboarding } from "~/domains/Onboarding";
 import type { OnboardingData } from "~/domains/Onboarding/Onboarding";
 import { Card } from "~/components/ui/card";
@@ -17,6 +18,7 @@ export const meta = () => [
 ];
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const utils = trpc.useUtils();
   const signup = trpc.auth.signup.useMutation({
     onSuccess: () => {
@@ -45,10 +47,15 @@ export default function SignUp() {
     signup.mutate(result.data);
   }
 
+  function onExit() {
+    navigate("/login");
+  }
+
   return (
     <Card className="md:w-xl w-full">
       <Onboarding
         onComplete={onComplete}
+        onExit={onExit}
         isLoading={signup.isPending}
         errors={allErrors}
       />
