@@ -13,9 +13,6 @@ export async function processFoodWithAI(prompt: string | File) {
     for water weight lost during cooking time so please adjust.
     - if the user specifies the macros like protein fat carbs fiber, please calculate the calories from it. for example user might say "whey protein shake with 50g calories and 20g carbs"
     you should fill in the calories for this item. don't even bother looking for ingredients, just return the macros
-
-    Additional notes:
-    - If the user prompt doesn't align with an actual meal specification, return
     `,
     prompt,
     z.object({

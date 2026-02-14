@@ -5,12 +5,13 @@ import prisma from "./prisma.server";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
 import { type DataResult } from "./utils/types";
 import { formatDate } from "~/hooks/useDates";
+import { base64ToFile } from "../utils/base64ToFile.server";
 
 export class FoodService {
   // Plain object schemas (for tRPC)
   static readonly createEntryParams = z.object({
     content: z.string().optional(),
-    image: z.instanceof(File).optional(),
+    imageBase64: z.string().optional(),
     day: z.string(),
   });
 
@@ -82,21 +83,46 @@ export class FoodService {
       return { data: null, errors: formatZodErrors(parsedSchema.error) };
     }
 
-    if (!(parsedSchema.data.content || parsedSchema.data.image)) {
+    if (!(parsedSchema.data.content || parsedSchema.data.imageBase64)) {
       return {
         data: null,
         errors: { content: "required either content or image" },
       };
     }
 
-    const aiResponse = await processFoodWithAI(
-      parsedSchema.data.content! || parsedSchema.data.image!,
-    );
+    // Convert base64 image to File if provided, otherwise use content
+    const input = parsedSchema.data.imageBase64
+      ? base64ToFile(parsedSchema.data.imageBase64)
+      : parsedSchema.data.content!;
+
+    let aiResponse;
+    try {
+      aiResponse = await processFoodWithAI(input);
+    } catch (error) {
+      console.error("AI processing failed:", error);
+      return {
+        data: null,
+        errors: {
+          content: `Failed to process ${parsedSchema.data.imageBase64 ? "image" : "text"}: ${error instanceof Error ? error.message : "Unknown error"}`,
+        },
+      };
+    }
 
     if (aiResponse.invalid) {
       return {
         data: null,
         errors: { content: "Prompt is not a valid meal description." },
+      };
+    }
+
+    if (!aiResponse.items || aiResponse.items.length === 0) {
+      console.error("AI returned no items:", aiResponse);
+      return {
+        data: null,
+        errors: {
+          content:
+            "Could not extract any nutritional information from the input.",
+        },
       };
     }
 
@@ -114,7 +140,7 @@ export class FoodService {
           carbs: 0,
           fat: 0,
           fiber: 0,
-          fromImage: !!parsedSchema.data.image,
+          fromImage: !!parsedSchema.data.imageBase64,
         },
       });
 

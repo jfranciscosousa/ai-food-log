@@ -1,8 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls:*)",
-      "Bash(pnpm run test:e2e-quick:*)"
+      "Bash(pnpm add:*)",
+      "Bash(pnpm run ts-check:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(pnpm run test:*)",
+      "Bash(npx playwright test*)",
+      "Bash(dotenv*)",
+      "Bash(prisma*)",
+      "MCP",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

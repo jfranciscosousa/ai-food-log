@@ -2,7 +2,9 @@ import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { FoodService } from "../../data/food.server";
 import { processFoodWithAI } from "../../ai/processFoodWithAI.server";
+import { generateMealSuggestion } from "../../ai/generateMealSuggestion.server";
 import { createValidationError } from "../errors";
+import prisma from "../../data/prisma.server";
 
 export const foodRouter = router({
   getEntriesForDay: protectedProcedure
@@ -21,6 +23,7 @@ export const foodRouter = router({
     .input(
       z.object({
         content: z.string().optional(),
+        imageBase64: z.string().optional(),
         day: z.string(),
       }),
     )
@@ -102,5 +105,54 @@ export const foodRouter = router({
         totals,
         input: input.input,
       };
+    }),
+
+  generateMealSuggestion: protectedProcedure
+    .input(
+      z.object({
+        date: z.string(),
+        prompt: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await prisma.user.findUnique({
+        where: { id: ctx.userId },
+        select: {
+          targetCalories: true,
+          targetProtein: true,
+          targetCarbs: true,
+          targetFat: true,
+          targetFiber: true,
+        },
+      });
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const totals = await FoodService.getAggregateForDay(
+        ctx.userId,
+        input.date,
+      );
+
+      const currentTotals = totals ?? {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+        fiber: 0,
+      };
+
+      const remaining = {
+        calories: (user.targetCalories ?? 0) - currentTotals.calories,
+        protein: (user.targetProtein ?? 0) - currentTotals.protein,
+        carbs: (user.targetCarbs ?? 0) - currentTotals.carbs,
+        fat: (user.targetFat ?? 0) - currentTotals.fat,
+        fiber: (user.targetFiber ?? 0) - currentTotals.fiber,
+      };
+
+      const result = await generateMealSuggestion(remaining, input.prompt);
+
+      return result;
     }),
 });

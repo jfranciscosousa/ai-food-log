@@ -1,10 +1,13 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { Camera } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useToast } from "~/hooks/use-toast";
 import { trpc } from "~/utils/trpc";
+import { DiaryAISuggestion } from "./DiaryAISuggestion";
 
 interface DiaryEntryFormProps {
   date: string;
@@ -12,8 +15,10 @@ interface DiaryEntryFormProps {
 
 export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputImageRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const utils = trpc.useUtils();
+  const [activeTab, setActiveTab] = useState("manual");
 
   const createEntry = trpc.food.createEntry.useMutation({
     onSuccess: () => {
@@ -52,30 +57,93 @@ export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
     });
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check if it's an image
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Please select an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      createEntry.mutate({
+        imageBase64: base64,
+        day: date,
+      });
+    };
+    reader.onerror = () => {
+      toast({
+        title: "Failed to read image",
+        variant: "destructive",
+      });
+    };
+    reader.readAsDataURL(file);
+
+    // Reset the input so the same file can be selected again
+    e.target.value = "";
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Add Meal</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-4">
-            <div className="grid w-full gap-1.5">
-              <Label htmlFor="meal">Meal Description</Label>
-              <div className="flex gap-2">
-                <Input
-                  name="content"
-                  placeholder="e.g. 100g of cooked rice and 250g of raw chicken breast"
-                  ref={inputRef}
-                />
-                <Button type="submit" isLoading={createEntry.isPending}>
-                  Add
-                </Button>
+    <Card>
+      <CardHeader>
+        <CardTitle>Add Meal</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="manual">Manual Entry</TabsTrigger>
+            <TabsTrigger value="ai">AI Suggestion</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="manual" className="mt-4">
+            <form onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-4">
+                <div className="grid w-full gap-1.5">
+                  <Label htmlFor="meal">Meal Description</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      name="content"
+                      placeholder="e.g. 100g of cooked rice and 250g of raw chicken breast"
+                      ref={inputRef}
+                    />
+                    <input
+                      ref={inputImageRef}
+                      className="hidden"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => inputImageRef.current?.click()}
+                      isLoading={createEntry.isPending}
+                      disabled={createEntry.isPending}
+                    >
+                      <Camera />
+                    </Button>
+                    <Button type="submit" isLoading={createEntry.isPending}>
+                      Add
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </form>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="ai" className="mt-4">
+            <DiaryAISuggestion date={date} />
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 }
