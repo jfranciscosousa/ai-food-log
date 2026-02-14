@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-import DiaryEntry from "~/modules/Diary/DiaryEntry";
+import DiaryEntry from "~/domains/Diary/DiaryEntry";
 import { trpc } from "~/utils/trpc";
 
 export const meta = () => [

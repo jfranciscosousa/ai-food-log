@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Onboarding } from "~/components/Onboarding";
-import type { OnboardingData } from "~/components/Onboarding/Onboarding";
+import { Onboarding } from "~/domains/Onboarding";
+import type { OnboardingData } from "~/domains/Onboarding/Onboarding";
 import { Card } from "~/components/ui/card";
 import { toast } from "~/hooks/use-toast";
 import {

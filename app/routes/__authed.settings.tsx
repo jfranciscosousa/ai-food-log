@@ -1,5 +1,5 @@
 import useUser from "~/hooks/useUser";
-import SettingsForm from "~/modules/Settings/SettingsForm";
+import SettingsForm from "~/domains/Settings/SettingsForm";
 
 export const meta = () => [
   {

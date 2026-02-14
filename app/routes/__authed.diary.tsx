@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router";
-import DiaryDailySummary from "~/modules/Diary/DiaryDailySummary";
-import DiaryEntryForm from "~/modules/Diary/DiaryEntryForm";
-import DiaryList from "~/modules/Diary/DiaryList";
-import DiaryNavigation from "~/modules/Diary/DiaryNavigation";
+import DiaryDailySummary from "~/domains/Diary/DiaryDailySummary";
+import DiaryEntryForm from "~/domains/Diary/DiaryEntryForm";
+import DiaryList from "~/domains/Diary/DiaryList";
+import DiaryNavigation from "~/domains/Diary/DiaryNavigation";
 
 export const meta = () => [
   {
