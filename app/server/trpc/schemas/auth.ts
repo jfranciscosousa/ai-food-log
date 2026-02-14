@@ -1,5 +1,5 @@
-import { FitnessLevel, Gender, WeightLossGoal } from "@prisma/client";
 import { z } from "zod";
+import { FitnessLevel, Gender, WeightLossGoal } from "~/constants";
 
 export const loginSchema = z.object({
   email: z.string().email(),
