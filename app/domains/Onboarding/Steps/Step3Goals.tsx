@@ -1,7 +1,9 @@
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
-import { FitnessLevel, WeightLossGoal } from "~/constants";
+import { FITNESS_LEVEL_OPTIONS, WEIGHT_LOSS_GOAL_OPTIONS } from "~/constants";
 import type { Step3Data } from "../Onboarding";
+import { calculateCalorieGoal } from "~/lib/calculateCalorieGoal";
+import useUser from "~/hooks/useUser";
 
 type Step3Props = {
   onNext: (data: Step3Data) => void;
@@ -10,7 +12,9 @@ type Step3Props = {
 };
 
 export function Step3Goals({ onNext, defaultValues, errors }: Step3Props) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const user = useUser();
+
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
@@ -33,13 +37,7 @@ export function Step3Goals({ onNext, defaultValues, errors }: Step3Props) {
         placeholder="Select your fitness level"
         required
         errors={errors}
-        options={Object.values(FitnessLevel).map((value) => ({
-          value,
-          label: value
-            .replace(/_/g, " ")
-            .toLowerCase()
-            .replace(/\b\w/g, (l) => l.toUpperCase()),
-        }))}
+        options={FITNESS_LEVEL_OPTIONS}
         defaultValue={defaultValues?.fitnessLevel}
       />
 
@@ -48,13 +46,14 @@ export function Step3Goals({ onNext, defaultValues, errors }: Step3Props) {
         name="weightLossGoal"
         placeholder="Select your goal"
         required
-        options={Object.values(WeightLossGoal).map((value) => ({
-          value,
-          label: value.charAt(0) + value.slice(1).toLowerCase(),
-        }))}
+        options={WEIGHT_LOSS_GOAL_OPTIONS}
         errors={errors}
         defaultValue={defaultValues?.weightLossGoal}
       />
+
+      <p className="text-xs text-muted-foreground">
+        Auto-calculated daily calorie goal: {calculateCalorieGoal(user)}kcal
+      </p>
 
       <InputField
         label="Daily calorie goal (optional)"

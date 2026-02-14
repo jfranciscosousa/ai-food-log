@@ -6,7 +6,6 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 import prisma from "./prisma.server";
-import { calculateCalorieGoal } from "./users/calculateCalorieGoal.server";
 import { encryptPassword, verifyPassword } from "./users/passwordUtils.server";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
 import { type DataResult } from "./utils/types";
@@ -38,7 +37,7 @@ export class UsersService {
       WeightLossGoal.MEDIUM,
       WeightLossGoal.HIGH,
     ]),
-    targetCalories: z.number().optional(),
+    targetCalories: z.number().optional().nullable(),
     rememberMe: z.boolean().optional(),
   });
 
@@ -99,7 +98,7 @@ export class UsersService {
       WeightLossGoal.MEDIUM,
       WeightLossGoal.HIGH,
     ]),
-    targetCalories: z.number().optional(),
+    targetCalories: z.number().optional().nullable(),
     targetProtein: z.number().optional(),
     targetCarbs: z.number().optional(),
     targetFat: z.number().optional(),
@@ -218,16 +217,7 @@ export class UsersService {
         gender,
         fitnessLevel,
         weightLossGoal,
-        targetCalories:
-          targetCalories ??
-          calculateCalorieGoal(
-            weight,
-            height,
-            age,
-            gender,
-            fitnessLevel,
-            weightLossGoal,
-          ),
+        targetCalories,
         bmi,
         bmr,
       },
@@ -302,14 +292,6 @@ export class UsersService {
         gender,
         fitnessLevel,
         weightLossGoal,
-        targetCalories: calculateCalorieGoal(
-          weight || user.weight,
-          height || user.height,
-          age || user.age,
-          gender || user.gender,
-          fitnessLevel || user.fitnessLevel,
-          weightLossGoal || user.weightLossGoal,
-        ),
         targetProtein,
         targetCarbs,
         targetFat,
@@ -362,16 +344,7 @@ export class UsersService {
         gender,
         fitnessLevel,
         weightLossGoal,
-        targetCalories:
-          targetCalories ??
-          calculateCalorieGoal(
-            weight,
-            height,
-            age,
-            gender,
-            fitnessLevel,
-            weightLossGoal,
-          ),
+        targetCalories,
         targetProtein,
         targetCarbs,
         targetFat,

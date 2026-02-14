@@ -1,18 +1,13 @@
-import { FitnessLevel, Gender, WeightLossGoal } from "@prisma/client";
+import type { UserWithoutPassword } from "~/server/data/users.server";
 
-export function calculateCalorieGoal(
-  weightKg: number,
-  heightCm: number,
-  age: number,
-  gender: Gender,
-  fitnessLevel: FitnessLevel,
-  weightLossGoal: WeightLossGoal,
-): number {
+export function calculateCalorieGoal(user: UserWithoutPassword): number {
+  const { weight, height, age, gender, fitnessLevel, weightLossGoal } = user;
+
   // Calculate Basal Metabolic Rate (BMR) using the Mifflin-St Jeor Equation
   const bmr =
     gender === "MALE"
-      ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
-      : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+      ? 10 * weight + 6.25 * height - 5 * age + 5
+      : 10 * weight + 6.25 * height - 5 * age - 161;
 
   // Adjust BMR based on activity level
   const activityFactors = {
@@ -34,5 +29,5 @@ export function calculateCalorieGoal(
   };
   maintenanceCalories -= weightLossCalories[weightLossGoal];
 
-  return maintenanceCalories;
+  return Math.round(maintenanceCalories);
 }

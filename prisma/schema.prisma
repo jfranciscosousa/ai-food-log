@@ -73,7 +73,7 @@ model User {
   gender          Gender                  @default(MALE)
   fitnessLevel    FitnessLevel
   weightLossGoal  WeightLossGoal          @default(LOW)
-  targetCalories  Float                 @default(2000)
+  targetCalories  Float?                 @default(2000)
   targetProtein   Float?
   targetCarbs     Float?
   targetFat       Float?

@@ -1,8 +1,13 @@
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
-import { FitnessLevel, Gender, WeightLossGoal } from "~/constants";
+import {
+  FITNESS_LEVEL_OPTIONS,
+  GENDER_OPTIONS,
+  WEIGHT_LOSS_GOAL_OPTIONS,
+} from "~/constants";
 import { useToast } from "~/hooks/use-toast";
+import { calculateCalorieGoal } from "~/lib/calculateCalorieGoal";
 import type { UserWithoutPassword } from "~/server/data/users.server";
 import { extractTrpcFormErrors } from "~/server/trpc/errors";
 import { trpc } from "~/utils/trpc";
@@ -40,9 +45,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
       gender: data.gender as string,
       fitnessLevel: data.fitnessLevel as string,
       weightLossGoal: data.weightLossGoal as string,
-      targetCalories: data.targetCalories
-        ? Number(data.targetCalories)
-        : undefined,
+      targetCalories: data.targetCalories ? Number(data.targetCalories) : null,
       targetProtein: data.targetProtein
         ? Number(data.targetProtein)
         : undefined,
@@ -71,10 +74,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           name="gender"
           placeholder="Your gender"
           required
-          options={Object.entries(Gender).map(([key, value]) => ({
-            value: key,
-            label: value,
-          }))}
+          options={GENDER_OPTIONS}
           errors={errors}
           defaultValue={user?.gender}
         />
@@ -119,10 +119,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           placeholder="Your fitness level"
           required
           errors={errors}
-          options={Object.values(FitnessLevel).map((value) => ({
-            value,
-            label: value,
-          }))}
+          options={FITNESS_LEVEL_OPTIONS}
           defaultValue={user?.fitnessLevel}
         />
 
@@ -131,13 +128,14 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           name="weightLossGoal"
           placeholder="Your weight loss goal"
           required
-          options={Object.values(WeightLossGoal).map((value) => ({
-            value,
-            label: value,
-          }))}
+          options={WEIGHT_LOSS_GOAL_OPTIONS}
           errors={errors}
           defaultValue={user?.weightLossGoal}
         />
+
+        <p className="text-xs text-muted-foreground">
+          Auto-calculated daily calorie goal: {calculateCalorieGoal(user)}kcal
+        </p>
 
         <InputField
           label="Daily calorie goal (optional)"

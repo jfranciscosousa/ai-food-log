@@ -30,6 +30,6 @@ export const signupSchema = z.object({
     WeightLossGoal.MEDIUM,
     WeightLossGoal.HIGH,
   ]),
-  targetCalories: z.number().optional(),
+  targetCalories: z.number().optional().nullable(),
   rememberMe: z.boolean().optional(),
 });

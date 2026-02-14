@@ -45,7 +45,7 @@ export function extractTrpcFormErrors<T extends InferrableClientTypes>(
   return {};
 }
 
-export function extractZodClientErrors(error: ZodError<unknown>) {
+export function extractZodErrors(error: ZodError<unknown>) {
   const errors: Record<string, string> = {};
 
   error.issues.forEach((issue) => {
