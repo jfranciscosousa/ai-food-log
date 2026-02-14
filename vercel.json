@@ -4,6 +4,12 @@
       "ENABLE_FILE_SYSTEM_API": "1"
     }
   },
+  "rewrites": [
+    {
+      "source": "/:path((?!api).*)*",
+      "destination": "/"
+    }
+  ],
   "headers": [
     {
       "source": "(.*)",
