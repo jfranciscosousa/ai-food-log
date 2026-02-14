@@ -31,7 +31,7 @@ export async function completion<T>(
       : { prompt: prompt.content };
 
   const response = await generateText({
-    model: "openai/gpt-5-mini",
+    model: "openai/gpt-oss-120b",
 
     system,
 

@@ -20,7 +20,7 @@ pnpm test               # Run all tests (Vitest + Playwright E2E)
 - **API Layer**: tRPC for end-to-end type-safe APIs
 - **Database**: PostgreSQL with Prisma ORM
 - **AI Integration**: Vercel AI SDK with OpenAI gpt-5-mini
-- **Styling**: TailwindCSS 4 with Radix UI primitives
+- **Styling**: TailwindCSS 4 with Radix UI primitives. shadcn library
 
 ## AI Capabilities
 
@@ -54,6 +54,6 @@ See `.env.example` for complete list.
 - E2E tests use Playwright with separate test database
 - Run `pnpm db:push` to sync schema during development
 
-## Vibe coding
-
-When implementing code as an AGENT, please only check types automatically. Do not run a build or tests unless told to.
+## Guidelines
+- When implementing code as an AGENT, please only check types automatically. Do not run a build or tests unless told to.
+- Avoid reinventing the wheel, use existing components and utilities

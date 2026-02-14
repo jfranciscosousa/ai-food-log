@@ -10,7 +10,8 @@
       "Bash(asdf list:*)",
       "Bash(npm view:*)",
       "Bash(mise ls-remote:*)",
-      "Bash(asdf install:*)"
+      "Bash(asdf install:*)",
+      "Bash(timeout 10 pnpm run:*)"
     ],
     "deny": [],
     "ask": []

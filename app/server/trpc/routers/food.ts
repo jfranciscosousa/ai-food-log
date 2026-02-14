@@ -1,32 +1,35 @@
-import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { FoodService } from "../../data/food.server";
 import { processFoodWithAI } from "../../ai/processFoodWithAI.server";
 import { generateMealSuggestion } from "../../ai/generateMealSuggestion.server";
 import { createValidationError } from "../errors";
 import prisma from "../../data/prisma.server";
+import {
+  getEntriesForDaySchema,
+  getAggregateForDaySchema,
+  createEntrySchema,
+  updateEntrySchema,
+  deleteEntrySchema,
+  deleteAllEntriesSchema,
+  previewEntrySchema,
+  generateMealSuggestionSchema,
+} from "../schemas/food";
 
 export const foodRouter = router({
   getEntriesForDay: protectedProcedure
-    .input(z.object({ date: z.string().optional() }))
+    .input(getEntriesForDaySchema)
     .query(async ({ ctx, input }) => {
       return FoodService.getEntriesForDay(ctx.userId, input.date);
     }),
 
   getAggregateForDay: protectedProcedure
-    .input(z.object({ date: z.string().optional() }))
+    .input(getAggregateForDaySchema)
     .query(async ({ ctx, input }) => {
       return FoodService.getAggregateForDay(ctx.userId, input.date);
     }),
 
   createEntry: protectedProcedure
-    .input(
-      z.object({
-        content: z.string().optional(),
-        imageBase64: z.string().optional(),
-        day: z.string(),
-      }),
-    )
+    .input(createEntrySchema)
     .mutation(async ({ ctx, input }) => {
       const result = await FoodService.createEntry(ctx.userId, input);
 
@@ -38,12 +41,7 @@ export const foodRouter = router({
     }),
 
   updateEntry: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-        content: z.string(),
-      }),
-    )
+    .input(updateEntrySchema)
     .mutation(async ({ ctx, input }) => {
       const result = await FoodService.updateEntry(ctx.userId, input);
 
@@ -55,7 +53,7 @@ export const foodRouter = router({
     }),
 
   deleteEntry: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(deleteEntrySchema)
     .mutation(async ({ ctx, input }) => {
       const result = await FoodService.deleteEntry(ctx.userId, input);
 
@@ -67,7 +65,7 @@ export const foodRouter = router({
     }),
 
   deleteAllEntries: protectedProcedure
-    .input(z.object({ day: z.string() }))
+    .input(deleteAllEntriesSchema)
     .mutation(async ({ ctx, input }) => {
       const result = await FoodService.deleteAllEntries(ctx.userId, input);
 
@@ -79,7 +77,7 @@ export const foodRouter = router({
     }),
 
   previewEntry: protectedProcedure
-    .input(z.object({ input: z.string() }))
+    .input(previewEntrySchema)
     .query(async ({ input }) => {
       const entry = await processFoodWithAI({
         type: "string",
@@ -111,12 +109,7 @@ export const foodRouter = router({
     }),
 
   generateMealSuggestion: protectedProcedure
-    .input(
-      z.object({
-        date: z.string(),
-        prompt: z.string().optional(),
-      }),
-    )
+    .input(generateMealSuggestionSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await prisma.user.findUnique({
         where: { id: ctx.userId },

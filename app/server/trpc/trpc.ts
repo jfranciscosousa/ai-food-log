@@ -5,6 +5,7 @@ import { type Context } from "./context";
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
+    console.log(error.cause, "meme");
     return {
       ...shape,
       data: {

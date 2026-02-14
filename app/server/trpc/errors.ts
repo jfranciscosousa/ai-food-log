@@ -1,6 +1,7 @@
 import type { TRPCClientErrorLike } from "@trpc/client";
 import type { InferrableClientTypes } from "@trpc/server/unstable-core-do-not-import";
 import { TRPCError } from "@trpc/server";
+import type { ZodError } from "zod";
 
 export function createValidationError(
   message: string,
@@ -42,4 +43,15 @@ export function extractTrpcFormErrors<T extends InferrableClientTypes>(
   }
 
   return {};
+}
+
+export function extractZodClientErrors(error: ZodError<unknown>) {
+  const errors: Record<string, string> = {};
+
+  error.issues.forEach((issue) => {
+    const path = issue.path.join(".");
+    errors[path] = issue.message;
+  });
+
+  return errors;
 }

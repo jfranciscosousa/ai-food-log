@@ -20,3 +20,6 @@ playwright-report/
 .mcp.local.json
 .claude/local.json
 .claude/settings.local.json
+
+*storybook.log
+storybook-static
