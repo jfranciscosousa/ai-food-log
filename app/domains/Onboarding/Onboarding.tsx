@@ -30,6 +30,7 @@ export type Step2Data = {
 export type Step3Data = {
   fitnessLevel: string;
   weightLossGoal: string;
+  targetCalories?: number;
 };
 
 export type Step4Data = {
@@ -58,6 +59,7 @@ const fieldToStepMap: Record<string, number> = {
   weight: 1,
   fitnessLevel: 2,
   weightLossGoal: 2,
+  targetCalories: 2,
   inviteToken: 3,
   rememberMe: 3,
 };
@@ -98,6 +100,7 @@ export function Onboarding({
   const [step3Data, setStep3Data] = useState<Step3Data>({
     fitnessLevel: "",
     weightLossGoal: "",
+    targetCalories: undefined,
   });
   const [step4Data, setStep4Data] = useState<Step4Data>({
     inviteToken: "",

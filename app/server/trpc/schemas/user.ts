@@ -52,6 +52,7 @@ export const updateHealthSchema = z.object({
     WeightLossGoal.MEDIUM,
     WeightLossGoal.HIGH,
   ]),
+  targetCalories: z.number().optional(),
   targetProtein: z.number().optional(),
   targetCarbs: z.number().optional(),
   targetFat: z.number().optional(),

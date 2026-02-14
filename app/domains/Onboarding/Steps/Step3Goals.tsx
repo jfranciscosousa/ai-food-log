@@ -1,3 +1,4 @@
+import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
 import { FitnessLevel, WeightLossGoal } from "~/constants";
 import type { Step3Data } from "../Onboarding";
@@ -13,9 +14,14 @@ export function Step3Goals({ onNext, defaultValues, errors }: Step3Props) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
+    const targetCaloriesValue = formData.get("targetCalories") as string;
+
     onNext({
       fitnessLevel: formData.get("fitnessLevel") as string,
       weightLossGoal: formData.get("weightLossGoal") as string,
+      targetCalories: targetCaloriesValue
+        ? Number(targetCaloriesValue)
+        : undefined,
     });
   };
 
@@ -50,12 +56,14 @@ export function Step3Goals({ onNext, defaultValues, errors }: Step3Props) {
         defaultValue={defaultValues?.weightLossGoal}
       />
 
-      <div className="rounded-lg border border-muted bg-muted/50 p-4">
-        <p className="text-sm text-muted-foreground">
-          Based on your information, we&apos;ll calculate your recommended daily
-          calorie intake and macro goals.
-        </p>
-      </div>
+      <InputField
+        label="Daily calorie goal (optional)"
+        name="targetCalories"
+        type="number"
+        placeholder="Leave blank to auto-calculate"
+        errors={errors}
+        defaultValue={defaultValues?.targetCalories?.toString()}
+      />
 
       <button type="submit" hidden />
     </form>

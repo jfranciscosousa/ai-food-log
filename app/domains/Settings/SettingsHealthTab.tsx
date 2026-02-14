@@ -27,7 +27,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
       });
     },
   });
-
+  console.log(user.targetCalories);
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -40,6 +40,9 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
       gender: data.gender as string,
       fitnessLevel: data.fitnessLevel as string,
       weightLossGoal: data.weightLossGoal as string,
+      targetCalories: data.targetCalories
+        ? Number(data.targetCalories)
+        : undefined,
       targetProtein: data.targetProtein
         ? Number(data.targetProtein)
         : undefined,
@@ -55,7 +58,11 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
   const errors = extractTrpcFormErrors(updateHealth.error);
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4"
+      key={JSON.stringify(user)}
+    >
       <div className="space-y-4">
         <h3 className="font-semibold">Personal Information</h3>
 
@@ -130,6 +137,14 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           }))}
           errors={errors}
           defaultValue={user?.weightLossGoal}
+        />
+
+        <InputField
+          label="Daily calorie goal (optional)"
+          name="targetCalories"
+          placeholder="Leave blank to auto-calculate"
+          errors={errors}
+          defaultValue={user?.targetCalories ?? undefined}
         />
       </div>
 

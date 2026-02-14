@@ -38,6 +38,7 @@ export class UsersService {
       WeightLossGoal.MEDIUM,
       WeightLossGoal.HIGH,
     ]),
+    targetCalories: z.number().optional(),
     rememberMe: z.boolean().optional(),
   });
 
@@ -98,6 +99,7 @@ export class UsersService {
       WeightLossGoal.MEDIUM,
       WeightLossGoal.HIGH,
     ]),
+    targetCalories: z.number().optional(),
     targetProtein: z.number().optional(),
     targetCarbs: z.number().optional(),
     targetFat: z.number().optional(),
@@ -176,6 +178,7 @@ export class UsersService {
       gender,
       fitnessLevel,
       weightLossGoal,
+      targetCalories,
       rememberMe,
     } = parsedSchema.data;
 
@@ -215,14 +218,16 @@ export class UsersService {
         gender,
         fitnessLevel,
         weightLossGoal,
-        targetCalories: calculateCalorieGoal(
-          weight,
-          height,
-          age,
-          gender,
-          fitnessLevel,
-          weightLossGoal,
-        ),
+        targetCalories:
+          targetCalories ??
+          calculateCalorieGoal(
+            weight,
+            height,
+            age,
+            gender,
+            fitnessLevel,
+            weightLossGoal,
+          ),
         bmi,
         bmr,
       },
@@ -332,6 +337,7 @@ export class UsersService {
       gender,
       fitnessLevel,
       weightLossGoal,
+      targetCalories,
       targetProtein,
       targetCarbs,
       targetFat,
@@ -356,14 +362,16 @@ export class UsersService {
         gender,
         fitnessLevel,
         weightLossGoal,
-        targetCalories: calculateCalorieGoal(
-          weight,
-          height,
-          age,
-          gender,
-          fitnessLevel,
-          weightLossGoal,
-        ),
+        targetCalories:
+          targetCalories ??
+          calculateCalorieGoal(
+            weight,
+            height,
+            age,
+            gender,
+            fitnessLevel,
+            weightLossGoal,
+          ),
         targetProtein,
         targetCarbs,
         targetFat,
