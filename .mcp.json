@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "env": {
+        "PLAYWRIGHT_PROJECT": "chromium"
+      }
+    },
+    "e2e-tests": {
+      "command": "pnpm",
+      "args": ["run", "test:e2e-quick"],
+      "env": {}
+    }
+  }
+}

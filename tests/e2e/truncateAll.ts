@@ -12,9 +12,9 @@ export async function truncateAll() {
 }
 
 export function truncateTable(client: PrismaClient, table: string) {
-  return client.$executeRawUnsafe(
-    `TRUNCATE TABLE "${table}" RESTART IDENTITY CASCADE`,
-  );
+  // Use DELETE instead of TRUNCATE to avoid permission issues
+  // Note: This is slower but works with restricted database users
+  return client.$executeRawUnsafe(`DELETE FROM "${table}"`);
 }
 
 function getTables() {

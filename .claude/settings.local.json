@@ -1,9 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm add:*)",
-      "Bash(pnpm run ts-check:*)",
-      "Bash(pnpm run build:*)"
+      "Bash(ls:*)",
+      "Bash(pnpm run test:e2e-quick:*)"
     ],
     "deny": [],
     "ask": []

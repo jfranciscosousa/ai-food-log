@@ -66,12 +66,12 @@ test("shows login and then redirects to original page", async ({
 }) => {
   const user = await createUser();
 
-  await page.goto("/profile");
+  await page.goto("/settings");
   await (await screen.findByLabelText("Email")).fill(user.email);
   await screen.getByLabelText("Password").fill(PASSWORD);
   await screen.getByText("Login", { selector: "button > span > span" }).click();
 
-  await expect(page).toHaveURL("/profile");
+  await expect(page).toHaveURL("/settings");
 });
 
 test("logs out and drops user on login page", async ({ page, screen }) => {

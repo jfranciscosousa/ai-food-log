@@ -22,7 +22,7 @@ function assertUserSame(user1: object, user2: object) {
 test("renders settings", async ({ page, screen }) => {
   const user = await createUserAndLogin(page, screen);
 
-  await page.goto("/settings");
+  await page.goto("/settings?tab=account");
 
   expect(await screen.findByDisplayValue(user.name)).toBeTruthy();
   expect(page.getByText(user.email)).toBeTruthy();

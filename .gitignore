@@ -15,3 +15,7 @@ playwright-report/
 !.env.sample
 !.env.*.sample
 .env*.local
+
+# Claude Code local overrides
+.mcp.local.json
+.claude/local.json
