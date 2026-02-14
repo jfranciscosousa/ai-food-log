@@ -46,7 +46,9 @@ export async function generateMealSuggestion(
 
     Always specify weights in grams for each component and account for cooking methods (raw vs cooked).
     `,
-    `
+    {
+      type: "string",
+      content: `
     User's remaining daily macros:
     - Calories: ${Math.max(0, calories)} kcal
     - Protein: ${Math.max(0, protein)}g
@@ -58,6 +60,7 @@ export async function generateMealSuggestion(
 
     Provide meal suggestions that match their request. Remember: ALWAYS return actual food descriptions with weights, never explanatory text.
     `,
+    },
     z.object({
       meals: z
         .array(

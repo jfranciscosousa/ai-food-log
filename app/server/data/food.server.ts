@@ -1,11 +1,10 @@
 import { type FoodEntry } from "@prisma/client";
 import { z } from "zod";
+import { formatDate } from "~/hooks/useDates";
 import { processFoodWithAI } from "../ai/processFoodWithAI.server";
 import prisma from "./prisma.server";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
 import { type DataResult } from "./utils/types";
-import { formatDate } from "~/hooks/useDates";
-import { base64ToFile } from "../utils/base64ToFile.server";
 
 export class FoodService {
   // Plain object schemas (for tRPC)
@@ -90,14 +89,13 @@ export class FoodService {
       };
     }
 
-    // Convert base64 image to File if provided, otherwise use content
-    const input = parsedSchema.data.imageBase64
-      ? base64ToFile(parsedSchema.data.imageBase64)
-      : parsedSchema.data.content!;
+    const prompt = parsedSchema.data.imageBase64
+      ? { type: "base64file" as const, content: parsedSchema.data.imageBase64 }
+      : { type: "string" as const, content: parsedSchema.data.content! };
 
     let aiResponse;
     try {
-      aiResponse = await processFoodWithAI(input);
+      aiResponse = await processFoodWithAI(prompt);
     } catch (error) {
       console.error("AI processing failed:", error);
       return {
@@ -191,7 +189,7 @@ export class FoodService {
 
     const { id, content } = parsedSchema.data;
 
-    const aiResponse = await processFoodWithAI(content);
+    const aiResponse = await processFoodWithAI({ type: "string", content });
 
     if (aiResponse.invalid) {
       return {

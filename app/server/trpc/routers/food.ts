@@ -81,7 +81,10 @@ export const foodRouter = router({
   previewEntry: protectedProcedure
     .input(z.object({ input: z.string() }))
     .query(async ({ input }) => {
-      const entry = await processFoodWithAI(input.input);
+      const entry = await processFoodWithAI({
+        type: "string",
+        content: input.input,
+      });
 
       if (entry.invalid) {
         return {

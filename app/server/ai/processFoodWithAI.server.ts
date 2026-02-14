@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { completion } from "./openai.server";
+import { completion, type Prompt } from "./openai.server";
 
-export async function processFoodWithAI(prompt: string | File) {
+export async function processFoodWithAI(prompt: Prompt) {
   return completion(
     `
     You are a meal tracker helper. You convert human text, like descriptions of meals with weights and convert it into macros.

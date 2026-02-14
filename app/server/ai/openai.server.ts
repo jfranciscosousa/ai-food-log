@@ -1,27 +1,26 @@
 import { generateText, Output, type FlexibleSchema } from "ai";
 
-async function fileToBase64(file: File): Promise<string> {
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const base64String = buffer.toString("base64");
-
-  return `data:${file.type};base64,${base64String}`;
-}
+export type Prompt =
+  | {
+      type: "string";
+      content: string;
+    }
+  | { type: "base64file"; content: string };
 
 export async function completion<T>(
   system: string,
-  prompt: string | File,
+  prompt: Prompt,
   schema: FlexibleSchema<T>,
 ) {
   const promptObj =
-    prompt instanceof File
+    prompt.type === "base64file"
       ? {
           messages: [
             {
               content: [
                 {
                   type: "file" as const,
-                  data: await fileToBase64(prompt),
+                  data: prompt.content,
                   mediaType: prompt.type,
                 },
               ],
@@ -29,7 +28,7 @@ export async function completion<T>(
             },
           ],
         }
-      : { prompt };
+      : { prompt: prompt.content };
 
   const response = await generateText({
     model: "openai/gpt-5-mini",
