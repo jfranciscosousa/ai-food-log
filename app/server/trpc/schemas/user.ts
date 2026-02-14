@@ -1,7 +1,7 @@
 import { FitnessLevel, Gender, WeightLossGoal } from "@prisma/client";
 import { z } from "zod";
 
-export const updateUserSchema = z.object({
+export const updateUserInput = z.object({
   email: z.string().email().optional(),
   name: z.string().optional(),
   currentPassword: z.string(),
@@ -34,7 +34,7 @@ export const updateUserSchema = z.object({
   targetFiber: z.number().optional(),
 });
 
-export const updateHealthSchema = z.object({
+export const updateHealthInput = z.object({
   gender: z.enum([Gender.MALE, Gender.FEMALE]),
   age: z.number(),
   height: z.number(),
@@ -58,7 +58,7 @@ export const updateHealthSchema = z.object({
   targetFiber: z.number().optional(),
 });
 
-export const updateAccountSchema = z.object({
+export const updateAccountInput = z.object({
   email: z.string().email(),
   name: z.string(),
   currentPassword: z.string(),

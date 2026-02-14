@@ -1,14 +1,9 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
+import { Card } from "~/components/ui/card";
 import { Onboarding } from "~/domains/Onboarding";
 import type { OnboardingData } from "~/domains/Onboarding/Onboarding";
-import { Card } from "~/components/ui/card";
 import { toast } from "~/hooks/use-toast";
-import {
-  extractTrpcFormErrors,
-  extractZodClientErrors,
-} from "~/server/trpc/errors";
-import { signupSchema } from "~/server/trpc/schemas/auth";
+import { extractTrpcFormErrors } from "~/server/trpc/errors";
 import { trpc } from "~/utils/trpc";
 
 export const meta = () => [
@@ -23,7 +18,6 @@ export default function SignUp() {
   const signup = trpc.auth.signup.useMutation({
     onSuccess: () => {
       utils.auth.invalidate();
-      setClientErrors({});
     },
     onError: () =>
       toast({
@@ -31,20 +25,12 @@ export default function SignUp() {
         variant: "destructive",
       }),
   });
-  const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
-  const formErrors = extractTrpcFormErrors(signup.error);
-  const allErrors = { ...clientErrors, ...formErrors };
+
+  const errors = extractTrpcFormErrors(signup.error);
 
   function onComplete(data: OnboardingData) {
-    const result = signupSchema.safeParse(data);
-
-    if (!result.success) {
-      setClientErrors(extractZodClientErrors(result.error));
-      return;
-    }
-
-    setClientErrors({});
-    signup.mutate(result.data);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    signup.mutate(data as any);
   }
 
   function onExit() {
@@ -57,7 +43,7 @@ export default function SignUp() {
         onComplete={onComplete}
         onExit={onExit}
         isLoading={signup.isPending}
-        errors={allErrors}
+        errors={errors}
       />
     </Card>
   );
