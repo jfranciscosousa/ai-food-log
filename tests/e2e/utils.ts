@@ -5,18 +5,12 @@ import {
   type LocatorFixtures as TestingLibraryFixtures,
 } from "@playwright-testing-library/test/fixture.js";
 import { test as base, type Page } from "@playwright/test";
-import { truncateAll } from "./truncateAll";
 import { UsersService } from "~/server/data/users.server";
 import type z from "zod";
 
 export const USER_TEST_PASSWORD = "foobar";
 
 export const test = base.extend<TestingLibraryFixtures>(fixtures);
-
-/**
- * Truncates the database between each test
- */
-test.beforeEach(truncateAll);
 
 export const expect = test.expect;
 

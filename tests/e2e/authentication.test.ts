@@ -2,8 +2,8 @@ import { waitFor } from "@playwright-testing-library/test";
 import { createUser, createUserAndLogin, expect, test } from "./utils";
 import prisma from "~/server/data/prisma.server";
 import { verifyPassword } from "~/server/data/users/passwordUtils.server";
+import { faker } from "@faker-js/faker";
 
-const EMAIL = "test@mail.com";
 const NAME = "Test name";
 const AGE = "39";
 const HEIGHT = "170";
@@ -11,9 +11,11 @@ const WEIGHT = "82";
 const PASSWORD = "foobar";
 
 test("signs up", async ({ page, screen }) => {
+  const email = faker.internet.email();
+
   await page.goto("/signup");
 
-  await (await screen.findByLabelText("Email")).fill(EMAIL);
+  await (await screen.findByLabelText("Email")).fill(email);
   await screen.getByLabelText("Name").fill(NAME);
   await screen.getByLabelText("Age").fill(AGE);
   await screen.getByLabelText("Height (cm)").fill(HEIGHT);
@@ -35,10 +37,10 @@ test("signs up", async ({ page, screen }) => {
   await expect(page).toHaveURL("/diary");
   await waitFor(async () => {
     const user = await prisma.user.findFirstOrThrow({
-      where: { email: EMAIL },
+      where: { email },
     });
     expect(user.name).toEqual(NAME);
-    expect(user.email).toEqual(EMAIL);
+    expect(user.email).toEqual(email);
     expect(user.age.toString()).toEqual(AGE);
     expect(user.height.toString()).toEqual(HEIGHT);
     expect(user.weight.toString()).toEqual(WEIGHT);

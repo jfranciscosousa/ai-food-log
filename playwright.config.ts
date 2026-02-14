@@ -1,5 +1,9 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
+import { config as loadEnv } from "dotenv";
+
+// Load .env.test for E2E tests
+loadEnv({ path: ".env.test", override: true });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -7,8 +11,9 @@ import { devices } from "@playwright/test";
 const config: PlaywrightTestConfig = {
   testDir: "./tests/e2e",
   webServer: {
-    command: "PORT=3001 pnpm run start",
+    command: "dotenv -e .env.test -- bash -c 'PORT=3001 pnpm run start'",
     port: 3001,
+    reuseExistingServer: true,
   },
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
