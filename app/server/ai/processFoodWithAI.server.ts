@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { completion, type Prompt } from "./openai.server";
+import { completion, type Prompt } from "./aiutils";
 
 export async function processFoodWithAI(prompt: Prompt) {
   return completion(

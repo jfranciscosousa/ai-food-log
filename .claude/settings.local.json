@@ -1,15 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm add:*)",
-      "Bash(pnpm run ts-check:*)",
-      "Bash(pnpm run build:*)",
-      "Bash(pnpm run test:*)",
-      "Bash(npx playwright test*)",
-      "Bash(dotenv*)",
-      "Bash(prisma*)",
-      "MCP",
-      "Bash(ls:*)"
+      "Bash(grep:*)",
+      "Bash:(mkdir:*)",
+      "Bash(pnpm outdated:*)",
+      "Bash(pnpm ts-check:*)",
+      "Bash(node:*)",
+      "Bash(pnpm:*)",
+      "Bash(asdf list:*)",
+      "Bash(npm view:*)",
+      "Bash(mise ls-remote:*)",
+      "Bash(asdf install:*)"
     ],
     "deny": [],
     "ask": []

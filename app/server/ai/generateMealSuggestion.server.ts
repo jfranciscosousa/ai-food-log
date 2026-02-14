@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { completion } from "./openai.server";
+import { completion } from "./aiutils";
 
 interface RemainingMacros {
   calories: number;

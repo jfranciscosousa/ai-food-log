@@ -108,7 +108,7 @@ export function DiaryAISuggestion({ date }: DiaryAISuggestionProps) {
             />
             <p className="text-xs text-muted-foreground">
               Try: &quot;What can I have for lunch?&quot; or &quot;Plan 3 meals
-              for today&quot;
+              for today&quot;ss
             </p>
           </div>
           <Button
@@ -141,7 +141,7 @@ export function DiaryAISuggestion({ date }: DiaryAISuggestionProps) {
                   isLoading={addingIndex === index}
                   disabled={addingIndex !== null}
                   size="sm"
-                  className="gap-1"
+                  className="gap-1 ml-auto flex"
                 >
                   <Plus className="h-3 w-3" />
                   Add This Meal
