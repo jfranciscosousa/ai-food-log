@@ -74,6 +74,10 @@ export class UsersService {
         WeightLossGoal.HIGH,
       ])
       .optional(),
+    targetProtein: z.number().optional(),
+    targetCarbs: z.number().optional(),
+    targetFat: z.number().optional(),
+    targetFiber: z.number().optional(),
   });
 
   static omitPassword(user: User): UserWithoutPassword {
@@ -214,6 +218,10 @@ export class UsersService {
       gender,
       fitnessLevel,
       weightLossGoal,
+      targetProtein,
+      targetCarbs,
+      targetFat,
+      targetFiber,
       newPassword,
       passwordConfirmation,
       currentPassword,
@@ -265,6 +273,10 @@ export class UsersService {
           fitnessLevel || user.fitnessLevel,
           weightLossGoal || user.weightLossGoal,
         ),
+        targetProtein,
+        targetCarbs,
+        targetFat,
+        targetFiber,
       },
     });
 

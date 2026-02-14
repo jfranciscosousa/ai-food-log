@@ -74,6 +74,10 @@ model User {
   fitnessLevel    FitnessLevel
   weightLossGoal  WeightLossGoal          @default(LOW)
   targetCalories  Float                 @default(2000)
+  targetProtein   Float?
+  targetCarbs     Float?
+  targetFat       Float?
+  targetFiber     Float?
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
   featureFlags    Json                    @default("{}")

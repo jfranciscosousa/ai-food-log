@@ -18,6 +18,73 @@ interface DiaryDailySummaryProps {
   date: string;
 }
 
+type MacroItemProps = {
+  label: string;
+  current: number;
+  target?: number | null;
+  showProgress?: boolean;
+};
+
+function MacroItem({ label, current, target, showProgress }: MacroItemProps) {
+  const progress = target ? (current / target) * 100 : 0;
+  const status = useMemo(() => {
+    if (!target) return null;
+    if (current > target) {
+      return {
+        color: "text-red-500 dark:text-red-400",
+        message: "Over",
+      };
+    }
+    if (current === target) {
+      return {
+        color: "text-green-500 dark:text-green-400",
+        message: "On target",
+      };
+    }
+    return {
+      color: "text-yellow-500 dark:text-yellow-400",
+      message: "Under",
+    };
+  }, [current, target]);
+
+  if (showProgress && target) {
+    return (
+      <div className="space-y-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <span className="text-sm font-medium">{label}</span>
+          <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-1.5">
+              <span className="font-medium">{formatNumber(current, 0)}</span>
+              <span className="text-muted-foreground">/</span>
+              <span className="text-muted-foreground">
+                {formatNumber(target, 0)}
+              </span>
+            </div>
+            {status && (
+              <span className={`${status.color}`}>({status.message})</span>
+            )}
+          </div>
+        </div>
+        <Progress value={progress} className="h-2" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-1">
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+      <p className="text-2xl font-bold">{formatNumber(current)}g</p>
+      {target ? (
+        <p className="text-xs text-muted-foreground">
+          Goal: {formatNumber(target)}g
+        </p>
+      ) : (
+        <span className="block h-4" />
+      )}
+    </div>
+  );
+}
+
 export default function DiaryDailySummary({ date }: DiaryDailySummaryProps) {
   const user = useUser();
   const { data: totals, isLoading } = trpc.food.getAggregateForDay.useQuery({
@@ -31,34 +98,6 @@ export default function DiaryDailySummary({ date }: DiaryDailySummaryProps) {
     fat: 0,
     fiber: 0,
   };
-
-  const calorieProgress = user
-    ? (entriesTotals.calories / user.targetCalories) * 100
-    : 0;
-  const calorieStatus = useMemo(() => {
-    if (!user) {
-      return {
-        color: "text-muted-foreground",
-        message: "Loading...",
-      };
-    }
-    if (entriesTotals.calories > user.targetCalories) {
-      return {
-        color: "text-red-500 dark:text-red-400",
-        message: "Over target",
-      };
-    }
-    if (entriesTotals.calories === user.targetCalories) {
-      return {
-        color: "text-green-500 dark:text-green-400",
-        message: "On target",
-      };
-    }
-    return {
-      color: "text-yellow-500 dark:text-yellow-400",
-      message: "Under target",
-    };
-  }, [entriesTotals.calories, user]);
 
   if (isLoading) {
     return (
@@ -80,7 +119,7 @@ export default function DiaryDailySummary({ date }: DiaryDailySummaryProps) {
               <div className="h-5 w-20 animate-pulse rounded bg-muted" />
               <div className="h-5 w-48 animate-pulse rounded bg-muted" />
             </div>
-            <div className="h-2 w-full animate-pulse rounded bg-muted" />
+            <Progress value={0} className="h-2 opacity-20" />
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -88,6 +127,7 @@ export default function DiaryDailySummary({ date }: DiaryDailySummaryProps) {
               <div key={i} className="space-y-1">
                 <div className="h-5 w-16 animate-pulse rounded bg-muted" />
                 <div className="h-8 w-20 animate-pulse rounded bg-muted" />
+                <span className="block h-4" />
               </div>
             ))}
           </div>
@@ -107,52 +147,34 @@ export default function DiaryDailySummary({ date }: DiaryDailySummaryProps) {
         <DiaryClearDay />
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-sm font-medium">Calories</span>
-            <div className="flex items-center gap-2 text-sm">
-              <div className="flex items-center gap-1.5">
-                <span className="font-medium">
-                  {formatNumber(entriesTotals.calories, 0)}
-                </span>
-                <span className="text-muted-foreground">/</span>
-                <span className="text-muted-foreground">
-                  {user ? formatNumber(user.targetCalories, 0) : "..."}
-                </span>
-              </div>
-              <span className={`${calorieStatus.color}`}>
-                ({calorieStatus.message})
-              </span>
-            </div>
-          </div>
-          <Progress value={calorieProgress} className="h-2" />
-        </div>
+        <MacroItem
+          label="Calories"
+          current={entriesTotals.calories}
+          target={user?.targetCalories}
+          showProgress
+        />
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Protein</p>
-            <p className="text-2xl font-bold">
-              {formatNumber(entriesTotals.protein)}g
-            </p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Carbs</p>
-            <p className="text-2xl font-bold">
-              {formatNumber(entriesTotals.carbs)}g
-            </p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Fat</p>
-            <p className="text-2xl font-bold">
-              {formatNumber(entriesTotals.fat)}g
-            </p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Fiber</p>
-            <p className="text-2xl font-bold">
-              {formatNumber(entriesTotals.fiber)}g
-            </p>
-          </div>
+          <MacroItem
+            label="Protein"
+            current={entriesTotals.protein}
+            target={user?.targetProtein}
+          />
+          <MacroItem
+            label="Carbs"
+            current={entriesTotals.carbs}
+            target={user?.targetCarbs}
+          />
+          <MacroItem
+            label="Fat"
+            current={entriesTotals.fat}
+            target={user?.targetFat}
+          />
+          <MacroItem
+            label="Fiber"
+            current={entriesTotals.fiber}
+            target={user?.targetFiber}
+          />
         </div>
       </CardContent>
     </Card>

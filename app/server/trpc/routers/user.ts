@@ -31,6 +31,10 @@ const updateUserInput = z.object({
       WeightLossGoal.HIGH,
     ])
     .optional(),
+  targetProtein: z.number().optional(),
+  targetCarbs: z.number().optional(),
+  targetFat: z.number().optional(),
+  targetFiber: z.number().optional(),
 });
 
 export const userRouter = router({

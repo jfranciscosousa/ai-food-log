@@ -57,6 +57,12 @@ export default function ProfileForm({ mode, user }: Props) {
       age: data.age ? Number(data.age) : undefined,
       height: data.height ? Number(data.height) : undefined,
       weight: data.weight ? Number(data.weight) : undefined,
+      targetProtein: data.targetProtein
+        ? Number(data.targetProtein)
+        : undefined,
+      targetCarbs: data.targetCarbs ? Number(data.targetCarbs) : undefined,
+      targetFat: data.targetFat ? Number(data.targetFat) : undefined,
+      targetFiber: data.targetFiber ? Number(data.targetFiber) : undefined,
       rememberMe: formData.get("rememberMe") === "on",
     };
 
@@ -164,6 +170,53 @@ export default function ProfileForm({ mode, user }: Props) {
             errors={errors}
             defaultValue={user?.weightLossGoal}
           />
+
+          {mode === "update" && (
+            <>
+              <div className="space-y-4 rounded-lg border p-4">
+                <h3 className="font-semibold">Macro Goals (Optional)</h3>
+                <p className="text-sm text-muted-foreground">
+                  Set individual goals for each macro. Leave blank to not track.
+                </p>
+
+                <InputField
+                  label="Protein goal (g)"
+                  name="targetProtein"
+                  type="number"
+                  placeholder="e.g., 150"
+                  errors={errors}
+                  defaultValue={user?.targetProtein ?? undefined}
+                />
+
+                <InputField
+                  label="Carbs goal (g)"
+                  name="targetCarbs"
+                  type="number"
+                  placeholder="e.g., 200"
+                  errors={errors}
+                  defaultValue={user?.targetCarbs ?? undefined}
+                />
+
+                <InputField
+                  label="Fat goal (g)"
+                  name="targetFat"
+                  type="number"
+                  placeholder="e.g., 60"
+                  errors={errors}
+                  defaultValue={user?.targetFat ?? undefined}
+                />
+
+                <InputField
+                  label="Fiber goal (g)"
+                  name="targetFiber"
+                  type="number"
+                  placeholder="e.g., 30"
+                  errors={errors}
+                  defaultValue={user?.targetFiber ?? undefined}
+                />
+              </div>
+            </>
+          )}
 
           {mode === "update" && (
             <InputField
