@@ -70,6 +70,4 @@ const SelectField = ({
   );
 };
 
-SelectField.displayName = "SelectField";
-
 export { SelectField };
