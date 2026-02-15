@@ -22,103 +22,109 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 });
 
-export default [{
-  ignores: [
-    "**/.cache",
-    "**/build",
-    "public/build",
-    "app/styles",
-    "**/dist/",
-    "**/node_modules",
-    "**/api/",
-    ".react-router/**",
-    "**/playwright-report",
-  ],
-}, ...fixupConfigRules(
-  compat.extends(
-    "eslint:recommended",
-    "prettier",
-    "plugin:prettier/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:jsx-a11y/recommended",
-    "plugin:react/jsx-runtime",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
+export default [
+  {
+    ignores: [
+      "**/.cache",
+      "**/build",
+      "public/build",
+      "app/styles",
+      "**/dist/",
+      "**/node_modules",
+      "**/api/",
+      ".react-router/**",
+      "**/playwright-report",
+      "storybook-static/**",
+    ],
+  },
+  ...fixupConfigRules(
+    compat.extends(
+      "eslint:recommended",
+      "prettier",
+      "plugin:prettier/recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:jsx-a11y/recommended",
+      "plugin:react/jsx-runtime",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+    ),
   ),
-), {
-  plugins: {
-    prettier: fixupPluginRules(prettier),
-    "@typescript-eslint": fixupPluginRules(typescriptEslint),
-    "jsx-a11y": fixupPluginRules(jsxA11Y),
-    react: fixupPluginRules(react),
-    "react-hooks": fixupPluginRules(reactHooks),
-    lodash,
-  },
-
-  languageOptions: {
-    globals: {
-      module: true,
-      require: true,
-      process: true,
-      exports: true,
+  {
+    plugins: {
+      prettier: fixupPluginRules(prettier),
+      "@typescript-eslint": fixupPluginRules(typescriptEslint),
+      "jsx-a11y": fixupPluginRules(jsxA11Y),
+      react: fixupPluginRules(react),
+      "react-hooks": fixupPluginRules(reactHooks),
+      lodash,
     },
 
-    parser: tsParser,
-  },
+    languageOptions: {
+      globals: {
+        module: true,
+        require: true,
+        process: true,
+        exports: true,
+      },
 
-  settings: {
-    react: {
-      version: "detect",
+      parser: tsParser,
     },
 
-    formComponents: ["Form"],
+    settings: {
+      react: {
+        version: "detect",
+      },
 
-    linkComponents: [
-      {
-        name: "Link",
-        linkAttribute: "to",
-      },
-      {
-        name: "NavLink",
-        linkAttribute: "to",
-      },
-    ],
+      formComponents: ["Form"],
+
+      linkComponents: [
+        {
+          name: "Link",
+          linkAttribute: "to",
+        },
+        {
+          name: "NavLink",
+          linkAttribute: "to",
+        },
+      ],
+    },
+
+    rules: {
+      "lodash/import-scope": [2, "method"],
+      "prettier/prettier": "error",
+      "import/no-unresolved": "off",
+
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+
+      "jsx-a11y/anchor-is-valid": [
+        "error",
+        {
+          components: ["Link", "NavLink"],
+          specialLink: ["to"],
+        },
+      ],
+
+      "react/boolean-prop-naming": "error",
+      "react/react-in-jsx-scope": "off",
+      "react/button-has-type": "error",
+      "react/prop-types": "off",
+      "react/jsx-no-target-blank": [
+        "error",
+        {
+          warnOnSpreadAttributes: true,
+          links: true,
+          forms: true,
+        },
+      ],
+    },
   },
-
-  rules: {
-    "lodash/import-scope": [2, "method"],
-    "prettier/prettier": "error",
-    "import/no-unresolved": "off",
-
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        argsIgnorePattern: "^_",
-        caughtErrorsIgnorePattern: "^_",
-        destructuredArrayIgnorePattern: "^_",
-        varsIgnorePattern: "^_",
-      },
-    ],
-
-    "jsx-a11y/anchor-is-valid": [
-      "error",
-      {
-        components: ["Link", "NavLink"],
-        specialLink: ["to"],
-      },
-    ],
-
-    "react/boolean-prop-naming": "error",
-    "react/react-in-jsx-scope": "off",
-    "react/button-has-type": "error",
-    "react/prop-types": "off",
-    "react/jsx-no-target-blank": [
-      "error",
-      {
-        warnOnSpreadAttributes: true,
-        links: true,
-        forms: true,
-      },
-    ],
-  },
-}, ...storybook.configs["flat/recommended"]];
+  ...storybook.configs["flat/recommended"],
+];
