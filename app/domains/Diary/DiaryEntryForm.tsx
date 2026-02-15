@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { useToast } from "~/hooks/use-toast";
+import { toast } from "sonner";
 import { trpc } from "~/utils/trpc";
 import { DiaryAISuggestion } from "./DiaryAISuggestion";
 
@@ -16,7 +16,6 @@ interface DiaryEntryFormProps {
 export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const inputImageRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
   const utils = trpc.useUtils();
   const [activeTab, setActiveTab] = useState("manual");
 
@@ -30,10 +29,8 @@ export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
       }
     },
     onError: (error) => {
-      toast({
-        title: "Failed to create entry",
+      toast.error("Failed to create entry", {
         description: error.message,
-        variant: "destructive",
       });
     },
   });
@@ -44,10 +41,7 @@ export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
     const content = formData.get("content") as string;
 
     if (!content?.trim()) {
-      toast({
-        title: "Please enter a meal description",
-        variant: "destructive",
-      });
+      toast.error("Please enter a meal description");
       return;
     }
 
@@ -63,10 +57,7 @@ export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
 
     // Check if it's an image
     if (!file.type.startsWith("image/")) {
-      toast({
-        title: "Please select an image file",
-        variant: "destructive",
-      });
+      toast.error("Please select an image file");
       return;
     }
 
@@ -80,10 +71,7 @@ export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
       });
     };
     reader.onerror = () => {
-      toast({
-        title: "Failed to read image",
-        variant: "destructive",
-      });
+      toast.error("Failed to read image");
     };
     reader.readAsDataURL(file);
 
@@ -97,7 +85,11 @@ export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
         <CardTitle>Add Meal</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex flex-col"
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="manual">Manual Entry</TabsTrigger>
             <TabsTrigger value="ai">AI Suggestion</TabsTrigger>

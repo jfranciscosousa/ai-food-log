@@ -22,15 +22,18 @@ export function DatePicker({
         <ChevronLeft className="h-4 w-4" />
       </Button>
       <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={cn("w-60 justify-start text-left font-normal")}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {format(date, "PPP")}
-          </Button>
-        </PopoverTrigger>
+        <PopoverTrigger
+          render={
+            <Button
+              variant="outline"
+              className={cn("w-60 justify-start text-left font-normal")}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {format(date, "PPP")}
+            </Button>
+          }
+        />
+
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
             mode="single"

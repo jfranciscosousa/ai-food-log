@@ -10,16 +10,15 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 import ErrorPage from "./components/Error500Page";
-import { Toaster } from "./components/ui/toaster";
 import { CLIENT_ENV } from "./env";
-import { useToast } from "./hooks/use-toast";
 import { useRootLoaderData } from "./hooks/useRootLoaderData";
 import { getCurrentTheme } from "./server/theme.server";
 import { cn } from "./utils";
 import { createTRPCClient, trpc } from "./utils/trpc";
+import { Toaster } from "./components/ui/sonner";
+import { userFromRequest } from "./server/auth.server";
 
 import "./root.css";
-import { userFromRequest } from "./server/auth.server";
 
 // Load the locale from the Accept-Language header to later
 // inject it on the app's context
@@ -83,11 +82,10 @@ export default function App() {
   const [trpcClient] = useState(() => createTRPCClient());
 
   const { ENV, currentTheme } = useRootLoaderData();
-  const { toast } = useToast();
 
   useEffect(() => {
     if (currentTheme === "system") applySystemTheme();
-  }, [currentTheme, toast]);
+  }, [currentTheme]);
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>

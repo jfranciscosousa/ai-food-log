@@ -3,7 +3,7 @@ import { Sparkles, Plus } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { useToast } from "~/hooks/use-toast";
+import { toast } from "sonner";
 import { trpc } from "~/utils/trpc";
 
 interface DiaryAISuggestionProps {
@@ -15,7 +15,6 @@ interface SuggestedMeal {
 }
 
 export function DiaryAISuggestion({ date }: DiaryAISuggestionProps) {
-  const { toast } = useToast();
   const utils = trpc.useUtils();
   const [prompt, setPrompt] = useState("");
   const [suggestedMeals, setSuggestedMeals] = useState<SuggestedMeal[]>([]);
@@ -26,10 +25,8 @@ export function DiaryAISuggestion({ date }: DiaryAISuggestionProps) {
       setSuggestedMeals(data.meals);
     },
     onError: (error) => {
-      toast({
-        title: "Failed to generate suggestion",
+      toast.error("Failed to generate suggestion", {
         description: error.message,
-        variant: "destructive",
       });
     },
   });
@@ -39,16 +36,12 @@ export function DiaryAISuggestion({ date }: DiaryAISuggestionProps) {
       utils.food.getEntriesForDay.invalidate();
       utils.food.getAggregateForDay.invalidate();
       setAddingIndex(null);
-      toast({
-        title: "Meal added successfully",
-      });
+      toast.success("Meal added successfully");
     },
     onError: (error) => {
       setAddingIndex(null);
-      toast({
-        title: "Failed to add meal",
+      toast.error("Failed to add meal", {
         description: error.message,
-        variant: "destructive",
       });
     },
   });

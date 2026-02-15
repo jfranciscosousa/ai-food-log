@@ -22,20 +22,29 @@ export default function DiaryNavigation() {
 
   return (
     <div className="flex items-center gap-2">
-      <Link to={`?date=${formatDate(subDays(date, 1))}`} prefetch="intent">
-        <Button variant="outline" size="icon" asChild>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-      </Link>
+      <Button
+        variant="outline"
+        size="icon"
+        render={
+          <Link
+            to={`?date=${formatDate(subDays(date, 1))}`}
+            prefetch="intent"
+          />
+        }
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
       <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-[240px] flex justify-start text-left font-normal"
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {format(date, "PPP")}
-          </Button>
+        <PopoverTrigger
+          render={
+            <Button
+              variant="outline"
+              className="w-[240px] flex justify-start text-left font-normal"
+            />
+          }
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {format(date, "PPP")}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
@@ -46,14 +55,18 @@ export default function DiaryNavigation() {
           />
         </PopoverContent>
       </Popover>
-      <Link
-        to={`/diary?date=${formatDate(addDays(date, 1))}`}
-        prefetch="intent"
+      <Button
+        variant="outline"
+        size="icon"
+        render={
+          <Link
+            to={`/diary?date=${formatDate(addDays(date, 1))}`}
+            prefetch="intent"
+          />
+        }
       >
-        <Button variant="outline" size="icon" asChild>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </Link>
+        <ChevronRight className="h-4 w-4" />
+      </Button>
     </div>
   );
 }

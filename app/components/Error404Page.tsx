@@ -11,11 +11,14 @@ export default function Error404Page() {
         in the correct URL.
       </p>
 
-      <Button variant="outline" asChild>
-        <Link className="block mt-4" to="/">
-          Go home
-        </Link>
-      </Button>
+      <Button
+        variant="outline"
+        render={
+          <Link className="block mt-4" to="/">
+            Go home
+          </Link>
+        }
+      />
     </section>
   );
 }

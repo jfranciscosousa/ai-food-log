@@ -1,10 +1,12 @@
+import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
+
 import get from "lodash/get";
 import { forwardRef, useId } from "react";
-import type { ComponentPropsWithRef, Ref } from "react";
+import type { Ref } from "react";
 import { cn } from "~/utils";
 import { Checkbox } from "./checkbox";
 
-export interface CheckboxFieldProps extends ComponentPropsWithRef<"button"> {
+export interface CheckboxFieldProps extends CheckboxPrimitive.Root.Props {
   label: string;
   name: string;
   errors?: Record<string, string> | null;

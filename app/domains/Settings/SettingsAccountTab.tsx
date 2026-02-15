@@ -1,6 +1,6 @@
+import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
-import { useToast } from "~/hooks/use-toast";
 import type { UserWithoutPassword } from "~/server/data/users.server";
 import { extractTrpcFormErrors } from "~/server/trpc/errors";
 import { trpc } from "~/utils/trpc";
@@ -11,18 +11,14 @@ interface SettingsAccountTabProps {
 
 export function SettingsAccountTab({ user }: SettingsAccountTabProps) {
   const utils = trpc.useUtils();
-  const { toast } = useToast();
 
   const updateAccount = trpc.user.updateAccount.useMutation({
     onSuccess: () => {
       utils.auth.me.invalidate();
-      toast({ title: "Account settings updated!" });
+      toast.success("Account settings updated!");
     },
     onError: () => {
-      toast({
-        title: "Failed to update account settings!",
-        variant: "destructive",
-      });
+      toast.success("Failed to update account settings!");
     },
   });
 

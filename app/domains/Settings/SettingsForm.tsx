@@ -20,7 +20,11 @@ export default function SettingsForm({ user }: SettingsFormProps) {
   return (
     <Card>
       <CardContent className="pt-6">
-        <Tabs value={tab} onValueChange={handleTabChange}>
+        <Tabs
+          value={tab}
+          onValueChange={handleTabChange}
+          className="flex flex-col"
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="health">Health & Exercise</TabsTrigger>
             <TabsTrigger value="account">Account</TabsTrigger>

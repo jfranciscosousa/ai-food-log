@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
-import { toast } from "~/hooks/use-toast";
+import { toast } from "sonner";
 import { trpc } from "~/utils/trpc";
 
 export function DiaryClearDay() {
@@ -27,16 +27,12 @@ export function DiaryClearDay() {
     onSuccess: () => {
       utils.food.getEntriesForDay.invalidate();
       utils.food.getAggregateForDay.invalidate();
-      toast({
-        title: "All entries cleared for the day.",
-      });
+      toast.success("All entries cleared for the day.");
       setOpen(false);
     },
     onError: (error) => {
-      toast({
-        title: "Failed to clear entries",
+      toast.error("Failed to clear entries", {
         description: error.message,
-        variant: "destructive",
       });
     },
   });
@@ -47,12 +43,15 @@ export function DiaryClearDay() {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive" size="sm" className="gap-2">
-          <Trash2 className="h-4 w-4" />
-          Clear Day
-        </Button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger
+        render={
+          <Button variant="destructive" size="sm" className="gap-2">
+            <Trash2 className="h-4 w-4" />
+            Clear Day
+          </Button>
+        }
+      />
+
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Clear all meals</AlertDialogTitle>

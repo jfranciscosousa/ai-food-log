@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
@@ -6,7 +7,6 @@ import {
   GENDER_OPTIONS,
   WEIGHT_LOSS_GOAL_OPTIONS,
 } from "~/constants";
-import { useToast } from "~/hooks/use-toast";
 import { calculateCalorieGoal } from "~/lib/calculateCalorieGoal";
 import type { UserWithoutPassword } from "~/server/data/users.server";
 import { extractTrpcFormErrors } from "~/server/trpc/errors";
@@ -18,18 +18,14 @@ interface SettingsHealthTabProps {
 
 export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
   const utils = trpc.useUtils();
-  const { toast } = useToast();
 
   const updateHealth = trpc.user.updateHealth.useMutation({
     onSuccess: () => {
       utils.auth.me.invalidate();
-      toast({ title: "Health settings updated!" });
+      toast.success("Health settings updated!");
     },
     onError: () => {
-      toast({
-        title: "Failed to update health settings!",
-        variant: "destructive",
-      });
+      toast.error("Failed to update health settings!");
     },
   });
   console.log(user.targetCalories);

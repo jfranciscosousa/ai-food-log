@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { CheckboxField } from "~/components/ui/checkbox-field";
@@ -9,7 +10,6 @@ import {
   GENDER_OPTIONS,
   WEIGHT_LOSS_GOAL_OPTIONS,
 } from "~/constants";
-import { useToast } from "~/hooks/use-toast";
 import type { UserWithoutPassword } from "~/server/data/users.server";
 import { extractTrpcFormErrors } from "~/server/trpc/errors";
 import { trpc } from "~/utils/trpc";
@@ -27,7 +27,6 @@ type Props =
 export default function ProfileForm({ mode, user }: Props) {
   const navigate = useNavigate();
   const utils = trpc.useUtils();
-  const { toast } = useToast();
 
   const signup = trpc.auth.signup.useMutation({
     onSuccess: async () => {
@@ -39,13 +38,10 @@ export default function ProfileForm({ mode, user }: Props) {
   const updateProfile = trpc.user.update.useMutation({
     onSuccess: () => {
       utils.auth.me.invalidate();
-      toast({ title: "Updated profile!" });
+      toast.success("Updated profile!");
     },
     onError: () => {
-      toast({
-        title: "Failed to update profile!",
-        variant: "destructive",
-      });
+      toast.error("Failed to update profile!");
     },
   });
 

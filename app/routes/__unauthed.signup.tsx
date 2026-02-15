@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { Card } from "~/components/ui/card";
 import { Onboarding } from "~/domains/Onboarding";
 import type { OnboardingData } from "~/domains/Onboarding/Onboarding";
-import { toast } from "~/hooks/use-toast";
 import { extractTrpcFormErrors } from "~/server/trpc/errors";
 import { trpc } from "~/utils/trpc";
 
@@ -19,11 +19,7 @@ export default function SignUp() {
     onSuccess: () => {
       utils.auth.invalidate();
     },
-    onError: () =>
-      toast({
-        title: "Error creating account!",
-        variant: "destructive",
-      }),
+    onError: () => toast.error("Error creating account"),
   });
 
   const errors = extractTrpcFormErrors(signup.error);

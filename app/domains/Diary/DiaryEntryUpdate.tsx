@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
-import { toast } from "~/hooks/use-toast";
+import { toast } from "sonner";
 import { trpc } from "~/utils/trpc";
 
 interface UpdateMealModalProps {
@@ -32,16 +32,12 @@ function Form({
     onSuccess: () => {
       utils.food.getEntriesForDay.invalidate();
       utils.food.getAggregateForDay.invalidate();
-      toast({
-        title: "Entry updated successfully.",
-      });
+      toast.success("Entry updated successfully.");
       setOpen(false);
     },
     onError: (error) => {
-      toast({
-        title: "Failed to update entry",
+      toast.error("Failed to update entry", {
         description: error.message,
-        variant: "destructive",
       });
     },
   });
@@ -87,16 +83,18 @@ export function DiaryEntryUpdate(props: UpdateMealModalProps) {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => setOpen(true)}
-        >
-          <Edit2 className="h-4 w-4" />
-        </Button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setOpen(true)}
+          >
+            <Edit2 className="h-4 w-4" />
+          </Button>
+        }
+      />
       <AlertDialogContent>
         {open && <Form {...props} setOpen={setOpen} />}
       </AlertDialogContent>

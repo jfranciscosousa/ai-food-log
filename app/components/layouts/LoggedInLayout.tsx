@@ -1,7 +1,6 @@
 import { Loader2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useNavigation } from "react-router";
-import ThemeChanger from "../ThemeChanger";
 import { UserNav } from "../UserNav";
 import { BaseLayout } from "./BaseLayout";
 
@@ -20,7 +19,6 @@ export default function LoggedInLayout({ children }: { children: ReactNode }) {
         </span>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 ml-2 pl-2">
-            <ThemeChanger />
             <UserNav />
           </div>
         </div>

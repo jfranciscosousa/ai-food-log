@@ -1,6 +1,6 @@
 import { Trash2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { useToast } from "~/hooks/use-toast";
+import { toast } from "sonner";
 import { trpc } from "~/utils/trpc";
 
 type Props = {
@@ -8,7 +8,6 @@ type Props = {
 };
 
 export default function DiaryEntryDeleteOne({ entryId }: Props) {
-  const { toast } = useToast();
   const utils = trpc.useUtils();
 
   const deleteEntry = trpc.food.deleteEntry.useMutation({
@@ -17,10 +16,8 @@ export default function DiaryEntryDeleteOne({ entryId }: Props) {
       utils.food.getAggregateForDay.invalidate();
     },
     onError: (error) => {
-      toast({
-        title: "Failed to delete entry",
+      toast.error("Failed to delete entry", {
         description: error.message,
-        variant: "destructive",
       });
     },
   });

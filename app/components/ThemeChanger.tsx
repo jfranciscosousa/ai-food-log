@@ -9,31 +9,32 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { useToast } from "~/hooks/use-toast";
+import { toast } from "sonner";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 
 export default function ThemeChanger() {
   const { state, formData } = useNavigation();
   const { currentTheme } = useRootLoaderData();
-  const { toast } = useToast();
 
   useEffect(() => {
     const theme = formData?.get("theme");
 
     if (typeof theme === "string" && state === "loading") {
-      toast({ title: `Theme changed to ${theme}` });
+      toast.success(`Theme changed to ${theme}`);
     }
-  }, [formData, state, toast]);
+  }, [formData, state]);
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" size="icon">
+            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end">
         <Form action="/theme" method="post">
           <button className="contents" type="submit" name="theme" value="light">

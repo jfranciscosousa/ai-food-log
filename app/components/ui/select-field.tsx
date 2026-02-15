@@ -37,7 +37,7 @@ const SelectField = ({
   const [hasValue, setHasValue] = useState(!!defaultValue);
 
   return (
-    <Label className={cn("flex flex-col gap-2", className)}>
+    <Label className={cn("flex flex-col gap-2 items-start", className)}>
       <span>{label}</span>
 
       <Select

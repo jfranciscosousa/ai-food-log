@@ -37,7 +37,7 @@ These are safe, read-only or reversible operations needed for the update process
 [Skill analyzes outdated packages]
 
 Updates categorized:
-✅ Patch/Minor (auto-update): @types/react, ai, isbot, dotenv, vercel, lucide-react
+✅ Patch/Minor (auto-update): @types/react, ai, dotenv, lucide-react
 ⚠️  Major (needs approval):
    - Prisma: 6.16.1 → 7.4.0
    - react-day-picker: 8.10.1 → 9.13.2
