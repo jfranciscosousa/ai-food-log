@@ -65,7 +65,7 @@ function MacroItem({ label, current, target, showProgress }: MacroItemProps) {
             )}
           </div>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress value={Math.min(progress, 100)} max={100} className="h-2" />
       </div>
     );
   }
