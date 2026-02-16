@@ -1,11 +1,22 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+# Cancel old runs when new commits are pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/ai-food-log-test
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     services:
       postgres:
@@ -23,64 +34,61 @@ jobs:
       - uses: marocchino/tool-versions-action@v1
         id: versions
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.versions.outputs.nodejs }}
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        id: pnpm-install
+      - uses: pnpm/action-setup@v4
         with:
-          version: 7
+          version: ${{ steps.versions.outputs.pnpm }}
           run_install: false
 
       - name: Get pnpm store directory
         id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
+      - uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Cache playwright deps
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-build-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-build-playwright-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        run: |
-          pnpm i
-          npx playwright install
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Lint & Type Check
         run: |
           pnpm prisma generate
           pnpm lint
           pnpm ts-check
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/ai-food-log-test
 
-      - name: Vitest
+      - name: Run Vitest
         run: pnpm test:vitest
 
-      - name: E2E
-        run: |
-          pnpm test:e2e
+      - name: Run E2E tests
+        run: pnpm test:e2e
         env:
           SECRET_KEY_BASE: supersecret42069
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/ai-food-log-test
           SECURE_AUTH_COOKIE: false
           NODE_ENV: production
           PORT: 3001
           AI_GATEWAY_API_KEY: foobar
+
+      - name: Upload Playwright Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Upload Test Results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
