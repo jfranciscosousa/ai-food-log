@@ -36,9 +36,8 @@ test("updates health settings", async ({ page, screen }) => {
   await page.goto("/settings?tab=health");
   await screen.getByLabelText("Height (cm)").fill(newHeight);
   await screen.getByLabelText("Weight (kg)").fill(newWeight);
-  await screen
-    .locator("select[name='fitnessLevel']")
-    .selectOption("EXTRA_ACTIVE");
+  await page.getByRole("combobox", { name: "Fitness level" }).click();
+  await page.getByRole("option", { name: "Extra Active" }).click();
   await page.getByRole("button", { name: "Save changes" }).click();
 
   await waitFor(async () => {

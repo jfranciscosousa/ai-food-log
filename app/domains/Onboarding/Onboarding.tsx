@@ -226,6 +226,7 @@ export function Onboarding({
 
             {currentStep === 2 && (
               <Step3Goals
+                step2Data={step2Data}
                 onNext={handleStep3Next}
                 defaultValues={step3Data}
                 errors={errors}

@@ -1,10 +1,10 @@
-import { type FoodEntry } from "@prisma/client";
 import { z } from "zod";
 import { formatDate } from "~/hooks/useDates";
 import { processFoodWithAI } from "../ai/processFoodWithAI.server";
 import prisma from "./prisma.server";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
 import { type DataResult } from "./utils/types";
+import type { FoodEntry } from "~/generated/prisma/browser";
 
 export class FoodService {
   // Plain object schemas (for tRPC)

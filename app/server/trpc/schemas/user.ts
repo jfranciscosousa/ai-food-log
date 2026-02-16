@@ -1,4 +1,8 @@
-import { FitnessLevel, Gender, WeightLossGoal } from "@prisma/client";
+import {
+  FitnessLevel,
+  Gender,
+  WeightLossGoal,
+} from "~/generated/prisma/browser";
 import { z } from "zod";
 
 export const updateUserSchema = z.object({

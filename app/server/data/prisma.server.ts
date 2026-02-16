@@ -1,10 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PrismaClient } from "@prisma/client";
+
+import { PrismaPg } from "@prisma/adapter-pg";
 import { SERVER_ENV } from "~/env.server";
+import { PrismaClient } from "~/generated/prisma/client";
 import { UserFeatureFlagsSchema } from "./users/userFeatureFlags.server";
 
 function buildClient() {
+  const adapter = new PrismaPg({
+    connectionString: SERVER_ENV.DATABASE_URL,
+  });
+
   const client = new PrismaClient({
+    adapter,
     log: ["query", "info", "warn", "error"],
   })
     /**

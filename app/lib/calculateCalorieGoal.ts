@@ -1,6 +1,11 @@
 import type { UserWithoutPassword } from "~/server/data/users.server";
 
-export function calculateCalorieGoal(user: UserWithoutPassword): number {
+export function calculateCalorieGoal(
+  user: Pick<
+    UserWithoutPassword,
+    "weight" | "height" | "age" | "gender" | "fitnessLevel" | "weightLossGoal"
+  >,
+): number {
   const { weight, height, age, gender, fitnessLevel, weightLossGoal } = user;
 
   // Calculate Basal Metabolic Rate (BMR) using the Mifflin-St Jeor Equation

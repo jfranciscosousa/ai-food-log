@@ -3,7 +3,7 @@ import {
   Gender,
   type User,
   WeightLossGoal,
-} from "@prisma/client";
+} from "~/generated/prisma/browser";
 import { z } from "zod";
 import prisma from "./prisma.server";
 import { encryptPassword, verifyPassword } from "./users/passwordUtils.server";

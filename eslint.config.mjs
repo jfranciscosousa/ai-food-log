@@ -35,6 +35,7 @@ export default [
       ".react-router/**",
       "**/playwright-report",
       "storybook-static/**",
+      "app/generated",
     ],
   },
   ...fixupConfigRules(

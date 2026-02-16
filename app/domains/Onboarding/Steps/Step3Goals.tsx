@@ -1,18 +1,36 @@
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
 import { FITNESS_LEVEL_OPTIONS, WEIGHT_LOSS_GOAL_OPTIONS } from "~/constants";
-import type { Step3Data } from "../Onboarding";
 import { calculateCalorieGoal } from "~/lib/calculateCalorieGoal";
-import useUser from "~/hooks/useUser";
+import type { Step2Data, Step3Data } from "../Onboarding";
+import { useState } from "react";
+import type {
+  FitnessLevel,
+  Gender,
+  WeightLossGoal,
+} from "~/generated/prisma/enums";
 
 type Step3Props = {
   onNext: (data: Step3Data) => void;
   defaultValues?: Partial<Step3Data>;
   errors?: Record<string, string> | null;
+  step2Data: Step2Data;
 };
 
-export function Step3Goals({ onNext, defaultValues, errors }: Step3Props) {
-  const user = useUser();
+export function Step3Goals({
+  onNext,
+  defaultValues,
+  errors,
+  step2Data,
+}: Step3Props) {
+  const [fitnessLevel, setFitnessLevel] = useState<FitnessLevel>(
+    defaultValues?.fitnessLevel as FitnessLevel,
+  );
+  const [weightLossGoal, setWeightLossGoal] = useState<WeightLossGoal>(
+    defaultValues?.weightLossGoal as WeightLossGoal,
+  );
+
+  const { height, weight, age, gender } = step2Data;
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,7 +56,8 @@ export function Step3Goals({ onNext, defaultValues, errors }: Step3Props) {
         required
         errors={errors}
         options={FITNESS_LEVEL_OPTIONS}
-        defaultValue={defaultValues?.fitnessLevel}
+        value={fitnessLevel}
+        onValueChange={(value) => setFitnessLevel(value as FitnessLevel)}
       />
 
       <SelectField
@@ -48,12 +67,28 @@ export function Step3Goals({ onNext, defaultValues, errors }: Step3Props) {
         required
         options={WEIGHT_LOSS_GOAL_OPTIONS}
         errors={errors}
-        defaultValue={defaultValues?.weightLossGoal}
+        value={weightLossGoal}
+        onValueChange={(value) => setWeightLossGoal(value as WeightLossGoal)}
       />
 
-      <p className="text-xs text-muted-foreground">
-        Auto-calculated daily calorie goal: {calculateCalorieGoal(user)}kcal
-      </p>
+      {fitnessLevel && weightLossGoal && weight && age && height ? (
+        <p className="text-xs text-muted-foreground">
+          Auto-calculated daily calorie goal:{" "}
+          {calculateCalorieGoal({
+            weight,
+            age,
+            height,
+            fitnessLevel,
+            weightLossGoal,
+            gender: gender as Gender,
+          })}
+          kcal
+        </p>
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          Auto-calculated daily calorie goal: N/A
+        </p>
+      )}
 
       <InputField
         label="Daily calorie goal (optional)"

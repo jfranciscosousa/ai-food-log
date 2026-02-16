@@ -15,24 +15,36 @@ test("signs up", async ({ page, screen }) => {
 
   await page.goto("/signup");
 
+  // Step 1: Welcome - Email, Name, Password
   await (await screen.findByLabelText("Email")).fill(email);
   await screen.getByLabelText("Name").fill(NAME);
-  await screen.getByLabelText("Age").fill(AGE);
-  await screen.getByLabelText("Height (cm)").fill(HEIGHT);
-  await screen.getByLabelText("Weight (kg)").fill(WEIGHT);
-  await screen.locator("select[name='gender']").selectOption("FEMALE");
-  await screen
-    .locator("select[name='fitnessLevel']")
-    .selectOption("VERY_ACTIVE");
-  await screen.locator("select[name='weightLossGoal']").selectOption("MEDIUM");
   await screen.getByLabelText("Password").fill(PASSWORD);
   await screen.getByLabelText("Confirm password").fill(PASSWORD);
+  await page.getByRole("button", { name: "Next" }).click();
+
+  // Step 2: About You - Gender, Age, Height, Weight
+  await page.getByText("Step 2 of 4").waitFor(); // Wait for step 2 to load
+  await page.getByRole("combobox", { name: "Gender" }).click();
+  await page.getByRole("option", { name: "Female" }).click();
+  await page.getByLabel("Age").fill(AGE);
+  await page.getByLabel("Height (cm)").fill(HEIGHT);
+  await page.getByLabel("Weight (kg)").fill(WEIGHT);
+  await page.getByRole("button", { name: "Next" }).click();
+
+  // Step 3: Goals - Fitness level, Weight loss goal
+  await page.getByText("Step 3 of 4").waitFor(); // Wait for step 3 to load
+  await page.getByRole("combobox", { name: "Fitness level" }).click();
+  await page.getByRole("option", { name: "Very Active" }).click();
+  await page.getByRole("combobox", { name: "Weight loss goal" }).click();
+  await page.getByRole("option", { name: "Moderate Loss" }).click();
+  await page.getByRole("button", { name: "Next" }).click();
+
+  // Step 4: Complete - Invite token
+  await page.getByText("Step 4 of 4").waitFor(); // Wait for step 4 to load
   await screen
     .getByLabelText("Invite token")
     .fill("xico o maior da minha aldeia");
-  await screen
-    .getByText("Sign up", { selector: "button > span > span" })
-    .click();
+  await page.getByRole("button", { name: "Complete" }).click();
 
   await expect(page).toHaveURL("/diary");
   await waitFor(async () => {
@@ -57,7 +69,7 @@ test("logins", async ({ page, screen }) => {
   await page.goto("/");
   await (await screen.findByLabelText("Email")).fill(user.email);
   await screen.getByLabelText("Password").fill(PASSWORD);
-  await screen.getByText("Login", { selector: "button > span > span" }).click();
+  await page.getByRole("button", { name: "Login" }).click();
 
   await expect(page).toHaveURL("/diary");
 });
@@ -71,7 +83,7 @@ test("shows login and then redirects to original page", async ({
   await page.goto("/settings");
   await (await screen.findByLabelText("Email")).fill(user.email);
   await screen.getByLabelText("Password").fill(PASSWORD);
-  await screen.getByText("Login", { selector: "button > span > span" }).click();
+  await page.getByRole("button", { name: "Login" }).click();
 
   await expect(page).toHaveURL("/settings");
 });
@@ -81,10 +93,9 @@ test("logs out and drops user on login page", async ({ page, screen }) => {
 
   await screen.getByText("Log out").click();
 
-  expect(
-    await (
-      await screen.findByText("Login", { selector: "button > span > span" })
-    ).count(),
-  ).toBe(1);
+  await page.waitForURL("/login");
+  await page.getByRole("button", { name: "Login" }).waitFor();
+
+  expect(await page.getByRole("button", { name: "Login" }).count()).toBe(1);
   expect(await screen.queryByText(user.name).count()).toBe(0);
 });

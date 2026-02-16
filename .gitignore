@@ -11,6 +11,7 @@ playwright-report/
 .eslintcache
 .react-router/
 .vercel
+app/generated/*
 
 !.env.sample
 !.env.*.sample

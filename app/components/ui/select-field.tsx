@@ -1,5 +1,5 @@
 import get from "lodash/get";
-import { useId, useState } from "react";
+import { useId } from "react";
 import { cn } from "~/utils";
 import { Label } from "./label";
 import {
@@ -19,6 +19,8 @@ export interface InputFieldProps {
   placeholder?: string;
   required?: boolean;
   defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string | null) => void;
 }
 
 const SelectField = ({
@@ -30,11 +32,12 @@ const SelectField = ({
   placeholder,
   required,
   defaultValue,
+  value,
+  onValueChange,
 }: InputFieldProps) => {
   const reactId = useId();
   const id = reactId;
   const errorMessage = get(errors, name);
-  const [hasValue, setHasValue] = useState(!!defaultValue);
 
   return (
     <Label className={cn("flex flex-col gap-2 items-start", className)}>
@@ -43,14 +46,15 @@ const SelectField = ({
       <Select
         name={name}
         required={required}
-        onValueChange={(v) => setHasValue(!!v)}
+        onValueChange={onValueChange}
         defaultValue={defaultValue}
+        value={value}
       >
         <SelectTrigger
           id={id}
           className={cn(
             "input w-full",
-            { "text-muted-foreground": !hasValue },
+
             className,
           )}
         >
