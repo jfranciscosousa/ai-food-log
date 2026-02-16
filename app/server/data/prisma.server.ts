@@ -6,80 +6,85 @@ import { PrismaClient } from "~/generated/prisma/client";
 import { UserFeatureFlagsSchema } from "./users/userFeatureFlags.server";
 
 function buildClient() {
-  const adapter = new PrismaPg({
-    connectionString: SERVER_ENV.DATABASE_URL,
-  });
+  let baseClient: PrismaClient;
 
-  const client = new PrismaClient({
-    adapter,
-    log: ["query", "info", "warn", "error"],
-  })
-    /**
-     * This extension applies the `zod` schema defined above to the user feature flags.
-     *
-     * It also makes it fully type safe even at runtime!
-     */
-    .$extends({
-      result: {
-        user: {
-          featureFlags: {
-            needs: { featureFlags: true },
-            compute({ featureFlags }) {
-              return UserFeatureFlagsSchema.parse(featureFlags);
+  if (SERVER_ENV.DATABASE_URL.startsWith("prisma+postgres")) {
+    baseClient = new PrismaClient({ accelerateUrl: SERVER_ENV.DATABASE_URL });
+  } else {
+    baseClient = new PrismaClient({
+      adapter: new PrismaPg({
+        connectionString: SERVER_ENV.DATABASE_URL,
+      }),
+    });
+  }
+
+  return (
+    baseClient
+      /**
+       * This extension applies the `zod` schema defined above to the user feature flags.
+       *
+       * It also makes it fully type safe even at runtime!
+       */
+      .$extends({
+        result: {
+          user: {
+            featureFlags: {
+              needs: { featureFlags: true },
+              compute({ featureFlags }) {
+                return UserFeatureFlagsSchema.parse(featureFlags);
+              },
             },
           },
         },
-      },
 
-      query: {
-        user: {
-          create({ args, query }) {
-            args.data.featureFlags = UserFeatureFlagsSchema.parse(
-              args.data.featureFlags,
-            );
-            return query(args);
-          },
-          createMany({ args, query }) {
-            const users = Array.isArray(args.data) ? args.data : [args.data];
-            for (const user of users) {
-              user.featureFlags = UserFeatureFlagsSchema.parse(
-                user.featureFlags,
-              );
-            }
-            return query(args);
-          },
-          update({ args, query }) {
-            if (args.data.featureFlags !== undefined) {
+        query: {
+          user: {
+            create({ args, query }) {
               args.data.featureFlags = UserFeatureFlagsSchema.parse(
                 args.data.featureFlags,
               );
-            }
-            return query(args);
-          },
-          updateMany({ args, query }) {
-            if (args.data.featureFlags !== undefined) {
-              args.data.featureFlags = UserFeatureFlagsSchema.parse(
-                args.data.featureFlags,
+              return query(args);
+            },
+            createMany({ args, query }) {
+              const users = Array.isArray(args.data) ? args.data : [args.data];
+              for (const user of users) {
+                user.featureFlags = UserFeatureFlagsSchema.parse(
+                  user.featureFlags,
+                );
+              }
+              return query(args);
+            },
+            update({ args, query }) {
+              if (args.data.featureFlags !== undefined) {
+                args.data.featureFlags = UserFeatureFlagsSchema.parse(
+                  args.data.featureFlags,
+                );
+              }
+              return query(args);
+            },
+            updateMany({ args, query }) {
+              if (args.data.featureFlags !== undefined) {
+                args.data.featureFlags = UserFeatureFlagsSchema.parse(
+                  args.data.featureFlags,
+                );
+              }
+              return query(args);
+            },
+            upsert({ args, query }) {
+              args.create.featureFlags = UserFeatureFlagsSchema.parse(
+                args.create.featureFlags,
               );
-            }
-            return query(args);
-          },
-          upsert({ args, query }) {
-            args.create.featureFlags = UserFeatureFlagsSchema.parse(
-              args.create.featureFlags,
-            );
-            if (args.update.featureFlags !== undefined) {
-              args.update.featureFlags = UserFeatureFlagsSchema.parse(
-                args.update.featureFlags,
-              );
-            }
-            return query(args);
+              if (args.update.featureFlags !== undefined) {
+                args.update.featureFlags = UserFeatureFlagsSchema.parse(
+                  args.update.featureFlags,
+                );
+              }
+              return query(args);
+            },
           },
         },
-      },
-    });
-
-  return client;
+      })
+  );
 }
 
 /**
