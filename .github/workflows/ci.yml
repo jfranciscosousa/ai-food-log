@@ -68,6 +68,8 @@ jobs:
           pnpm prisma generate
           pnpm lint
           pnpm ts-check
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/ai-food-log-test
 
       - name: Vitest
         run: pnpm test:vitest

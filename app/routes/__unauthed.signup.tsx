@@ -25,9 +25,7 @@ export default function SignUp() {
   const errors = extractTrpcFormErrors(signup.error);
 
   function onComplete(data: OnboardingData) {
-    // TODO: improve form type handling
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    signup.mutate(data as any);
+    signup.mutate(data);
   }
 
   function onExit() {

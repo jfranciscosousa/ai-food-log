@@ -39,8 +39,8 @@ export function Step3Goals({
     const targetCaloriesValue = formData.get("targetCalories") as string;
 
     onNext({
-      fitnessLevel: formData.get("fitnessLevel") as string,
-      weightLossGoal: formData.get("weightLossGoal") as string,
+      fitnessLevel,
+      weightLossGoal,
       targetCalories: targetCaloriesValue
         ? Number(targetCaloriesValue)
         : undefined,
@@ -56,7 +56,7 @@ export function Step3Goals({
         required
         errors={errors}
         options={FITNESS_LEVEL_OPTIONS}
-        value={fitnessLevel}
+        value={fitnessLevel ?? ""}
         onValueChange={(value) => setFitnessLevel(value as FitnessLevel)}
       />
 
@@ -67,7 +67,7 @@ export function Step3Goals({
         required
         options={WEIGHT_LOSS_GOAL_OPTIONS}
         errors={errors}
-        value={weightLossGoal}
+        value={weightLossGoal ?? ""}
         onValueChange={(value) => setWeightLossGoal(value as WeightLossGoal)}
       />
 

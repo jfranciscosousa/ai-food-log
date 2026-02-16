@@ -1,6 +1,7 @@
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
-import { Gender } from "~/constants";
+import { GENDER_OPTIONS } from "~/constants";
+import type { Gender } from "~/generated/prisma/enums";
 import type { Step2Data } from "../Onboarding";
 
 type Step2Props = {
@@ -15,7 +16,7 @@ export function Step2AboutYou({ onNext, defaultValues, errors }: Step2Props) {
     const formData = new FormData(e.currentTarget);
 
     onNext({
-      gender: formData.get("gender") as string,
+      gender: formData.get("gender") as Gender,
       age: Number(formData.get("age") as string),
       height: Number(formData.get("height") as string),
       weight: Number(formData.get("weight") as string),
@@ -30,10 +31,7 @@ export function Step2AboutYou({ onNext, defaultValues, errors }: Step2Props) {
         placeholder="Select your gender"
         required
         errors={errors}
-        options={Object.entries(Gender).map(([key, value]) => ({
-          value: key,
-          label: value,
-        }))}
+        options={GENDER_OPTIONS}
         defaultValue={defaultValues?.gender}
       />
 

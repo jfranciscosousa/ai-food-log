@@ -12,6 +12,11 @@ import { Step1Welcome } from "./Steps/Step1Welcome";
 import { Step2AboutYou } from "./Steps/Step2AboutYou";
 import { Step3Goals } from "./Steps/Step3Goals";
 import { Step4Complete } from "./Steps/Step4Complete";
+import type {
+  FitnessLevel,
+  Gender,
+  WeightLossGoal,
+} from "~/generated/prisma/enums";
 
 export type Step1Data = {
   email: string;
@@ -21,21 +26,21 @@ export type Step1Data = {
 };
 
 export type Step2Data = {
-  gender: string;
-  age?: number;
-  height?: number;
-  weight?: number;
+  gender: Gender;
+  age: number;
+  height: number;
+  weight: number;
 };
 
 export type Step3Data = {
-  fitnessLevel: string;
-  weightLossGoal: string;
+  fitnessLevel: FitnessLevel;
+  weightLossGoal: WeightLossGoal;
   targetCalories?: number;
 };
 
 export type Step4Data = {
   inviteToken: string;
-  rememberMe: boolean;
+  rememberMe?: boolean;
 };
 
 export type OnboardingData = Step1Data & Step2Data & Step3Data & Step4Data;
@@ -85,27 +90,10 @@ export function Onboarding({
   onExit,
 }: OnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [step1Data, setStep1Data] = useState<Step1Data>({
-    email: "",
-    name: "",
-    password: "",
-    passwordConfirmation: "",
-  });
-  const [step2Data, setStep2Data] = useState<Step2Data>({
-    gender: "",
-    age: undefined,
-    height: undefined,
-    weight: undefined,
-  });
-  const [step3Data, setStep3Data] = useState<Step3Data>({
-    fitnessLevel: "",
-    weightLossGoal: "",
-    targetCalories: undefined,
-  });
-  const [step4Data, setStep4Data] = useState<Step4Data>({
-    inviteToken: "",
-    rememberMe: false,
-  });
+  const [step1Data, setStep1Data] = useState<Step1Data | undefined>();
+  const [step2Data, setStep2Data] = useState<Step2Data | undefined>();
+  const [step3Data, setStep3Data] = useState<Step3Data | undefined>();
+  const [step4Data, setStep4Data] = useState<Step4Data | undefined>();
 
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -159,6 +147,10 @@ export function Onboarding({
 
   const handleStep4Next = (data: Step4Data) => {
     setStep4Data(data);
+
+    if (!step1Data || !step2Data || !step3Data || !data) {
+      throw new Error("invariant");
+    }
 
     const completeData = {
       ...step1Data,
@@ -224,7 +216,7 @@ export function Onboarding({
               />
             )}
 
-            {currentStep === 2 && (
+            {currentStep === 2 && step2Data && (
               <Step3Goals
                 step2Data={step2Data}
                 onNext={handleStep3Next}
@@ -233,7 +225,7 @@ export function Onboarding({
               />
             )}
 
-            {currentStep === 3 && (
+            {currentStep === 3 && step1Data && step2Data && (
               <Step4Complete
                 onNext={handleStep4Next}
                 defaultValues={step4Data}
