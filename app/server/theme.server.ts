@@ -16,6 +16,10 @@ export async function getCurrentTheme(request: Request): Promise<ThemeType> {
   return "system";
 }
 
+export async function serializeThemeCookie(theme: ThemeType): Promise<string> {
+  return themeCookie.serialize(theme);
+}
+
 export async function setTheme(request: Request): Promise<Response> {
   const desiredTheme = (await request.formData()).get("theme");
   const redirectUrl = request.headers.get("Referer") || "/";

@@ -1,6 +1,6 @@
 import { Moon, Sun } from "lucide-react";
-import { useEffect } from "react";
-import { Form, useNavigation } from "react-router";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -9,20 +9,39 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { toast } from "sonner";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
+import type { ThemeType } from "~/server/theme.server";
+import { trpc } from "~/utils/trpc";
+
+function applyThemeToDom(theme: ThemeType) {
+  const cl = document.documentElement.classList;
+  cl.remove("dark", "light", "system");
+
+  if (theme === "system") {
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    cl.add(prefersDark ? "dark" : "light");
+  } else {
+    cl.add(theme);
+  }
+}
 
 export default function ThemeChanger() {
-  const { state, formData } = useNavigation();
   const { currentTheme } = useRootLoaderData();
+  const [theme, setTheme] = useState<ThemeType>(currentTheme);
 
-  useEffect(() => {
-    const theme = formData?.get("theme");
+  const setThemeMutation = trpc.theme.setTheme.useMutation({
+    onSuccess: ({ theme: newTheme }) => {
+      setTheme(newTheme);
+      applyThemeToDom(newTheme);
+      toast.success(`Theme changed to ${newTheme}`);
+    },
+  });
 
-    if (typeof theme === "string" && state === "loading") {
-      toast.success(`Theme changed to ${theme}`);
-    }
-  }, [formData, state]);
+  const handleSelect = (newTheme: ThemeType) => {
+    setThemeMutation.mutate({ theme: newTheme });
+  };
 
   return (
     <DropdownMenu>
@@ -36,28 +55,24 @@ export default function ThemeChanger() {
         }
       />
       <DropdownMenuContent align="end">
-        <Form action="/theme" method="post">
-          <button className="contents" type="submit" name="theme" value="light">
-            <DropdownMenuCheckboxItem checked={currentTheme === "light"}>
-              Light
-            </DropdownMenuCheckboxItem>
-          </button>
-          <button className="contents" type="submit" name="theme" value="dark">
-            <DropdownMenuCheckboxItem checked={currentTheme === "dark"}>
-              Dark
-            </DropdownMenuCheckboxItem>
-          </button>
-          <button
-            className="contents"
-            type="submit"
-            name="theme"
-            value="system"
-          >
-            <DropdownMenuCheckboxItem checked={currentTheme === "system"}>
-              System
-            </DropdownMenuCheckboxItem>
-          </button>
-        </Form>
+        <DropdownMenuCheckboxItem
+          checked={theme === "light"}
+          onClick={() => handleSelect("light")}
+        >
+          Light
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={theme === "dark"}
+          onClick={() => handleSelect("dark")}
+        >
+          Dark
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={theme === "system"}
+          onClick={() => handleSelect("system")}
+        >
+          System
+        </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

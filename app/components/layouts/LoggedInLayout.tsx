@@ -1,30 +1,55 @@
-import { Loader2 } from "lucide-react";
+// It's ok for this specific component to ignore set states in effects
+/* eslint-disable react-hooks/set-state-in-effect */
+
+import { Menu } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { useNavigation } from "react-router";
-import { UserNav } from "../UserNav";
-import { BaseLayout } from "./BaseLayout";
+import { useLocation } from "react-router";
+import { AppSidebar } from "../AppSidebar";
+import { NavigationProgress } from "../NavigationProgress";
+import { Button } from "../ui/button";
 
 export default function LoggedInLayout({ children }: { children: ReactNode }) {
-  const { state } = useNavigation();
+  const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
 
   return (
-    <BaseLayout>
-      <div className="flex items-center justify-between">
-        <span className="flex gap-2 items-center">
-          <h1 className="text-2xl font-bold tracking-tight">AI Food Log</h1>
+    <>
+      <NavigationProgress />
 
-          {(state === "loading" || state === "submitting") && (
-            <Loader2 className="animate-spin fade-in" />
-          )}
-        </span>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 ml-2 pl-2">
-            <UserNav />
-          </div>
+      <div className="flex h-screen overflow-hidden bg-background">
+        <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+          {/* Mobile header */}
+          <header className="flex items-center gap-3 px-4 h-14 border-b md:hidden shrink-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-expanded={sidebarOpen}
+              aria-controls="app-sidebar"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu aria-hidden="true" className="h-5 w-5" />
+              <span className="sr-only">
+                {sidebarOpen ? "Close menu" : "Open menu"}
+              </span>
+            </Button>
+
+            <h1 className="text-lg font-bold">AI Food Log</h1>
+          </header>
+
+          {/* Main content */}
+          <main className="flex-1 overflow-auto">
+            <div className="max-w-2xl mx-auto p-4 space-y-6">{children}</div>
+          </main>
         </div>
       </div>
-
-      {children}
-    </BaseLayout>
+    </>
   );
 }

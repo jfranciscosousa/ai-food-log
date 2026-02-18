@@ -14,7 +14,8 @@
       "Bash(timeout 10 pnpm run:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(xargs ls:*)"
     ],
     "deny": [],
     "ask": []
