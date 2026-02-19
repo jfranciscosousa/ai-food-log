@@ -34,7 +34,11 @@ export const foodRouter = router({
       const result = await FoodService.createEntry(ctx.userId, input);
 
       if (result.errors) {
-        throw createValidationError("Failed to create entry", result.errors);
+        throw createValidationError(
+          result.errors.content ||
+            "Unknown error. Our minions are taking a look at it.",
+          result.errors,
+        );
       }
 
       return result.data;

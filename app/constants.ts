@@ -34,6 +34,7 @@ export const FITNESS_LEVEL_OPTIONS: Array<{
 }> = Object.values(FITNESS_LEVEL).map((value) => ({
   value,
   label: FITNESS_LEVEL_LABELS[value],
+  description: FITNESS_LEVEL_DESCRIPTIONS[value],
 }));
 
 // Weight Loss Goal Constants
@@ -64,6 +65,7 @@ export const WEIGHT_LOSS_GOAL_OPTIONS: Array<{
 }> = Object.values(WEIGHT_LOSS_GOAL).map((value) => ({
   value,
   label: WEIGHT_LOSS_GOAL_LABELS[value],
+  description: WEIGHT_LOSS_GOAL_DESCRIPTIONS[value],
 }));
 
 // Gender Constants
@@ -84,11 +86,3 @@ export const GENDER_OPTIONS: Array<{
   value,
   label: GENDER_LABELS[value],
 }));
-
-// Legacy exports for backwards compatibility (deprecated)
-/** @deprecated Use FITNESS_LEVEL instead */
-export const FitnessLevel = FITNESS_LEVEL;
-/** @deprecated Use WEIGHT_LOSS_GOAL instead */
-export const WeightLossGoal = WEIGHT_LOSS_GOAL;
-/** @deprecated Use GENDER instead */
-export const Gender = GENDER;

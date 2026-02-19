@@ -98,10 +98,11 @@ export class FoodService {
       aiResponse = await processFoodWithAI(prompt);
     } catch (error) {
       console.error("AI processing failed:", error);
+
       return {
         data: null,
         errors: {
-          content: `Failed to process ${parsedSchema.data.imageBase64 ? "image" : "text"}: ${error instanceof Error ? error.message : "Unknown error"}`,
+          content: "Unknown error. Our minions are taking a look at it.",
         },
       };
     }
@@ -109,7 +110,10 @@ export class FoodService {
     if (aiResponse.invalid) {
       return {
         data: null,
-        errors: { content: "Prompt is not a valid meal description." },
+        errors: {
+          content:
+            "The prompt is not a valid meal input. Please be more specific.",
+        },
       };
     }
 

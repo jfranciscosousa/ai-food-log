@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
@@ -8,6 +9,11 @@ import {
   WEIGHT_LOSS_GOAL_OPTIONS,
 } from "~/constants";
 import { calculateCalorieGoal } from "~/lib/calculateCalorieGoal";
+import type {
+  FitnessLevel,
+  Gender,
+  WeightLossGoal,
+} from "~/generated/prisma/enums";
 import type { UserWithoutPassword } from "~/server/data/users.server";
 import { extractTrpcFormErrors } from "~/server/trpc/errors";
 import { trpc } from "~/utils/trpc";
@@ -19,6 +25,29 @@ interface SettingsHealthTabProps {
 export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
   const utils = trpc.useUtils();
 
+  const [weight, setWeight] = useState<number | null>(user?.weight ?? null);
+  const [height, setHeight] = useState<number | null>(user?.height ?? null);
+  const [age, setAge] = useState<number | null>(user?.age ?? null);
+  const [gender, setGender] = useState<string | null>(user?.gender ?? null);
+  const [fitnessLevel, setFitnessLevel] = useState<string | null>(
+    user?.fitnessLevel ?? null,
+  );
+  const [weightLossGoal, setWeightLossGoal] = useState<string | null>(
+    user?.weightLossGoal ?? null,
+  );
+
+  const liveCalorieGoal =
+    weight && height && age && gender && fitnessLevel && weightLossGoal
+      ? calculateCalorieGoal({
+          weight,
+          height,
+          age,
+          gender: gender as Gender,
+          fitnessLevel: fitnessLevel as FitnessLevel,
+          weightLossGoal: weightLossGoal as WeightLossGoal,
+        })
+      : null;
+
   const updateHealth = trpc.user.updateHealth.useMutation({
     onSuccess: () => {
       utils.auth.me.invalidate();
@@ -28,7 +57,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
       toast.error("Failed to update health settings!");
     },
   });
-  console.log(user.targetCalories);
+
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -73,6 +102,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           options={GENDER_OPTIONS}
           errors={errors}
           defaultValue={user?.gender}
+          onValueChange={setGender}
         />
 
         <InputField
@@ -83,6 +113,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           placeholder="Your age"
           errors={errors}
           defaultValue={user?.age}
+          onChange={(e) => setAge(e.target.valueAsNumber || null)}
         />
 
         <InputField
@@ -93,6 +124,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           placeholder="Your height in cm"
           errors={errors}
           defaultValue={user?.height}
+          onChange={(e) => setHeight(e.target.valueAsNumber || null)}
         />
 
         <InputField
@@ -103,6 +135,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           placeholder="Your weight in kg"
           errors={errors}
           defaultValue={user?.weight}
+          onChange={(e) => setWeight(e.target.valueAsNumber || null)}
         />
       </div>
 
@@ -117,6 +150,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           errors={errors}
           options={FITNESS_LEVEL_OPTIONS}
           defaultValue={user?.fitnessLevel}
+          onValueChange={setFitnessLevel}
         />
 
         <SelectField
@@ -127,10 +161,12 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           options={WEIGHT_LOSS_GOAL_OPTIONS}
           errors={errors}
           defaultValue={user?.weightLossGoal}
+          onValueChange={setWeightLossGoal}
         />
 
         <p className="text-xs text-muted-foreground">
-          Auto-calculated daily calorie goal: {calculateCalorieGoal(user)}kcal
+          Auto-calculated daily calorie goal:{" "}
+          {liveCalorieGoal != null ? `${liveCalorieGoal}kcal` : "—"}
         </p>
 
         <InputField

@@ -5,6 +5,7 @@ import { Label } from "./label";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -15,11 +16,11 @@ export interface InputFieldProps {
   name: string;
   errors?: Record<string, string> | null;
   className?: string;
-  options: { label: string; value: string }[];
+  options: { label: string; value: string; description?: string }[];
   placeholder?: string;
   required?: boolean;
   defaultValue?: string;
-  value?: string;
+  value?: string | null;
   onValueChange?: (value: string | null) => void;
 }
 
@@ -49,23 +50,27 @@ const SelectField = ({
         onValueChange={onValueChange}
         defaultValue={defaultValue}
         value={value}
+        items={options}
       >
-        <SelectTrigger
-          id={id}
-          className={cn(
-            "input w-full",
-
-            className,
-          )}
-        >
+        <SelectTrigger id={id} className={cn("input w-full", className)}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectGroup>
+            {options.map((option) => (
+              <SelectItem
+                key={option.value}
+                value={option.value}
+                className="*:flex-col items-start"
+              >
+                <span className="block">{option.label}</span>
+
+                <span className="block text-muted-foreground text-xs ">
+                  {option.description}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectGroup>
         </SelectContent>
       </Select>
 
