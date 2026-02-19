@@ -41,7 +41,7 @@ export default function LoggedInLayout({ children }: { children: ReactNode }) {
               </span>
             </Button>
 
-            <h1 className="text-lg font-bold">AI Food Log</h1>
+            <h1 className="text-lg font-bold">Vigor</h1>
           </header>
 
           {/* Main content */}

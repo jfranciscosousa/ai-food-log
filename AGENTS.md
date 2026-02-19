@@ -1,4 +1,4 @@
-# AI Food Log
+# Vigor
 
 A full-stack food tracking application with AI-powered meal parsing and suggestion generation.
 

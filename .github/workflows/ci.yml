@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DATABASE_URL: postgres://postgres:postgres@localhost:5432/ai-food-log-test
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/vigor-test
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: ai-food-log-test
+          POSTGRES_DB: vigor-test
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432

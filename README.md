@@ -1,4 +1,4 @@
-# ai-food-log
+# Vigor
 
 Private License
 

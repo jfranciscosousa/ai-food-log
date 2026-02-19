@@ -13,7 +13,7 @@ import { trpc } from "~/utils/trpc";
 
 export const meta = () => [
   {
-    title: "Preview | AI Food Log",
+    title: "Preview | Vigor",
   },
 ];
 

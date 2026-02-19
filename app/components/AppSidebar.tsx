@@ -62,7 +62,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
           {/* Not an h1 — the page already has one in the mobile header.
               The aside's aria-label identifies this landmark for AT. */}
           {!collapsed && (
-            <p className="text-lg font-bold truncate flex-1">AI Food Log</p>
+            <p className="text-lg font-bold truncate flex-1">Vigor</p>
           )}
 
           {/* Mobile close button */}

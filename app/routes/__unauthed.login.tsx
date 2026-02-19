@@ -2,7 +2,7 @@ import Login from "~/domains/Login";
 
 export const meta = () => [
   {
-    title: "Login | AI Food Log",
+    title: "Login | Vigor",
   },
 ];
 

@@ -46,7 +46,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-export const meta = () => [{ title: "AI Food Log" }];
+export const meta = () => [{ title: "Vigor" }];
 
 function applySystemTheme() {
   const theme = window.matchMedia("(prefers-color-scheme: dark)").matches

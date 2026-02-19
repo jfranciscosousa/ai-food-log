@@ -7,7 +7,7 @@ import DiaryNavigation from "~/domains/Diary/DiaryNavigation";
 
 export const meta = () => [
   {
-    title: "Diary | AI Food Log",
+    title: "Diary | Vigor",
   },
 ];
 

@@ -3,7 +3,7 @@ import SettingsForm from "~/domains/Settings/SettingsForm";
 
 export const meta = () => [
   {
-    title: "Settings | AI Food Log",
+    title: "Settings | Vigor",
   },
 ];
 
