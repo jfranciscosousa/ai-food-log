@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { InputField } from "~/components/ui/input-field";
 import { SelectField } from "~/components/ui/select-field";
+import { Textarea } from "~/components/ui/textarea";
 import {
   FITNESS_LEVEL_OPTIONS,
   GENDER_OPTIONS,
@@ -77,6 +78,7 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
       targetCarbs: data.targetCarbs ? Number(data.targetCarbs) : undefined,
       targetFat: data.targetFat ? Number(data.targetFat) : undefined,
       targetFiber: data.targetFiber ? Number(data.targetFiber) : undefined,
+      workoutPreferences: (data.workoutPreferences as string) || null,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -175,6 +177,21 @@ export function SettingsHealthTab({ user }: SettingsHealthTabProps) {
           placeholder="Leave blank to auto-calculate"
           errors={errors}
           defaultValue={user?.targetCalories ?? undefined}
+        />
+      </div>
+
+      <div className="space-y-4 rounded-lg border p-4">
+        <h3 className="font-semibold">Exercise Preferences</h3>
+        <p className="text-sm text-muted-foreground">
+          Describe your available equipment, machines, and any preferences or
+          limitations. This is used when generating AI workout plans.
+        </p>
+
+        <Textarea
+          name="workoutPreferences"
+          placeholder="e.g. I have dumbbells and a pull-up bar. I prefer compound movements and no running."
+          defaultValue={user?.workoutPreferences ?? undefined}
+          rows={4}
         />
       </div>
 

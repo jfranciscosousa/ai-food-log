@@ -1,6 +1,7 @@
 import {
   ChevronLeft,
   ChevronRight,
+  Dumbbell,
   LogOut,
   Notebook,
   ScanEye,
@@ -17,6 +18,7 @@ import { trpc } from "~/utils/trpc";
 
 const navLinks = [
   { to: "/diary", icon: Notebook, label: "Diary" },
+  { to: "/workout", icon: Dumbbell, label: "Workout" },
   { to: "/preview", icon: ScanEye, label: "Preview" },
   { to: "/settings", icon: User, label: "Settings" },
 ];

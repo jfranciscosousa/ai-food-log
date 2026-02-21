@@ -64,6 +64,7 @@ export async function userFromRequest(request: Request) {
       targetCarbs: true,
       targetFat: true,
       targetFiber: true,
+      workoutPreferences: true,
       bmr: true,
       bmi: true,
     },

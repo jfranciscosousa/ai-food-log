@@ -103,6 +103,7 @@ export class UsersService {
     targetCarbs: z.number().optional(),
     targetFat: z.number().optional(),
     targetFiber: z.number().optional(),
+    workoutPreferences: z.string().optional().nullable(),
   });
 
   static readonly updateAccountParams = z.object({
@@ -324,6 +325,7 @@ export class UsersService {
       targetCarbs,
       targetFat,
       targetFiber,
+      workoutPreferences,
     } = parsedSchema.data;
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -349,6 +351,7 @@ export class UsersService {
         targetCarbs,
         targetFat,
         targetFiber,
+        workoutPreferences,
       },
     });
 

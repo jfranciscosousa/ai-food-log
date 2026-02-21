@@ -61,6 +61,7 @@ export const updateHealthSchema = z.object({
   targetCarbs: z.number().optional(),
   targetFat: z.number().optional(),
   targetFiber: z.number().optional(),
+  workoutPreferences: z.string().optional().nullable(),
 });
 
 export const updateAccountSchema = z.object({
