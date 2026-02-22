@@ -46,15 +46,16 @@ type Props = {
     }[];
     fromImage?: boolean;
   };
+  actionButtons?: React.ReactNode;
 };
 
-export default function DiaryEntry({ entry }: Props) {
+export default function DiaryEntry({ entry, actionButtons }: Props) {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between space-y-0">
-        <div>
+        <div className="flex-1 min-w-0">
           <CardTitle className="flex items-center gap-2 text-lg">
             {entry.icon && (
               <DynamicIcon name={entry.icon} className="h-5 w-5 shrink-0" />
@@ -71,17 +72,21 @@ export default function DiaryEntry({ entry }: Props) {
           </div>
         </div>
 
-        {entry.id && (
-          <div className="flex gap-2">
-            {/** TODO: edit image */}
-            {!entry.fromImage && (
-              <DiaryEntryUpdate
-                entryId={entry.id}
-                entryContent={entry.content}
-              />
-            )}
-            <DiaryEntryDeleteOne entryId={entry.id} />
-          </div>
+        {actionButtons ? (
+          <div className="flex gap-2 shrink-0">{actionButtons}</div>
+        ) : (
+          entry.id && (
+            <div className="flex gap-2 shrink-0">
+              {/** TODO: edit image */}
+              {!entry.fromImage && (
+                <DiaryEntryUpdate
+                  entryId={entry.id}
+                  entryContent={entry.content}
+                />
+              )}
+              <DiaryEntryDeleteOne entryId={entry.id} />
+            </div>
+          )
         )}
       </CardHeader>
       <div className="sm:px-6 px-4 pt-0">
