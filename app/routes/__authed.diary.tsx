@@ -18,7 +18,15 @@ export default function NotesPage() {
   const date = searchParams.get("date") ?? today;
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
+      {/* Header Section */}
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Food Diary</h1>
+        <p className="text-muted-foreground">
+          Track your daily nutrition and reach your health goals
+        </p>
+      </div>
+
       <div className="flex flex-col items-center">
         <DiaryNavigation />
       </div>
@@ -28,6 +36,6 @@ export default function NotesPage() {
       <DiaryDailySummary date={date} />
 
       <DiaryList date={date} />
-    </>
+    </div>
   );
 }

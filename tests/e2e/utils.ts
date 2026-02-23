@@ -49,8 +49,9 @@ export async function createUserAndLogin(page: Page, screen: Screen) {
   await (await screen.findByLabelText("Email")).fill(data.email);
   await screen.getByLabelText("Password").fill(USER_TEST_PASSWORD);
   await page.getByRole("button", { name: "Login" }).click();
-  await page.getByRole("button", { name: "User nav" }).click();
-  await screen.findByText(data.name);
+
+  // Wait for successful login by checking for the user info in the sidebar
+  await page.waitForSelector(`[aria-label="Signed in as ${data.name}"]`);
 
   return data;
 }

@@ -13,6 +13,7 @@ import {
   deleteAllEntriesSchema,
   previewEntrySchema,
   generateMealSuggestionSchema,
+  savePreviewEntrySchema,
 } from "../schemas/food";
 
 export const foodRouter = router({
@@ -152,6 +153,55 @@ export const foodRouter = router({
       };
 
       const result = await generateMealSuggestion(remaining, input.prompt);
+
+      return result;
+    }),
+
+  savePreviewEntry: protectedProcedure
+    .input(savePreviewEntrySchema)
+    .mutation(async ({ ctx, input }) => {
+      // Calculate totals from items
+      const totals = {
+        calories: input.items.reduce((acc, item) => acc + item.calories, 0),
+        protein: input.items.reduce((acc, item) => acc + item.protein, 0),
+        carbs: input.items.reduce((acc, item) => acc + item.carbs, 0),
+        fat: input.items.reduce((acc, item) => acc + item.fat, 0),
+        fiber: input.items.reduce((acc, item) => acc + item.fiber, 0),
+      };
+
+      // Create the entry with items in a transaction
+      const result = await prisma.$transaction(async (tx) => {
+        const entry = await tx.foodEntry.create({
+          data: {
+            content: input.content,
+            day: new Date(input.day),
+            userId: ctx.userId,
+            name: input.name,
+            icon: input.icon,
+            calories: totals.calories,
+            protein: totals.protein,
+            carbs: totals.carbs,
+            fat: totals.fat,
+            fiber: totals.fiber,
+            fromImage: false,
+            aiResponse: {
+              name: input.name,
+              icon: input.icon,
+              items: input.items,
+              invalid: false,
+            },
+          },
+        });
+
+        await tx.foodEntryItem.createMany({
+          data: input.items.map((item) => ({
+            ...item,
+            foodEntryId: entry.id,
+          })),
+        });
+
+        return entry;
+      });
 
       return result;
     }),

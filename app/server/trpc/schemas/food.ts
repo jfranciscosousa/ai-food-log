@@ -35,3 +35,21 @@ export const generateMealSuggestionSchema = z.object({
   date: z.string(),
   prompt: z.string().optional(),
 });
+
+export const savePreviewEntrySchema = z.object({
+  content: z.string(),
+  day: z.string(),
+  name: z.string(),
+  icon: z.string().nullable().optional(),
+  items: z.array(
+    z.object({
+      name: z.string(),
+      servingSize: z.number(),
+      calories: z.number(),
+      protein: z.number(),
+      carbs: z.number(),
+      fat: z.number(),
+      fiber: z.number(),
+    }),
+  ),
+});

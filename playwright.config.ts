@@ -1,6 +1,7 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
 import { config as loadEnv } from "dotenv";
+import { SERVER_ENV } from "~/env.server";
 
 // Load .env.test for E2E tests
 loadEnv({ path: ".env.test", override: true });
@@ -25,9 +26,9 @@ const config: PlaywrightTestConfig = {
     timeout: 5000,
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: !!SERVER_ENV.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: SERVER_ENV.CI ? 2 : 0,
   /* We are cleaning the database with each test so make sure we only have 1 worker to avoid cleaning the database in the middle of a parallel test */
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
