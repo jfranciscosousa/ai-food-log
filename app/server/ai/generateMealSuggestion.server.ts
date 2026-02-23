@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { completion } from "./aiutils";
+import { generateMealSuggestionMock } from "./generateMealSuggestion.mock";
+import { SERVER_ENV } from "~/env.server";
 
 interface RemainingMacros {
   calories: number;
@@ -13,6 +15,11 @@ export async function generateMealSuggestion(
   remaining: RemainingMacros,
   userPrompt?: string,
 ) {
+  // Use mock in test environment
+  if (SERVER_ENV.USE_AI_MOCK) {
+    return generateMealSuggestionMock(remaining, userPrompt);
+  }
+
   const { calories, protein, carbs, fat, fiber } = remaining;
 
   const defaultPrompt =

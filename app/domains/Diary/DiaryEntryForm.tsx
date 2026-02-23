@@ -102,6 +102,7 @@ export default function DiaryEntryForm({ date }: DiaryEntryFormProps) {
                   <Label htmlFor="meal">Meal Description</Label>
                   <div className="flex gap-2">
                     <Input
+                      id="meal"
                       name="content"
                       placeholder="e.g. 100g of cooked rice and 250g of raw chicken breast"
                       ref={inputRef}

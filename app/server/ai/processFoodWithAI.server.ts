@@ -1,7 +1,14 @@
 import { z } from "zod";
 import { completion, type Prompt } from "./aiutils";
+import { processFoodWithAIMock } from "./processFoodWithAI.mock";
+import { SERVER_ENV } from "~/env.server";
 
 export async function processFoodWithAI(prompt: Prompt) {
+  // Use mock in test environment
+  if (SERVER_ENV.USE_AI_MOCK) {
+    return processFoodWithAIMock(prompt);
+  }
+
   return completion(
     `
     You are a meal tracker helper. You convert human text, like descriptions of meals with weights and convert it into macros.

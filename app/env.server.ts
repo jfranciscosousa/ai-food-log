@@ -7,6 +7,14 @@ export const serverEnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   SECRET_KEY_BASE: z.string(),
   AI_GATEWAY_API_KEY: z.string(),
+  USE_AI_MOCK: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((v) => v === "true"),
+  CI: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((v) => v === "true"),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

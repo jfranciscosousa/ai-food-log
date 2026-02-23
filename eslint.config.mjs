@@ -125,6 +125,24 @@ export default [
           forms: true,
         },
       ],
+
+      // Block direct usage of process.env - use SERVER_ENV or CLIENT_ENV instead
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "MemberExpression[object.name='process'][property.name='env']",
+          message:
+            "Direct access to process.env is not allowed. Use SERVER_ENV from ~/env.server or CLIENT_ENV from ~/env instead.",
+        },
+      ],
+    },
+  },
+  // Allow process.env only in environment configuration files and infrastructure scripts
+  {
+    files: ["app/env.server.ts", "app/env.ts", "scripts/**/*.ts"],
+    rules: {
+      "no-restricted-syntax": "off",
     },
   },
   ...storybook.configs["flat/recommended"],
