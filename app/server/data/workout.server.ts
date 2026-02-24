@@ -1,6 +1,7 @@
 import { z } from "zod";
 import prisma from "./prisma.server";
 import { generateWorkoutPlan } from "../ai/generateWorkoutPlan.server";
+import { parseWorkoutPlan } from "../ai/parseWorkoutPlan.server";
 import type { FitnessLevel, WeightLossGoal } from "~/generated/prisma/enums";
 
 function getStartAndEndOfDay(date?: string): [Date, Date] {
@@ -28,6 +29,8 @@ export class WorkoutService {
     const { content, day } = params;
     const [start, end] = getStartAndEndOfDay(day);
 
+    const parsed = await parseWorkoutPlan(content);
+
     await prisma.workoutPlan.deleteMany({
       where: { userId, day: { gte: start, lte: end } },
     });
@@ -36,9 +39,9 @@ export class WorkoutService {
       data: {
         userId,
         day: new Date(day),
-        name: "Manual Workout",
+        name: parsed.name,
         content,
-        exercises: [],
+        exercises: parsed.exercises,
         aiGenerated: false,
       },
     });

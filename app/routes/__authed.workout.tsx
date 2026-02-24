@@ -17,6 +17,13 @@ export default function WorkoutPage() {
 
   return (
     <>
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Workout</h1>
+        <p className="text-muted-foreground">
+          Plan and track your daily workouts
+        </p>
+      </div>
+
       <div className="flex flex-col items-center">
         <WorkoutNavigation />
       </div>

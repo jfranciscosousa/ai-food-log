@@ -22,7 +22,7 @@ export default function LoggedInLayout({ children }: { children: ReactNode }) {
     <>
       <NavigationProgress />
 
-      <div className="flex h-screen overflow-hidden bg-background">
+      <div className="flex fixed inset-0 overflow-hidden bg-background">
         <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
