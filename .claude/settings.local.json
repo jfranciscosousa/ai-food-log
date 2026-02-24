@@ -15,7 +15,8 @@
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(cat:*)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []
