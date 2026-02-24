@@ -12,9 +12,10 @@ export const serverEnvSchema = z.object({
     .optional()
     .transform((v) => v === "true"),
   CI: z
-    .enum(["true", "false"])
+    .any()
     .optional()
-    .transform((v) => v === "true"),
+    // Vercel puts a 1 on the CI var if true
+    .transform((v) => v === "true" || v === 1 || v === "1"),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

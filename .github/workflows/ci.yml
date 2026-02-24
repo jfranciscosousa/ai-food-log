@@ -76,6 +76,7 @@ jobs:
           NODE_ENV: production
           PORT: 3001
           AI_GATEWAY_API_KEY: foobar
+          USE_AI_MOCK: true
 
       - name: Upload Playwright Report
         if: failure()
