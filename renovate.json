@@ -2,5 +2,13 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
   "rangeStrategy": "bump",
-  "schedule": ["before 3am on the first day of the month"]
+  "schedule": ["at midnight"],
+  "automerge": true,
+  "automergeType": "pr",
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "pinDigests": false
+    }
+  ]
 }
