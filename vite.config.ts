@@ -3,14 +3,13 @@
 import tailwindcss from "@tailwindcss/vite";
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import Inspector from "vite-plugin-react-inspector";
 
 export default defineConfig({
+  resolve: { tsconfigPaths: true },
   plugins: [
     tailwindcss(),
     reactRouter(),
-    tsconfigPaths(),
     Inspector({
       // Only enable in development
       exclude: [],

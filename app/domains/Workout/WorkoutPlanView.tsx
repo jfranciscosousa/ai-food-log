@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Loader2, Dumbbell, Trash2, Sparkles, Info } from "lucide-react";
+import { Loader2, Dumbbell, Trash2, Sparkles, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import {
@@ -10,11 +10,13 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "~/components/ui/collapsible";
 import { trpc } from "~/utils/trpc";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 import type { Exercise } from "~/server/ai/generateWorkoutPlan.server";
 
 const categoryColors: Record<Exercise["category"], string> = {
@@ -96,39 +98,39 @@ export default function WorkoutPlanView({ date }: WorkoutPlanViewProps) {
       <CardContent className="space-y-3">
         {exercises.length > 0 ? (
           exercises.map((ex, i) => (
-            <div key={i} className="space-y-1.5 rounded-md border p-3">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-medium text-sm">{ex.name}</span>
-                <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${categoryColors[ex.category]}`}
-                >
-                  {ex.category}
-                </span>
-                {ex.instructions && (
-                  <Popover>
-                    <PopoverTrigger className="text-muted-foreground hover:text-foreground transition-colors">
-                      <Info className="h-3.5 w-3.5" />
-                      <span className="sr-only">Instructions</span>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      side="top"
-                      className="w-80 text-xs leading-relaxed"
-                    >
-                      {ex.instructions}
-                    </PopoverContent>
-                  </Popover>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-muted-foreground">
-                {ex.sets && ex.reps && (
-                  <span>
-                    {ex.sets} × {ex.reps}
+            <Collapsible key={i} disabled={!ex.instructions}>
+              <CollapsibleTrigger
+                className="w-full text-left rounded-md border p-3 space-y-1.5 hover:bg-muted/50 transition-colors data-[state=open]:rounded-b-none disabled:cursor-default disabled:hover:bg-transparent"
+                disabled={!ex.instructions}
+              >
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-medium text-sm">{ex.name}</span>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${categoryColors[ex.category]}`}
+                  >
+                    {ex.category}
                   </span>
-                )}
-                {ex.duration && <span>{ex.duration}</span>}
-                {ex.restTime && <span>Rest: {ex.restTime}</span>}
-              </div>
-            </div>
+                  {ex.instructions && (
+                    <ChevronDown className="ml-auto h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 [[data-state=open]_&]:rotate-180" />
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-muted-foreground">
+                  {ex.sets && ex.reps && (
+                    <span>
+                      {ex.sets} × {ex.reps}
+                    </span>
+                  )}
+                  {ex.duration && <span>{ex.duration}</span>}
+                  {ex.restTime && <span>Rest: {ex.restTime}</span>}
+                </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent
+                className="prose prose-sm text-xs text-muted-foreground dark:prose-invert max-w-none p-3 border border-t-0 rounded-b-md"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(marked(ex.instructions) as string),
+                }}
+              />
+            </Collapsible>
           ))
         ) : (
           <p className="text-sm text-muted-foreground whitespace-pre-wrap">

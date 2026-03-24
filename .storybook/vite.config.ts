@@ -1,12 +1,11 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import Inspector from "vite-plugin-react-inspector";
 
 export default defineConfig({
+  resolve: { tsconfigPaths: true },
   plugins: [
     tailwindcss(),
-    tsconfigPaths(),
     Inspector({
       exclude: [],
       toggleButtonVisibility: "always",

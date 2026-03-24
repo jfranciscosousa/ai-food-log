@@ -17,7 +17,7 @@ export const exerciseSchema = z.object({
   instructions: z
     .string()
     .describe(
-      "Step-by-step instructions on how to perform the exercise correctly",
+      "Step-by-step instructions on how to perform the exercise correctly, formatted in Markdown (use numbered lists for steps, **bold** for key cues)",
     ),
   category: z
     .enum(["warmup", "strength", "cardio", "flexibility", "cooldown"])
@@ -73,7 +73,7 @@ Rules:
 - Include a warm-up and cool-down
 - For strength exercises always include sets, reps, and rest time between sets
 - For cardio/timed exercises always include duration, no sets/reps
-- Always include step-by-step instructions for every exercise
+- Always include step-by-step instructions for every exercise, formatted in Markdown (numbered steps, **bold** for key form cues)
 - If the user specifies a style in their request (e.g. "HIIT", "upper body"), follow it exactly
     `,
     {
