@@ -7,6 +7,7 @@ import {
 import { test as base, type Page } from "@playwright/test";
 import { UsersService } from "~/server/data/users.server";
 import type z from "zod";
+import { SERVER_ENV } from "~/env.server";
 
 export const USER_TEST_PASSWORD = "foobar";
 
@@ -18,7 +19,7 @@ export async function createUser(
   params: Partial<z.infer<typeof UsersService.createUserParams>> = {},
 ) {
   const defaults = {
-    inviteToken: "xico o maior da minha aldeia",
+    inviteToken: SERVER_ENV.INVITE_TOKEN,
     email: faker.internet.email(),
     name: faker.person.firstName(),
     password: USER_TEST_PASSWORD,
