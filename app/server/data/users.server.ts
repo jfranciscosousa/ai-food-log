@@ -5,6 +5,7 @@ import {
   WeightLossGoal,
 } from "~/generated/prisma/browser";
 import { z } from "zod";
+import { SERVER_ENV } from "~/env.server";
 import prisma from "./prisma.server";
 import { encryptPassword, verifyPassword } from "./users/passwordUtils.server";
 import { formatZodErrors } from "./utils/formatZodErrors.server";
@@ -182,7 +183,7 @@ export class UsersService {
       rememberMe,
     } = parsedSchema.data;
 
-    if (inviteToken !== "xico o maior da minha aldeia") {
+    if (inviteToken !== SERVER_ENV.INVITE_TOKEN) {
       return {
         data: null,
         errors: { inviteToken: "Invalid invite token!" },

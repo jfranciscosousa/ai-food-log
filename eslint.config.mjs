@@ -138,9 +138,9 @@ export default [
       ],
     },
   },
-  // Allow process.env only in environment configuration files and infrastructure scripts
+  // Allow process.env only in environment configuration files, infrastructure scripts, and e2e tests
   {
-    files: ["app/env.server.ts", "app/env.ts", "scripts/**/*.ts"],
+    files: ["app/env.server.ts", "app/env.ts", "scripts/**/*.ts", "tests/**/*.ts"],
     rules: {
       "no-restricted-syntax": "off",
     },

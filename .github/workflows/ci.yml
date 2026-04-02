@@ -20,7 +20,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:18-alpine
         env:
           POSTGRES_DB: vigor-test
           POSTGRES_PASSWORD: postgres
@@ -29,16 +29,16 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: marocchino/tool-versions-action@v1
+      - uses: marocchino/tool-versions-action@v2
         id: versions
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ steps.versions.outputs.nodejs }}
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: ${{ steps.versions.outputs.pnpm }}
           run_install: false
@@ -47,7 +47,7 @@ jobs:
         id: pnpm-cache
         run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -77,10 +77,11 @@ jobs:
           PORT: 3001
           AI_GATEWAY_API_KEY: foobar
           USE_AI_MOCK: true
+          INVITE_TOKEN: test-invite-token
 
       - name: Upload Playwright Report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report/
@@ -88,7 +89,7 @@ jobs:
 
       - name: Upload Test Results
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: test-results/

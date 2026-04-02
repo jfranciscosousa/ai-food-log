@@ -41,9 +41,7 @@ test("signs up", async ({ page, screen }) => {
 
   // Step 4: Complete - Invite token
   await page.getByText("Step 4 of 4").waitFor(); // Wait for step 4 to load
-  await screen
-    .getByLabelText("Invite token")
-    .fill("xico o maior da minha aldeia");
+  await screen.getByLabelText("Invite token").fill(process.env.INVITE_TOKEN!);
   await page.getByRole("button", { name: "Complete" }).click();
 
   await expect(page).toHaveURL("/diary");
