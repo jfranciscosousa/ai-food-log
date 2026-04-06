@@ -86,7 +86,7 @@
     "@types/accept-language-parser": "^1.5.8",
     "@types/dompurify": "^3.2.0",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
